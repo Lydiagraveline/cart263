@@ -1,5 +1,5 @@
 /**
-Wheres Sausage Dog?
+Where's Sausage Dog?
 Lydia Graveline
 
 This is a template. You must fill in the title,
