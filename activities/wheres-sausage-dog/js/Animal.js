@@ -1,4 +1,9 @@
+// Animal
+// A class defining an animal that can be displayed as an image
+
 class Animal {
+  // Stores position and image as properties
+  // Creates an angle property for potential rotation
   constructor(x, y, image){
     this.x = x;
     this.y = y;
@@ -7,13 +12,13 @@ class Animal {
     this.angle = 0;
   }
 
-  // An update method that calls the display method
+  // Calls the display method
   update(){
     this.display();
   }
 
   // displays the animals
-  dsiplay() {
+  display() {
     push();
     imageMode(CENTER);
     translate(this.x, this.y);
