@@ -9,7 +9,11 @@ dog to win the game.
 
 "use strict";
 
+
 let state = `title` // can be 'title', 'game', 'end'
+
+// the player's score, increases each time sausage dog is found
+let score = 0
 
 // global constants
 const NUM_ANIMAL_IMAGES = 10;
@@ -108,20 +112,14 @@ function mousePressed() {
   }
 }
 
-// calls the refresh method
-function keyTyped() {
-  if (keyCode === ENTER) {
-    refresh()
-  }
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 function title() {
   background(255);
   push();
-
   textAlign(CENTER, CENTER);
   textSize(64);
-  text(`Where's Sausage Dog?`, width / 2 + 75, height / 4 - 30);
+  text(`Where's Sausage Dog?`, width / 2, height / 4 - 30);
   pop();
+
+
 }

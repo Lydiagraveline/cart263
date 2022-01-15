@@ -1,25 +1,25 @@
 // SausageDog
 // An extension of the Animal class
 // Adds the idea of being found when clicked
-// and spinning when found
+// and runs away when found
 
 class SausageDog extends Animal {
   // Calls the super constructor
-  // Adds properties for being found, for a rotation speed, and for a random direction
+  // Adds properties for being found, for a running away speed, and for a random direction
   constructor(x, y, image){
     super(x, y, image);
 
     this.found = false;
-    this.rotationSpeed = 0.25;
-    this.randomDirection;
+    this.speed = 5;
+    this.randomDirection = undefined;
   }
 
-  // Calls the super update() and changes angle if found (to rotate!)
+  // Calls the super update(), moves if found, and refreshes the game when sausage dog runs away
   update(){
     super.update();
 
     if (this.found){
-      this.move()
+      this.move();
     }
 
     // refreshes the game when the sausage dog goes back into hiding
@@ -31,24 +31,26 @@ class SausageDog extends Animal {
   // Move the sausage dog in a random direction when found
   move(){
     if (this.randomDirection === `up`){
-      this.y -= 1
+      this.y -= this.speed
     }
     else if (this.randomDirection === `down`) {
-      this.y += 1
+      this.y += this.speed
     }
     else if (this.randomDirection === `left`) {
-      this.x -= 1
+      this.x -= this.speed
     }
     else if (this.randomDirection === `right`) {
-      this.x += 1
+      this.x += this.speed
     }
 
   }
 
-  // Checks if the sausage dog was clicked
+  // Checks if the sausage dog was clicked + increases score if found
   mousePressed(){
     if (!this.found && this.overlap(mouseX, mouseY)) {
       this.found = true;
+      score += 1
+      console.log(score);
     }
     // sets a random direction when clicked
     let directions = [`up`, `down`, `left`, `right`];
@@ -58,7 +60,6 @@ class SausageDog extends Animal {
     } else {
       this.goingLeft = false;
     }
-    console.log(this.randomDirection);
-    console.log(this.goingLeft);
+
   }
 }
