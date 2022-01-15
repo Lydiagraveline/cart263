@@ -10,6 +10,7 @@ class Animal {
     this.image = image;
 
     this.angle = 0;
+    this.goingLeft = false;
   }
 
   // Calls the display method
@@ -23,6 +24,14 @@ class Animal {
     imageMode(CENTER);
     translate(this.x, this.y);
     rotate(this.angle);
+
+    // sausage dog flips if going left
+    if (this.goingLeft && this.found){
+      scale(-1,1);
+    } else {
+      scale(1, 1);
+    }
+
     image(this.image, 0, 0);
     pop();
   }

@@ -108,6 +108,7 @@ function mousePressed() {
   }
 }
 
+// calls the refresh method
 function keyTyped() {
   if (keyCode === ENTER) {
     refresh()
@@ -122,8 +123,5 @@ function title() {
   textAlign(CENTER, CENTER);
   textSize(64);
   text(`Where's Sausage Dog?`, width / 2 + 75, height / 4 - 30);
-
-  //updateSausageDog();
-
   pop();
 }
