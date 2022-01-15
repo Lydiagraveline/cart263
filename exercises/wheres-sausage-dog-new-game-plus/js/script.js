@@ -38,7 +38,12 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  // Create the animals + add them to the animal array
+  createAnimals();
+  createSausageDog();
+}
+
+// Create the animals + add them to the animal array
+function createAnimals() {
   for (let i = 0; i < NUM_ANIMALS; i++) {
     let x = random(0, width);
     let y = random(0, height);
@@ -46,11 +51,22 @@ function setup() {
     let animal = new Animal (x, y, animalImage);
     animals.push(animal);
   }
+}
 
-  // create the sausage dog
+// create the sausage dog
+function createSausageDog() {
   let x = random(0, width);
   let y = random(0, height);
   sausageDog = new SausageDog(x, y, sausageDogImage)
+}
+
+// refresh the game
+function refresh() {
+  //empty the array of animals an then refill it, changing the position of each animal
+  animals = [];
+  createAnimals();
+  // create a new sausage dog at a new position
+  createSausageDog();
 }
 
 // Draws the background then updates all animals and the sausage dog
@@ -89,6 +105,12 @@ function mousePressed() {
 
   if (state === `title`){
     state = `game`;
+  }
+}
+
+function keyTyped() {
+  if (keyCode === ENTER) {
+    refresh()
   }
 }
 
