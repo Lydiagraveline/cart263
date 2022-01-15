@@ -27,5 +27,10 @@ class SausageDog extends Animal {
     if (!this.found && this.overlap(mouseX, mouseY)) {
       this.found = true;
     }
+
+    // if (state === `title` && this.overlap(mouseX, mouseY)) {
+    //   this.found = false;
+    //   state = `game`;
+    // }
   }
 }

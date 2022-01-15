@@ -2,11 +2,14 @@
 Where's Sausage Dog?
 Lydia Graveline
 
-This is a template. You must fill in the title,
-author, and this description to match your project!
+Displays a large number of random animal images as well as
+a single sausage dog image. The player needs to click on the
+dog to win the game.
 */
 
 "use strict";
+
+let state = `title` // can be 'title', 'game', 'end'
 
 // global constants
 const NUM_ANIMAL_IMAGES = 10;
@@ -50,18 +53,55 @@ function setup() {
   sausageDog = new SausageDog(x, y, sausageDogImage)
 }
 
-//draw
+// Draws the background then updates all animals and the sausage dog
 function draw() {
   background(255);
 
+  if (state === `title`){
+    title();
+  }
+  else if (state === `game`) {
+    updateAnimals();
+    updateSausageDog();
+  }
+  else if (state === `end`) {
+    end();
+  }
+}
+
+// Calls the update() method for all animals
+function updateAnimals() {
+  // Loop through all animals
   for (let i = 0; i < animals.length; i++) {
+    // Update the current animal
     animals[i].update();
   }
+}
 
+// Calls the update() method of the sausage dog
+function updateSausageDog() {
   sausageDog.update();
 }
 
 // Call the sausage dog's mousePressed() method so it knows the mouse was clicked.
 function mousePressed() {
   sausageDog.mousePressed();
+
+  if (state === `title`){
+    state = `game`;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+function title() {
+  background(255);
+  push();
+
+  textAlign(CENTER, CENTER);
+  textSize(64);
+  text(`Where's Sausage Dog?`, width / 2 + 75, height / 4 - 30);
+
+  //updateSausageDog();
+
+  pop();
 }
