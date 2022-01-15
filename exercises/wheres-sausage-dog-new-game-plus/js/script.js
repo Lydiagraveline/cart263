@@ -15,6 +15,9 @@ let state = `title` // can be 'title', 'game', 'end'
 // the player's score, increases each time sausage dog is found
 let score = 0
 
+// countdown timer in seconds
+let timer = 30 //seconds
+
 // global constants
 const NUM_ANIMAL_IMAGES = 10;
 const NUM_ANIMALS = 100;
@@ -83,9 +86,29 @@ function draw() {
   else if (state === `game`) {
     updateAnimals();
     updateSausageDog();
+    countdown();
   }
   else if (state === `end`) {
     end();
+  }
+}
+
+// runs a countdown timer and displays it
+function countdown(){
+  // displays the countdown in the corner
+  textAlign(CENTER, CENTER);
+  textSize(50);
+  text(timer, 100, 100);
+
+  // "countdown timer" by marynotari on editor.p5js
+  // https://editor.p5js.org/marynotari/sketches/S1T2ZTMp-
+
+  // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
+  if (frameCount % 60 == 0 && timer > 0) {
+    timer --;
+  }
+  if (timer == 0) {
+    state = `end`;
   }
 }
 
@@ -120,6 +143,9 @@ function title() {
   textSize(64);
   text(`Where's Sausage Dog?`, width / 2, height / 4 - 30);
   pop();
+}
 
-
+function end(){
+  text(`TIMES UP!`, width/2, height/2 - 50);
+  text(`Score: `+ (score), width/2, height/2 + 50 )
 }
