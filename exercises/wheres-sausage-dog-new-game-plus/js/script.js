@@ -30,6 +30,10 @@ let animals = [];
 let sausageDog = undefined;
 let sausageDogImage = undefined;
 
+// sounds
+let barkSFX;
+let button1SFX;
+
 // load all the animal images and add each image to the animal images array
 function preload() {
   for (let i = 0; i < NUM_ANIMAL_IMAGES; i++) {
@@ -39,6 +43,10 @@ function preload() {
 
   // Load the sausage dog image
   sausageDogImage = loadImage(`assets/images/sausage-dog.png`);
+
+  // Load the sounds
+  barkSFX = loadSound(`assets/sounds/bark.mp3`);
+  button1SFX = loadSound(`assets/sounds/button1.mp3`);
 }
 
 // Creates all the animal objects and a sausage dog object
@@ -74,6 +82,7 @@ function refresh() {
   createAnimals();
   // create a new sausage dog at a new position
   createSausageDog();
+  button1SFX.play();
 }
 
 // Draws the background then updates all animals and the sausage dog
@@ -129,7 +138,6 @@ function updateSausageDog() {
 // Call the sausage dog's mousePressed() method so it knows the mouse was clicked.
 function mousePressed() {
   sausageDog.mousePressed();
-
   if (state === `title`){
     state = `game`;
   }

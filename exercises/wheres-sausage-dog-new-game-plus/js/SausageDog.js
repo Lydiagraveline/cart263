@@ -50,6 +50,8 @@ class SausageDog extends Animal {
     if (!this.found && this.overlap(mouseX, mouseY)) {
       this.found = true;
       score += 1
+      barkSFX.play();
+      button1SFX.play();
       console.log(score);
     }
     // sets a random direction when clicked
