@@ -134,7 +134,7 @@ function easyMode(){
   horrorButton.removeClass('active');
   easyButton.addClass('active');
   mode = `easy`
-  NUM_ANIMALS = 100;
+  NUM_ANIMALS = 75;
 }
 
 // sets the state to difficult mode
@@ -143,6 +143,8 @@ function difficultMode(){
   horrorButton.removeClass('active');
   difficultButton.addClass('active');
   mode = `difficult`
+  NUM_ANIMALS = 100;
+  timer = 60;
 }
 
 // sets the state to horror mode

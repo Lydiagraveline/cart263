@@ -5,13 +5,14 @@
 
 class SausageDog extends Animal {
   // Calls the super constructor
-  // Adds properties for being found, for a running away speed, and for a random direction
+  // Adds properties for being found, moving, speed, and for a random direction
   constructor(x, y, image){
     super(x, y, image);
 
     this.found = false;
+    this.isMoving = false;
     this.speed = 5;
-    this.randomDirection = undefined;
+    this.rotationSpeed = 0.25;
   }
 
   // Calls the super update(), moves if found, and refreshes the game when sausage dog runs away
@@ -22,14 +23,23 @@ class SausageDog extends Animal {
       this.move();
     }
 
+    let d = dist(mouseX, mouseY, this.x, this.y)
+    if (!this.isMoving && d < 50){
+      this.angle += this.rotationSpeed;
+    } else if (this.isMoving) {
+      this.angle = 0;
+    }
+
     // refreshes the game when the sausage dog goes back into hiding
     if (this.x < 0 || this.x > width || this.y < 0 || this.y > height){
       refresh();
     }
   }
 
-  // Move the sausage dog in a random direction when found
+  // Move the sausage dog in a random direction and remember it is moving
   move(){
+    this.isMoving = true;
+    // Move the sausage dog in a random direction when found
     if (this.randomDirection === `up`){
       this.y -= this.speed
     }
@@ -42,12 +52,11 @@ class SausageDog extends Animal {
     else if (this.randomDirection === `right`) {
       this.x += this.speed
     }
-
   }
 
   // Checks if the sausage dog was clicked + increases score if found
   mousePressed(){
-    if (!this.found && this.overlap(mouseX, mouseY)) {
+    if (!this.found && !this.isMoving && this.overlap(mouseX, mouseY)) {
       this.found = true;
       score += 1
       barkSFX.play();
