@@ -9,8 +9,8 @@ dog to win the game.
 
 "use strict";
 
-
-let state = `title` // can be 'title', 'game', 'end'
+let state = `title` // can be title, game, end
+let mode = `undefined` // can be easy, difficult, horror
 
 // the player's score, increases each time sausage dog is found
 let score = 0
@@ -20,7 +20,9 @@ let timer = 30 //seconds
 
 // global constants
 const NUM_ANIMAL_IMAGES = 10;
-const NUM_ANIMALS = 100;
+
+// The number of animals is determined by the mode
+let NUM_ANIMALS = undefined;
 
 // empty array to store animal images
 let animalImages = [];
@@ -33,6 +35,12 @@ let sausageDogImage = undefined;
 // sounds
 let barkSFX;
 let button1SFX;
+
+// The buttons
+let startButton;
+let easyButton;
+let difficultButton;
+let horrorButton;
 
 // load all the animal images and add each image to the animal images array
 function preload() {
@@ -49,12 +57,27 @@ function preload() {
   button1SFX = loadSound(`assets/sounds/button1.mp3`);
 }
 
-// Creates all the animal objects and a sausage dog object
+// Creates the buttons
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  textFont("courier");
 
-  createAnimals();
-  createSausageDog();
+  // create the buttons + assign a function on mousePressed
+  startButton = createImg(`assets/images/sausage-dog.png`);
+  startButton.addClass(`jump`);
+  startButton.mousePressed(startGame);
+  easyButton = createButton();
+  easyButton.mousePressed(easyMode);
+  difficultButton = createButton();
+  difficultButton.mousePressed(difficultMode);
+  horrorButton = createButton();
+  horrorButton.mousePressed(horrorMode);
+
+  // add html to the buttons
+  startButton.html(`<span class="text">Start Game</span><span>Please select a game mode.</span></button>`)
+  easyButton.html(`<span class="text">Easy</span><span>30 seconds</span></button>`)
+  difficultButton.html(`<span class="text">Difficult</span><span>60 seconds</span></button>`)
+  horrorButton.html(`<span class="text">Horror</span><span>Random</span></button>`)
 }
 
 // Create the animals + add them to the animal array
@@ -83,6 +106,50 @@ function refresh() {
   // create a new sausage dog at a new position
   createSausageDog();
   button1SFX.play();
+}
+
+// changes the state to `game` and hides the buttons
+function startGame() {
+  // will only start if a mode has been selected
+  if (mode === `easy` || mode === `difficult` || mode === `horror`) {
+    state = `game`;
+    createAnimals();
+    createSausageDog();
+
+    // hide the buttons
+    startButton.style("display", "none")
+    easyButton.style("display", "none");
+    difficultButton.style("display", "none");
+    horrorButton.style("display", "none");
+  }
+  // Prompts the player to select a game mode before starting the game
+  else {
+    alert(`Please select a game mode.`)
+  }
+}
+
+// sets the state to easy mode
+function easyMode(){
+  difficultButton.removeClass('active');
+  horrorButton.removeClass('active');
+  easyButton.addClass('active');
+  mode = `easy`
+  NUM_ANIMALS = 100;
+}
+
+// sets the state to difficult mode
+function difficultMode(){
+  easyButton.removeClass('active');
+  horrorButton.removeClass('active');
+  difficultButton.addClass('active');
+  mode = `difficult`
+}
+
+// sets the state to horror mode
+function horrorMode(){
+  easyButton.removeClass('active');
+  difficultButton.removeClass('active');
+  horrorButton.addClass('active');
 }
 
 // Draws the background then updates all animals and the sausage dog
@@ -137,20 +204,31 @@ function updateSausageDog() {
 
 // Call the sausage dog's mousePressed() method so it knows the mouse was clicked.
 function mousePressed() {
-  sausageDog.mousePressed();
-  if (state === `title`){
-    state = `game`;
+  console.log(mouseX, mouseY)
+  if (state === `game`){
+    sausageDog.mousePressed();
   }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 function title() {
-  background(255);
+  background(0);
   push();
   textAlign(CENTER, CENTER);
   textSize(64);
-  text(`Where's Sausage Dog?`, width / 2, height / 4 - 30);
+  fill(255);
+  text(`Where's Sausage Dog?`, width / 2, height / 4);
+
+  textSize(16);
+  fill(220);
+  text(`Select a game mode, then click the sausage dog to begin the game.`, width / 2, height - 20);
   pop();
+
+  // display the buttons and center them
+  startButton.position(width / 2 - 100, height / 3);
+  easyButton.position(width / 2 - 280, height / 2);
+  difficultButton.position(width / 2 - 120, height / 2 );
+  horrorButton.position(width / 2 + 100, height / 2);
 }
 
 function end(){

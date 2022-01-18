@@ -1,20 +1,98 @@
 /*********************************************
 
-Here is a description of any special CSS used.
-In this case it's just padding and margin to 0
-and then centring the canvas (and anything else)
-using the CSS Grid.
-
-Also hides overflow.
+CSS used to style the buttons on the title screen.
+"button 57" CSS by Scott Branch https://getcssscan.com/css-buttons-examples
 
 **********************************************/
 
 body {
   padding: 0;
-  margin: 0;
+  /* margin: 0; */
   display: grid; /* Set up the grid and justify/align to center */
   justify-content: center;
   align-content: center;
   height: 100vh; /* Body is the height of the viewport */
   overflow: hidden; /* Hide anything that goes off the window size */
+}
+
+/* "button 57" CSS by Scott Branch https://getcssscan.com/css-buttons-examples */
+button {
+  font-family: 'Courier New', monospace;
+  position: relative;
+  overflow: hidden;
+  /* border: 1px solid #18181a; */
+  border: none;
+  color: black;
+  display: inline-block;
+  font-size: 20px;
+  /* line-height: 15px; */
+  padding: 18px 18px 17px;
+  /* text-decoration: none; */
+  cursor: pointer;
+  background: white;
+  /* user-select: none; */
+  /* -webkit-user-select: none; */
+  /* touch-action: manipulation; */
+}
+
+button span:first-child {
+  position: relative;
+  transition: color 600ms cubic-bezier(0.48, 0, 0.12, 1);
+  z-index: 10;
+}
+
+button span:last-child {
+  color: white;
+  display: block;
+  position: absolute;
+  bottom: 0;
+  transition: all 500ms cubic-bezier(0.48, 0, 0.12, 1);
+  z-index: 100;
+  opacity: 0;
+  top: 50%;
+  left: 50%;
+  transform: translateY(225%) translateX(-50%);
+  height: 14px;
+  line-height: 13px;
+}
+
+button:after {
+  content: "";
+  position: absolute;
+  bottom: -50%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  transform-origin: bottom center;
+  transition: transform 600ms cubic-bezier(0.48, 0, 0.12, 1);
+  transform: skewY(9.3deg) scaleY(0);
+  z-index: 50;
+}
+
+button:hover:after {
+  transform-origin: bottom center;
+  transform: skewY(9.3deg) scaleY(2);
+}
+
+button:hover span:last-child {
+  transform: translateX(-50%) translateY(-100%);
+  opacity: 1;
+  transition: all 900ms cubic-bezier(0.48, 0, 0.12, 1);
+}
+
+.active {
+  color: white;
+  background-color: black;
+}
+
+.jump:hover {
+  cursor: pointer;
+  animation: jump 2s infinite;
+}
+
+@keyframes jump {
+  0% {transform: translateY(0%);}
+  50% {transform: translateY(-30%); }
+  100% {transform: translateY(0%);}
 }

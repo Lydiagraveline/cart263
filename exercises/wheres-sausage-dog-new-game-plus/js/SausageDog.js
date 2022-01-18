@@ -52,7 +52,6 @@ class SausageDog extends Animal {
       score += 1
       barkSFX.play();
       button1SFX.play();
-      console.log(score);
     }
     // sets a random direction when clicked
     let directions = [`up`, `down`, `left`, `right`];
