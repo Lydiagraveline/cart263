@@ -38,7 +38,9 @@ let horrorDogImage = undefined;
 
 // sounds
 let barkSFX;
-let button1SFX;
+let growlSFX;
+let buttonSFX;
+
 
 // The buttons
 let startButton;
@@ -59,7 +61,8 @@ function preload() {
 
   // Load the sounds
   barkSFX = loadSound(`assets/sounds/bark.mp3`);
-  button1SFX = loadSound(`assets/sounds/button1.mp3`);
+  growlSFX = loadSound(`assets/sounds/growl.mp3`);
+  buttonSFX = loadSound(`assets/sounds/button1.mp3`);
 }
 
 // Creates the buttons
@@ -121,11 +124,13 @@ function refresh() {
   if (mode === `horror`){
     createHorrorDog();
   }
-  button1SFX.play();
+  buttonSFX.play();
 }
 
 // changes the state to `game` and hides the buttons + creates the animals
 function startGame() {
+  buttonSFX.play();
+
   // will only start if a mode has been selected
   if (mode === `easy` || mode === `difficult` || mode === `horror`) {
     state = `game`;
@@ -134,6 +139,9 @@ function startGame() {
     // create a new horror dog if its horror mode
     if (mode === `horror`){
       createHorrorDog();
+      growlSFX.play();
+    } else {
+      barkSFX.play();
     }
 
     // hide the buttons
@@ -150,6 +158,7 @@ function startGame() {
 
 // sets the state to easy mode
 function easyMode(){
+  buttonSFX.play();
   difficultButton.removeClass('active');
   horrorButton.removeClass('active');
   easyButton.addClass('active');
@@ -160,6 +169,7 @@ function easyMode(){
 
 // sets the state to difficult mode
 function difficultMode(){
+  buttonSFX.play();
   easyButton.removeClass('active');
   horrorButton.removeClass('active');
   difficultButton.addClass('active');
@@ -170,6 +180,7 @@ function difficultMode(){
 
 // sets the state to horror mode
 function horrorMode(){
+  buttonSFX.play();
   easyButton.removeClass('active');
   difficultButton.removeClass('active');
   horrorButton.addClass('active');

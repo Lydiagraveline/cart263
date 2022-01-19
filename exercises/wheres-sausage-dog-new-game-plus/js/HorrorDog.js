@@ -30,6 +30,8 @@ class HorrorDog extends Animal {
     if (!this.found && this.overlap(mouseX, mouseY)){
       this.found = true;
       state = `horrorEnd`
+      growlSFX.play();
+      buttonSFX.play();
     }
   }
 
