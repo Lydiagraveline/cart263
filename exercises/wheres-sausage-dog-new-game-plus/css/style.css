@@ -21,7 +21,7 @@ body {
 /* "button 57" CSS by Scott Branch https://getcssscan.com/css-buttons-examples */
 button {
   font-family: 'Courier New', monospace;
-  position: relative;
+  /* position: sticky; */
   overflow: hidden;
   /* border: 1px solid #18181a; */
   border: none;
@@ -31,6 +31,7 @@ button {
   font-size: 20px;
   /* line-height: 15px; */
   padding: 18px 18px 17px;
+  margin: 20px;
   /* text-decoration: none; */
   cursor: pointer;
   background: white;

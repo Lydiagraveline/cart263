@@ -177,10 +177,10 @@ function draw() {
 // runs a countdown timer and displays it
 function countdown(){
   // displays the countdown in the corner
-  textAlign(CENTER, CENTER);
-  textSize(50);
-  fill(255);
-  text(timer, 100, 100);
+  // textAlign(CENTER, CENTER);
+  // textSize(50);
+  // fill(255);
+  // text(timer, 100, 100);
 
   // "countdown timer" by marynotari on editor.p5js
   // https://editor.p5js.org/marynotari/sketches/S1T2ZTMp-
@@ -225,19 +225,27 @@ function title() {
   fill(255);
   text(`Where's Sausage Dog?`, width / 2, height / 4);
 
+  rectMode(CENTER)
+  rect(width / 2, height - 95, 500, 100)
+
   textSize(12);
-  fill(220);
-  text(`Select a game mode, then click the sausage dog to begin the game.`, width / 2, height - 20);
+  fill(0);
+  text(`Select a game mode, then click the sausage dog to begin the game.`, width / 2, height - 120);
+  text(`Find and click the sausage dog to earn points,`, width / 2, height - 100);
+  text(`save time by clicking again to redirect the sausage dog.`, width / 2, height - 80);
+  text(`Get as many points as possible before time runs out!`, width / 2, height - 60);
   pop();
 
   // display the buttons and center them
-  startButton.position(windowWidth/2 - 75, height - 200);
+  startButton.position(windowWidth/2 - 75, 3 * windowHeight / 5);
   easyButton.position(windowWidth/3 - 75, windowHeight / 2 - 25);
   difficultButton.position(windowWidth/2 - 75, windowHeight / 2 - 25);
   horrorButton.position(2*windowWidth/3 - 75, windowHeight / 2 - 25);
 }
 
 function end(){
+  textAlign(CENTER, CENTER);
+  textSize(64);
   text(`TIMES UP!`, width/2, height/2 - 50);
   text(`Score: `+ (score), width/2, height/2 + 50 )
 }
