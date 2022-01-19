@@ -16,7 +16,7 @@ let mode = `undefined` // can be easy, difficult, horror
 let score = 0
 
 // countdown timer in seconds
-let timer = 30 //seconds
+let timer;
 
 // global constants
 const NUM_ANIMAL_IMAGES = 10;
@@ -42,9 +42,6 @@ let easyButton;
 let difficultButton;
 let horrorButton;
 
-// let canvasWidth = 800;
-// let canvasHeight = 700;
-
 // load all the animal images and add each image to the animal images array
 function preload() {
   for (let i = 0; i < NUM_ANIMAL_IMAGES; i++) {
@@ -62,7 +59,7 @@ function preload() {
 
 // Creates the buttons
 function setup() {
-  createCanvas(800, 700);
+  createCanvas(800, 600);
   textFont("courier");
 
   // create the buttons + assign a function on mousePressed
@@ -80,7 +77,7 @@ function setup() {
   startButton.html(`<span class="text">Start Game</span><span>Please select a game mode.</span></button>`)
   easyButton.html(`<span class="text">Easy</span><span>30 seconds</span></button>`)
   difficultButton.html(`<span class="text">Difficult</span><span>60 seconds</span></button>`)
-  horrorButton.html(`<span class="text">Horror</span><span>Random</span></button>`)
+  horrorButton.html(`<span class="text">Horror</span><span>?</span></button>`)
 }
 
 // Create the animals + add them to the animal array
@@ -137,7 +134,9 @@ function easyMode(){
   horrorButton.removeClass('active');
   easyButton.addClass('active');
   mode = `easy`
-  NUM_ANIMALS = 75;
+  NUM_ANIMALS = 50;
+  timer = 30;
+  speed = 5;
 }
 
 // sets the state to difficult mode
@@ -155,6 +154,9 @@ function horrorMode(){
   easyButton.removeClass('active');
   difficultButton.removeClass('active');
   horrorButton.addClass('active');
+  mode = `horror`
+  NUM_ANIMALS = 100;
+  timer = 60;
 }
 
 // Draws the background then updates all animals and the sausage dog
@@ -237,10 +239,10 @@ function title() {
   pop();
 
   // display the buttons and center them
-  startButton.position(windowWidth/2 - 75, 3 * windowHeight / 5);
-  easyButton.position(windowWidth/3 - 75, windowHeight / 2 - 25);
-  difficultButton.position(windowWidth/2 - 75, windowHeight / 2 - 25);
-  horrorButton.position(2*windowWidth/3 - 75, windowHeight / 2 - 25);
+  startButton.position(windowWidth/2 - 75, 3 * windowHeight / 5 - 30);
+  easyButton.position(windowWidth/3 - 75, windowHeight / 2 - 75);
+  difficultButton.position(windowWidth/2 - 75, windowHeight / 2 - 75);
+  horrorButton.position(2*windowWidth/3 - 75, windowHeight / 2 - 75);
 }
 
 function end(){
