@@ -42,6 +42,9 @@ let easyButton;
 let difficultButton;
 let horrorButton;
 
+// let canvasWidth = 800;
+// let canvasHeight = 700;
+
 // load all the animal images and add each image to the animal images array
 function preload() {
   for (let i = 0; i < NUM_ANIMAL_IMAGES; i++) {
@@ -59,7 +62,7 @@ function preload() {
 
 // Creates the buttons
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(800, 700);
   textFont("courier");
 
   // create the buttons + assign a function on mousePressed
@@ -176,6 +179,7 @@ function countdown(){
   // displays the countdown in the corner
   textAlign(CENTER, CENTER);
   textSize(50);
+  fill(255);
   text(timer, 100, 100);
 
   // "countdown timer" by marynotari on editor.p5js
@@ -221,16 +225,16 @@ function title() {
   fill(255);
   text(`Where's Sausage Dog?`, width / 2, height / 4);
 
-  textSize(16);
+  textSize(12);
   fill(220);
   text(`Select a game mode, then click the sausage dog to begin the game.`, width / 2, height - 20);
   pop();
 
   // display the buttons and center them
-  startButton.position(width / 2 - 100, height / 3);
-  easyButton.position(width / 2 - 280, height / 2);
-  difficultButton.position(width / 2 - 120, height / 2 );
-  horrorButton.position(width / 2 + 100, height / 2);
+  startButton.position(windowWidth/2 - 75, height - 200);
+  easyButton.position(windowWidth/3 - 75, windowHeight / 2 - 25);
+  difficultButton.position(windowWidth/2 - 75, windowHeight / 2 - 25);
+  horrorButton.position(2*windowWidth/3 - 75, windowHeight / 2 - 25);
 }
 
 function end(){

@@ -7,11 +7,14 @@ CSS used to style the buttons on the title screen.
 
 body {
   padding: 0;
+  margin: 0;
+  /* display: flex; */
   /* margin: 0; */
   display: grid; /* Set up the grid and justify/align to center */
   justify-content: center;
   align-content: center;
   height: 100vh; /* Body is the height of the viewport */
+  background-color: black;
   overflow: hidden; /* Hide anything that goes off the window size */
 }
 
@@ -23,7 +26,8 @@ button {
   /* border: 1px solid #18181a; */
   border: none;
   color: black;
-  display: inline-block;
+  /* display: inline-block; */
+  width: 150px;
   font-size: 20px;
   /* line-height: 15px; */
   padding: 18px 18px 17px;
