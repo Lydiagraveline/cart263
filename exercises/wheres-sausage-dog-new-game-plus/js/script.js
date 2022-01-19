@@ -9,7 +9,7 @@ dog to win the game.
 
 "use strict";
 
-let state = `title` // can be title, game, end
+let state = `title` // can be title, game, end, and horrorEnd
 let mode = `undefined` // can be easy, difficult, horror
 
 // the player's score, increases each time sausage dog is found
@@ -32,6 +32,10 @@ let animals = [];
 let sausageDog = undefined;
 let sausageDogImage = undefined;
 
+// horror dog object and image variables
+let horrorDog = undefined;
+let horrorDogImage = undefined;
+
 // sounds
 let barkSFX;
 let button1SFX;
@@ -49,8 +53,9 @@ function preload() {
     animalImages.push(animalImage);
   }
 
-  // Load the sausage dog image
+  // Load the dog images
   sausageDogImage = loadImage(`assets/images/sausage-dog.png`);
+  horrorDogImage = loadImage(`assets/images/horror-dog.png`);
 
   // Load the sounds
   barkSFX = loadSound(`assets/sounds/bark.mp3`);
@@ -98,6 +103,13 @@ function createSausageDog() {
   sausageDog = new SausageDog(x, y, sausageDogImage)
 }
 
+// create the horror dog
+function createHorrorDog(){
+  let x = random(0, width);
+  let y = random(0, height);
+  horrorDog = new HorrorDog(x, y, horrorDogImage)
+}
+
 // refresh the game
 function refresh() {
   //empty the array of animals an then refill it, changing the position of each animal
@@ -105,16 +117,24 @@ function refresh() {
   createAnimals();
   // create a new sausage dog at a new position
   createSausageDog();
+  // create a new horror dog at a new position
+  if (mode === `horror`){
+    createHorrorDog();
+  }
   button1SFX.play();
 }
 
-// changes the state to `game` and hides the buttons
+// changes the state to `game` and hides the buttons + creates the animals
 function startGame() {
   // will only start if a mode has been selected
   if (mode === `easy` || mode === `difficult` || mode === `horror`) {
     state = `game`;
     createAnimals();
     createSausageDog();
+    // create a new horror dog if its horror mode
+    if (mode === `horror`){
+      createHorrorDog();
+    }
 
     // hide the buttons
     startButton.style("display", "none")
@@ -136,7 +156,6 @@ function easyMode(){
   mode = `easy`
   NUM_ANIMALS = 50;
   timer = 30;
-  speed = 5;
 }
 
 // sets the state to difficult mode
@@ -169,24 +188,24 @@ function draw() {
   else if (state === `game`) {
     updateAnimals();
     updateSausageDog();
+    //update horror dog if the game mode is horror
+    if (mode === `horror`){
+      updateHorrorDog();
+    }
     countdown();
   }
   else if (state === `end`) {
     end();
   }
+  else if (state === `horrorEnd`){
+    horrorEnd();
+  }
 }
 
 // runs a countdown timer and displays it
 function countdown(){
-  // displays the countdown in the corner
-  // textAlign(CENTER, CENTER);
-  // textSize(50);
-  // fill(255);
-  // text(timer, 100, 100);
-
   // "countdown timer" by marynotari on editor.p5js
   // https://editor.p5js.org/marynotari/sketches/S1T2ZTMp-
-
   // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
   if (frameCount % 60 == 0 && timer > 0) {
     timer --;
@@ -210,11 +229,19 @@ function updateSausageDog() {
   sausageDog.update();
 }
 
+// Calls the update() method of the horror dog
+function updateHorrorDog(){
+  horrorDog.update();
+}
+
 // Call the sausage dog's mousePressed() method so it knows the mouse was clicked.
 function mousePressed() {
   console.log(mouseX, mouseY)
   if (state === `game`){
     sausageDog.mousePressed();
+    if (mode === `horror`){
+    horrorDog.mousePressed();
+    }
   }
 }
 
@@ -250,4 +277,12 @@ function end(){
   textSize(64);
   text(`TIMES UP!`, width/2, height/2 - 50);
   text(`Score: `+ (score), width/2, height/2 + 50 )
+}
+
+function horrorEnd() {
+  textAlign(CENTER, CENTER);
+  textSize(45)
+  text(`OH NO! YOU FOUND HORROR DOG!`, width/2, height/2 - 75);
+  text(`GAME OVER X_X`, width/2, height/2);
+  text(`Score: `+ (score), width/2, height/2 + 75 )
 }
