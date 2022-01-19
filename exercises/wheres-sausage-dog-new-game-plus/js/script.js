@@ -52,8 +52,6 @@ let bgColor = `#f6d76f`;
 let palette = [`#fb5858`, `#8f5543`, `#fbb071`, `#05232e`, `#ff835d`, `#c97e67`, `#6b8f9c`, `#325763`,
                 `#faeab6`, `#fdf3d3`, `#f6d76f`, `#fbb071`, `#05232e`];
 
-
-
 // load all the animal images and add each image to the animal images array
 function preload() {
   for (let i = 0; i < NUM_ANIMAL_IMAGES; i++) {

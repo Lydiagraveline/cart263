@@ -88,7 +88,7 @@ class SausageDog extends Animal {
       else if (mouseY < this.y && mouseX > this.x - this.image.width / 2 && mouseX < this.x + this.image.width / 2){
         this.randomDirection = `up`
       }
-      else if (mouseY > this.y && mouseX > this.x - this.image.width && mouseX < this.x + this.image.width){
+      else if (mouseY > this.y && mouseX > this.x - this.image.width / 2 && mouseX < this.x + this.image.width / 2){
         this.randomDirection = `down`
       }
     }
