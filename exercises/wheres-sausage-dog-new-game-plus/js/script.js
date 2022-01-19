@@ -9,11 +9,11 @@ dog to win the game.
 
 "use strict";
 
-let state = `title` // can be title, game, end, and horrorEnd
-let mode = `undefined` // can be easy, difficult, horror
+let state = `title`; // can be title, game, end, and horrorEnd
+let mode = `undefined`; // can be easy, difficult, horror
 
 // the player's score, increases each time sausage dog is found
-let score = 0
+let score = 0;
 
 // countdown timer in seconds
 let timer;
@@ -41,12 +41,18 @@ let barkSFX;
 let growlSFX;
 let buttonSFX;
 
-
 // The buttons
 let startButton;
 let easyButton;
 let difficultButton;
 let horrorButton;
+
+// background
+let bgColor = `#f6d76f`;
+let palette = [`#fb5858`, `#8f5543`, `#fbb071`, `#05232e`, `#ff835d`, `#c97e67`, `#6b8f9c`, `#325763`,
+                `#faeab6`, `#fdf3d3`, `#f6d76f`, `#fbb071`, `#05232e`];
+
+
 
 // load all the animal images and add each image to the animal images array
 function preload() {
@@ -82,10 +88,16 @@ function setup() {
   horrorButton.mousePressed(horrorMode);
 
   // add html to the buttons
-  startButton.html(`<span class="text">Start Game</span><span>Please select a game mode.</span></button>`)
-  easyButton.html(`<span class="text">Easy</span><span>30 seconds</span></button>`)
-  difficultButton.html(`<span class="text">Difficult</span><span>60 seconds</span></button>`)
-  horrorButton.html(`<span class="text">Horror</span><span>?</span></button>`)
+  startButton.html(
+    `<span class="text">Start Game</span><span>Please select a game mode.</span></button>`
+  );
+  easyButton.html(
+    `<span class="text">Easy</span><span>30 seconds</span></button>`
+  );
+  difficultButton.html(
+    `<span class="text">Difficult</span><span>60 seconds</span></button>`
+  );
+  horrorButton.html(`<span class="text">Horror</span><span>?</span></button>`);
 }
 
 // Create the animals + add them to the animal array
@@ -94,7 +106,7 @@ function createAnimals() {
     let x = random(0, width);
     let y = random(0, height);
     let animalImage = random(animalImages);
-    let animal = new Animal (x, y, animalImage);
+    let animal = new Animal(x, y, animalImage);
     animals.push(animal);
   }
 }
@@ -103,25 +115,26 @@ function createAnimals() {
 function createSausageDog() {
   let x = random(0, width);
   let y = random(0, height);
-  sausageDog = new SausageDog(x, y, sausageDogImage)
+  sausageDog = new SausageDog(x, y, sausageDogImage);
 }
 
 // create the horror dog
-function createHorrorDog(){
+function createHorrorDog() {
   let x = random(0, width);
   let y = random(0, height);
-  horrorDog = new HorrorDog(x, y, horrorDogImage)
+  horrorDog = new HorrorDog(x, y, horrorDogImage);
 }
 
 // refresh the game
 function refresh() {
+  bgColor = random(palette)
   //empty the array of animals an then refill it, changing the position of each animal
   animals = [];
   createAnimals();
   // create a new sausage dog at a new position
   createSausageDog();
   // create a new horror dog at a new position
-  if (mode === `horror`){
+  if (mode === `horror`) {
     createHorrorDog();
   }
   buttonSFX.play();
@@ -137,7 +150,7 @@ function startGame() {
     createAnimals();
     createSausageDog();
     // create a new horror dog if its horror mode
-    if (mode === `horror`){
+    if (mode === `horror`) {
       createHorrorDog();
       growlSFX.play();
     } else {
@@ -145,81 +158,78 @@ function startGame() {
     }
 
     // hide the buttons
-    startButton.style("display", "none")
+    startButton.style("display", "none");
     easyButton.style("display", "none");
     difficultButton.style("display", "none");
     horrorButton.style("display", "none");
   }
   // Prompts the player to select a game mode before starting the game
   else {
-    alert(`Please select a game mode.`)
+    alert(`Please select a game mode.`);
   }
 }
 
 // sets the state to easy mode
-function easyMode(){
+function easyMode() {
   buttonSFX.play();
-  difficultButton.removeClass('active');
-  horrorButton.removeClass('active');
-  easyButton.addClass('active');
-  mode = `easy`
+  difficultButton.removeClass("active");
+  horrorButton.removeClass("active");
+  easyButton.addClass("active");
+  mode = `easy`;
   NUM_ANIMALS = 50;
   timer = 30;
 }
 
 // sets the state to difficult mode
-function difficultMode(){
+function difficultMode() {
   buttonSFX.play();
-  easyButton.removeClass('active');
-  horrorButton.removeClass('active');
-  difficultButton.addClass('active');
-  mode = `difficult`
+  easyButton.removeClass("active");
+  horrorButton.removeClass("active");
+  difficultButton.addClass("active");
+  mode = `difficult`;
   NUM_ANIMALS = 100;
   timer = 60;
 }
 
 // sets the state to horror mode
-function horrorMode(){
+function horrorMode() {
   buttonSFX.play();
-  easyButton.removeClass('active');
-  difficultButton.removeClass('active');
-  horrorButton.addClass('active');
-  mode = `horror`
+  easyButton.removeClass("active");
+  difficultButton.removeClass("active");
+  horrorButton.addClass("active");
+  mode = `horror`;
   NUM_ANIMALS = 100;
   timer = 60;
 }
 
 // Draws the background then updates all animals and the sausage dog
 function draw() {
-  background(255);
+  background(bgColor);
 
-  if (state === `title`){
+  if (state === `title`) {
     title();
-  }
-  else if (state === `game`) {
+  } else if (state === `game`) {
     updateAnimals();
     updateSausageDog();
     //update horror dog if the game mode is horror
-    if (mode === `horror`){
+    if (mode === `horror`) {
       updateHorrorDog();
     }
     countdown();
-  }
-  else if (state === `end`) {
+  } else if (state === `end`) {
     end();
-  }
-  else if (state === `horrorEnd`){
+  } else if (state === `horrorEnd`) {
     horrorEnd();
   }
 }
 
 // runs a countdown timer and displays it
-function countdown(){
+function countdown() {
   // "countdown timer" by marynotari on editor.p5js
   // https://editor.p5js.org/marynotari/sketches/S1T2ZTMp-
   // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
   if (frameCount % 60 == 0 && timer > 0) {
-    timer --;
+    timer--;
   }
   if (timer == 0) {
     state = `end`;
@@ -241,17 +251,17 @@ function updateSausageDog() {
 }
 
 // Calls the update() method of the horror dog
-function updateHorrorDog(){
+function updateHorrorDog() {
   horrorDog.update();
 }
 
 // Call the sausage dog's mousePressed() method so it knows the mouse was clicked.
 function mousePressed() {
-  console.log(mouseX, mouseY)
-  if (state === `game`){
+  console.log(mouseX, mouseY);
+  if (state === `game`) {
     sausageDog.mousePressed();
-    if (mode === `horror`){
-    horrorDog.mousePressed();
+    if (mode === `horror`) {
+      horrorDog.mousePressed();
     }
   }
 }
@@ -265,35 +275,51 @@ function title() {
   fill(255);
   text(`Where's Sausage Dog?`, width / 2, height / 4);
 
-  rectMode(CENTER)
-  rect(width / 2, height - 95, 500, 100)
+  rectMode(CENTER);
+  rect(width / 2, height - 95, 500, 100);
 
   textSize(12);
   fill(0);
-  text(`Select a game mode, then click the sausage dog to begin the game.`, width / 2, height - 120);
-  text(`Find and click the sausage dog to earn points,`, width / 2, height - 100);
-  text(`save time by clicking again to redirect the sausage dog.`, width / 2, height - 80);
-  text(`Get as many points as possible before time runs out!`, width / 2, height - 60);
+  text(
+    `Select a game mode, then click the sausage dog to begin the game.`,
+    width / 2,
+    height - 120
+  );
+  text(
+    `Find and click the sausage dog to earn points,`,
+    width / 2,
+    height - 100
+  );
+  text(
+    `save time by clicking again to redirect the sausage dog.`,
+    width / 2,
+    height - 80
+  );
+  text(
+    `Get as many points as possible before time runs out!`,
+    width / 2,
+    height - 60
+  );
   pop();
 
   // display the buttons and center them
-  startButton.position(windowWidth/2 - 75, 3 * windowHeight / 5 - 30);
-  easyButton.position(windowWidth/3 - 75, windowHeight / 2 - 75);
-  difficultButton.position(windowWidth/2 - 75, windowHeight / 2 - 75);
-  horrorButton.position(2*windowWidth/3 - 75, windowHeight / 2 - 75);
+  startButton.position(windowWidth / 2 - 75, (3 * windowHeight) / 5 - 30);
+  easyButton.position(windowWidth / 3 - 75, windowHeight / 2 - 75);
+  difficultButton.position(windowWidth / 2 - 75, windowHeight / 2 - 75);
+  horrorButton.position((2 * windowWidth) / 3 - 75, windowHeight / 2 - 75);
 }
 
-function end(){
+function end() {
   textAlign(CENTER, CENTER);
   textSize(64);
-  text(`TIMES UP!`, width/2, height/2 - 50);
-  text(`Score: `+ (score), width/2, height/2 + 50 )
+  text(`TIMES UP!`, width / 2, height / 2 - 50);
+  text(`Score: ` + score, width / 2, height / 2 + 50);
 }
 
 function horrorEnd() {
   textAlign(CENTER, CENTER);
-  textSize(45)
-  text(`OH NO! YOU FOUND HORROR DOG!`, width/2, height/2 - 75);
-  text(`GAME OVER X_X`, width/2, height/2);
-  text(`Score: `+ (score), width/2, height/2 + 75 )
+  textSize(45);
+  text(`OH NO! YOU FOUND HORROR DOG!`, width / 2, height / 2 - 75);
+  text(`GAME OVER X_X`, width / 2, height / 2);
+  text(`Score: ` + score, width / 2, height / 2 + 75);
 }

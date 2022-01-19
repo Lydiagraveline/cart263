@@ -4,7 +4,7 @@
 class Animal {
   // Stores position and image as properties
   // Creates an angle property for potential rotation
-  constructor(x, y, image){
+  constructor(x, y, image) {
     this.x = x;
     this.y = y;
     this.image = image;
@@ -14,7 +14,7 @@ class Animal {
   }
 
   // Calls the display method
-  update(){
+  update() {
     this.display();
   }
 
@@ -26,8 +26,8 @@ class Animal {
     rotate(this.angle);
 
     // sausage dog flips if going left
-    if (this.goingLeft && this.found){
-      scale(-1,1);
+    if (this.goingLeft && this.found) {
+      scale(-1, 1);
     } else {
       scale(1, 1);
     }
@@ -38,14 +38,16 @@ class Animal {
 
   // Checks whether the position x,y is inside this animal's image
   // Returns: true if the click was inside the image and false otherwise
-  overlap(x,y){
-    if (x > this.x - this.image.width / 2 &&
+  overlap(x, y) {
+    if (
+      x > this.x - this.image.width / 2 &&
       x < this.x + this.image.width / 2 &&
       y > this.y - this.image.height / 2 &&
-      y < this.y + this.image.height) {
-        return true;
-      } else {
-        return false;
-      }
+      y < this.y + this.image.height
+    ) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

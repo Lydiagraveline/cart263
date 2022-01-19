@@ -74,6 +74,7 @@ class SausageDog extends Animal {
       score += 1
       barkSFX.play();
       buttonSFX.play();
+
     }
 
     // sausage dog will change direction upon a second click based on the mouse location when clicked
