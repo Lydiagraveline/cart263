@@ -157,6 +157,8 @@ let currentAnswer = `Click to begin.`;
 // The current animal name the user is trying to guess
 let currentAnimal = `...`;
 
+let helpText = ``
+
 /**
 Create a canvas
 Set up annyang with the guessing command
@@ -168,9 +170,9 @@ function setup() {
   if (annyang) {
     // Create the guessing command
     let commands = {
-      "(is it) *animal": guessAnimal,
+      "is it *animal": guessAnimal,
       "skip": nextQuestion,
-      "help": nextQuestion,
+      "help": help,
     };
     annyang.addCommands(commands);
     annyang.start();
@@ -180,6 +182,8 @@ function setup() {
   textAlign(CENTER);
   textFont("courier");
 }
+
+
 
 /**
 Display the current answer.
@@ -201,7 +205,15 @@ function displayAnswer() {
     fill(255);
   }
   text(currentAnswer, width / 2, height / 2);
-  text(reverseString(currentAnimal), width / 2, height / 3);
+
+}
+
+/**
+spell out the animal with ResponsiveVoice when commanded "help"
+*/
+function help(){
+  let splitAnimal = splitString(currentAnimal);
+  responsiveVoice.speak(splitAnimal);
 }
 
 /**
@@ -209,20 +221,28 @@ Reverse the animal name and say it with ResponsiveVoice
 */
 function sayAnimalBackwards(animal) {
   let reverseAnimal = reverseString(animal);
-  responsiveVoice.speak(reverseAnimal, "Russian Female");
+  responsiveVoice.speak(reverseAnimal);
 }
 
 /**
 Reverses the provided string
 */
 function reverseString(string) {
-  // Split the string into an array of characters
   let characters = string.split("");
-  // Reverse the array of characters
   let reverseCharacters = characters.reverse();
-  // Join the array of characters back into a string
   let result = reverseCharacters.join("");
-  // Return the result
+  return result;
+}
+
+/**
+splits the provided string into separate characters
+*/
+function splitString(string) {
+  let characters = string.split("");
+  let reverseCharacters = characters.reverse();
+  // Adds a period to the end of each character in the array
+  let spacedCharacters = reverseCharacters.map(i => `.` + i)
+  let result = spacedCharacters.join("");
   return result;
 }
 
