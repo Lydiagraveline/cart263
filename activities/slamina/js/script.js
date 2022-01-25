@@ -151,7 +151,7 @@ const animals = [
 // The current answer to display (used initially to display the instructions)
 let currentAnswer = `Click to begin.`;
 // The current animal name the user is trying to guess
-let currentAnimal = ``;
+let currentAnimal = `...`;
 
 /**
 Create a canvas
@@ -170,10 +170,8 @@ function setup() {
     annyang.start();
   }
 
-
   // Default text
   textSize(100);
-  //textStyle(BOLD);
   textAlign(CENTER);
   textFont("courier");
 
@@ -197,7 +195,7 @@ function displayAnswer() {
     fill(0, 255, 0);
   }
   else {
-    fill(255, 0, 0);
+    fill(255);
   }
   text(currentAnswer, width / 2, height / 2);
 }
@@ -231,7 +229,7 @@ function reverseString(string) {
 Reset the answer text, get a new random animal, say its name
 */
 function nextQuestion(){
-  currentAnswer = ``;
+  currentAnswer = `...`;
   currentAnimal = random(animals);
 
   //Reverse the animal name and say it with ResponsiveVoice
