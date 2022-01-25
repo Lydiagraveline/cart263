@@ -147,3 +147,32 @@ const animals = [
       "yak",
       "zebra"
     ];
+
+// The current animal name the user is trying to guess
+let currentAnimal = ``;
+
+function setup() {
+
+}
+
+function draw() {
+
+}
+
+function mousePressed() {
+  currentAnimal = random(animals);
+  let reverseAnimal = reverseString(currentAnimal);
+  responsiveVoice.speak(reverseAnimal);
+}
+
+//Reverses the provided string
+function reverseString(string) {
+  // Split the string into an array of characters
+  let characters = string.split('');
+  // Reverse the array of characters
+  let reverseCharacters = characters.reverse();
+  // Join the array of characters back into a string
+  let result = reverseCharacters.join('');
+  // Return the result
+  return result;
+}
