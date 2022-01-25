@@ -148,13 +148,37 @@ const animals = [
       "zebra"
     ];
 
+// The current answer to display (used initially to display the instructions)
+let currentAnswer = `Click to begin.`;
 // The current animal name the user is trying to guess
 let currentAnimal = ``;
 
+/**
+Create a canvas
+Set up annyang with the guessing command
+Set text defaults
+*/
 function setup() {
+  // checks if annyang available
+  if (annyang){
+    // Create the guessing command
+    let commands = {
+      'I think it is *animal': guessAnimal
+    };
+    annyang.addCommands(commands);
+    annyang.start();
+  }
 
+
+  // Default text
+  textSize(102);
+  textStyle(BOLD);
+  textAlign(CENTER);
 }
 
+/**
+Display the current answer.
+ */
 function draw() {
 
 }
@@ -165,7 +189,20 @@ function mousePressed() {
   responsiveVoice.speak(reverseAnimal);
 }
 
-//Reverses the provided string
+/**
+Called by annyang when the user make a guess.
+animal parameter contains the guess as a string.
+Sets the answer text to the guess.
+*/
+function guessAnimal(animal) {
+  // Convert the guess to lowercase to match the answer format
+  currentAnswer = animal.toLowerCase();
+  console.log(currentAnswer);
+}
+
+/**
+Reverses the provided string
+*/
 function reverseString(string) {
   // Split the string into an array of characters
   let characters = string.split('');
