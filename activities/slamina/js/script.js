@@ -159,11 +159,12 @@ Set up annyang with the guessing command
 Set text defaults
 */
 function setup() {
+  createCanvas(windowWidth, windowHeight);
   // checks if annyang available
   if (annyang){
     // Create the guessing command
     let commands = {
-      'I think it is *animal': guessAnimal
+      '*animal': guessAnimal
     };
     annyang.addCommands(commands);
     annyang.start();
@@ -171,22 +172,34 @@ function setup() {
 
 
   // Default text
-  textSize(102);
-  textStyle(BOLD);
+  textSize(100);
+  //textStyle(BOLD);
   textAlign(CENTER);
+  textFont("courier");
+
 }
 
 /**
 Display the current answer.
  */
 function draw() {
+  background(0);
 
+    displayAnswer();
 }
 
-function mousePressed() {
-  currentAnimal = random(animals);
-  let reverseAnimal = reverseString(currentAnimal);
-  responsiveVoice.speak(reverseAnimal);
+/**
+Display the current answer in red if incorrect and green if correct
+(Displays nothing if no guess entered yet)
+*/
+function displayAnswer() {
+  if (currentAnswer === currentAnimal) {
+    fill(0, 255, 0);
+  }
+  else {
+    fill(255, 0, 0);
+  }
+  text(currentAnswer, width / 2, height / 2);
 }
 
 /**
@@ -197,7 +210,6 @@ Sets the answer text to the guess.
 function guessAnimal(animal) {
   // Convert the guess to lowercase to match the answer format
   currentAnswer = animal.toLowerCase();
-  console.log(currentAnswer);
 }
 
 /**
@@ -212,4 +224,24 @@ function reverseString(string) {
   let result = reverseCharacters.join('');
   // Return the result
   return result;
+}
+
+
+/**
+Reset the answer text, get a new random animal, say its name
+*/
+function nextQuestion(){
+  currentAnswer = ``;
+  currentAnimal = random(animals);
+
+  //Reverse the animal name and say it with ResponsiveVoice
+  let reverseAnimal = reverseString(currentAnimal);
+  responsiveVoice.speak(reverseAnimal);
+}
+
+/**
+When the user clicks, go to the next question
+*/
+function mousePressed() {
+  nextQuestion()
 }
