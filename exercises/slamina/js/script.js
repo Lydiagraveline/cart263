@@ -156,7 +156,7 @@ const QUESTION_DELAY = 2000; // in milliseconds
 let currentAnswer = `Click to begin.`;
 // The current animal name the user is trying to guess
 let currentAnimal = `...`;
-
+// the player's score
 let score = 0
 
 /**
@@ -254,16 +254,37 @@ function splitString(string) {
 Called by annyang when the user make a guess.
 animal parameter contains the guess as a string.
 Sets the answer text to the guess.
-Increases score if the answer is correct.
 */
 function guessAnimal(animal) {
   // Convert the guess to lowercase to match the answer format
   currentAnswer = animal.toLowerCase();
 
-  // increase score of correct
+  // calls the correct() function
   if (currentAnswer === currentAnimal){
-    score++
+    correct();
   }
+  else {
+    incorrect();
+  }
+}
+
+/**
+Increases score if the answer is correct and says the guess was correct.
+*/
+function correct(){
+  let responses = [`yes!`, `That's it.`, `yup.`, `You got it.`, `good job.`]
+  let randResponse = random(responses);
+  responsiveVoice.speak(randResponse + currentAnswer + `is correct.`);
+  score++
+}
+
+/**
+Tells the user they guess was wrong.
+*/
+function incorrect(){
+  let responses = [`no.`, `nope.`, `no, that's wrong.`, `no, try again.`, `no, it is not.`, `thats not it.`]
+  let randResponse = random(responses);
+  responsiveVoice.speak(randResponse);
 }
 
 /**
