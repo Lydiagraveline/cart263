@@ -148,22 +148,37 @@ name forwards.
 //       "zebra"
 //     ];
 
-const animals = [`test`];
+const animals = [`test`, `test 2`];
 
-const QUESTION_DELAY = 2000; // in milliseconds
+let state = `title`; //can be title or game
 
 // The current answer to display (used initially to display the instructions)
-let currentAnswer = `Click to begin.`;
+let currentAnswer = "is it ___?";
 // The current animal name the user is trying to guess
-let currentAnimal = `...`;
+let currentAnimal;
 // the player's score
-let score = 0
+let score = 0;
 // accent
-let voice = "UK English Female"
-
+let voice = "UK English Female";
+// responsiveVoice parameters
 var parameters = {
   onend: voiceEndCallback
 }
+// text and variables for the instructions() function
+let instructions =
+`Welcome to Slamina!
+
+Slamina is a guessing game in which I will pronounce the name of an animal backwards and you must figure out what it was and say the name forwards.
+
+For example, I might say Gorf. You would then say FROG and gain a point.
+
+You can say WHAT or press the space bar to hear me repeat the word.
+
+Say SKIP to skip the word, but you will not gain a point.
+
+If the level is too difficult, say HELP and I will spell out the word for you.`
+let index = 0;
+let lastMillis = 0;
 
 /**
 Create a canvas
@@ -172,33 +187,106 @@ Set text defaults
 */
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  // checks if responsiveVoice is available and speaks
+  if(responsiveVoice.voiceSupport()){
+    responsiveVoice.speak(" ");
+  }
   // checks if annyang available
   if (annyang) {
     // Create the guessing command
     let commands = {
       "is it *animal": guessAnimal,
-      //"next": nextQuestion,
-      "ok": nextQuestion,
-      //"go": nextQuestion,
+      "what": repeat,
       "skip": nextQuestion,
-      "help": help,
+      "help(me)": help,
+      "(tell me) how (do i)(to) play": howToPlay,
+      "(S)lamina": startGame,
     };
     annyang.addCommands(commands);
     annyang.start();
   }
   // Default text
+  fill(255);
   textSize(100);
   textAlign(CENTER);
   textFont("courier");
 }
 
 /**
-Display the current answer.
+Changes the state to `instructions` and speaks
+ */
+function howToPlay() {
+  state = `instructions`;
+  //typewriter(instructions);
+  responsiveVoice.speak(instructions, voice);
+}
+
+/**
+Changes the state to `game`
+ */
+function startGame(){
+  state = `game`;
+  //sayAnimalBackwards(currentAnimal);
+}
+
+/**
+Display the title screen and the current answer.
  */
 function draw() {
   background(0);
+  if (state === `title`){
+    titleScreen();
+  }
+  else if (state === `instructions`){
+    instructionsText();
+  }
+  else if (state === `game`){
+    displayAnswer();
+  }
+}
 
-  displayAnswer();
+/**
+Display the intructions and animates the text like a typewriter.
+ */
+function instructionsText(){
+  push();
+  textAlign(LEFT, TOP);
+  textSize(40);
+  text(instructions.substring(0, index), 0, 0, width, height);
+  pop();
+
+  typewriter(instructions);
+}
+
+/**
+typewriter effect by cfoss at
+https://editor.p5js.org/cfoss/sketches/SJggPXhcQ
+*/
+function typewriter(text) {
+  if (millis() > lastMillis + 200) {
+  	index = index + 1;
+    // display one word at a time
+    while(text.charAt(index) != ' ' &&
+     index < text.length){
+       index = index + 1;
+     }
+  	lastMillis = millis();
+  	}
+}
+
+/**
+Display the title screen.
+ */
+function titleScreen() {
+  text(`Slamina!`, width / 2, 300)
+  push();
+  textSize(25);
+  text(`Say`, width / 2, 175)
+  text(`to start the game...`, width / 2, 400)
+  textSize(16);
+  text(`...or ask me how to play for instructions`, width / 2, height - 100)
+  pop();
 }
 
 /**
@@ -300,7 +388,6 @@ function incorrect(){
 calls nextQuestion() after a the player guesses correctly and a delay
 */
 function voiceEndCallback(){
-  console.log(`voice ended`);
   setTimeout(nextQuestion, 1000)
 ;}
 
@@ -313,20 +400,25 @@ function nextQuestion() {
   sayAnimalBackwards(currentAnimal);
 }
 
-/**
-When the user clicks, go to the next question or repeat current animal
-*/
-function mousePressed() {
-  console.log(`score: ` + score);
-  if (currentAnswer === currentAnimal || currentAnimal === `...`) {
-    nextQuestion();
-  } else {
-    sayAnimalBackwards(currentAnimal);
-  }
+function repeat(){
+  sayAnimalBackwards(currentAnimal);
 }
 
+/**
+Press space to begin the game, and to repeat the animal
+*/
 function keyPressed(){
   if (keyCode === 32){
-    currentAnswer = currentAnimal;
+    console.log(state)
+    console.log(currentAnswer)
+    if (state === `title` || state === `instructions`){
+      state = `game`
+      startGame();
+      nextQuestion();
+    }
+    else if (state === `game` || !currentAnswer === currentAnimal){
+      // nextQuestion();
+      repeat();
+    }
   }
 }
