@@ -12,143 +12,141 @@ name forwards.
 //An array of animal names from
 //https://github.com/dariusk/corpora/blob/master/data/animals/common.json
 const animals = [
-      "aardvark",
-      "alligator",
-      "alpaca",
-      "antelope",
-      "ape",
-      "armadillo",
-      "baboon",
-      "badger",
-      "bat",
-      "bear",
-      "beaver",
-      "bison",
-      "boar",
-      "buffalo",
-      "bull",
-      "camel",
-      "canary",
-      "capybara",
-      "cat",
-      "chameleon",
-      "cheetah",
-      "chimpanzee",
-      "chinchilla",
-      "chipmunk",
-      "cougar",
-      "cow",
-      "coyote",
-      "crocodile",
-      "crow",
-      "deer",
-      "dingo",
-      "dog",
-      "donkey",
-      "dromedary",
-      "elephant",
-      "elk",
-      "ewe",
-      "ferret",
-      "finch",
-      "fish",
-      "fox",
-      "frog",
-      "gazelle",
-      "gila monster",
-      "giraffe",
-      "gnu",
-      "goat",
-      "gopher",
-      "gorilla",
-      "grizzly bear",
-      "ground hog",
-      "guinea pig",
-      "hamster",
-      "hedgehog",
-      "hippopotamus",
-      "hog",
-      "horse",
-      "hyena",
-      "ibex",
-      "iguana",
-      "impala",
-      "jackal",
-      "jaguar",
-      "kangaroo",
-      "koala",
-      "lamb",
-      "lemur",
-      "leopard",
-      "lion",
-      "lizard",
-      "llama",
-      "lynx",
-      "mandrill",
-      "marmoset",
-      "mink",
-      "mole",
-      "mongoose",
-      "monkey",
-      "moose",
-      "mountain goat",
-      "mouse",
-      "mule",
-      "muskrat",
-      "mustang",
-      "mynah bird",
-      "newt",
-      "ocelot",
-      "opossum",
-      "orangutan",
-      "oryx",
-      "otter",
-      "ox",
-      "panda",
-      "panther",
-      "parakeet",
-      "parrot",
-      "pig",
-      "platypus",
-      "polar bear",
-      "porcupine",
-      "porpoise",
-      "prairie dog",
-      "puma",
-      "rabbit",
-      "raccoon",
-      "ram",
-      "rat",
-      "reindeer",
-      "reptile",
-      "rhinoceros",
-      "salamander",
-      "seal",
-      "sheep",
-      "shrew",
-      "silver fox",
-      "skunk",
-      "sloth",
-      "snake",
-      "squirrel",
-      "tapir",
-      "tiger",
-      "toad",
-      "turtle",
-      "walrus",
-      "warthog",
-      "weasel",
-      "whale",
-      "wildcat",
-      "wolf",
-      "wolverine",
-      "wombat",
-      "woodchuck",
-      "yak",
-      "zebra"
-    ];
-
-// const animals = [`test`, `test 2`];
+  "aardvark",
+  "alligator",
+  "alpaca",
+  "antelope",
+  "ape",
+  "armadillo",
+  "baboon",
+  "badger",
+  "bat",
+  "bear",
+  "beaver",
+  "bison",
+  "boar",
+  "buffalo",
+  "bull",
+  "camel",
+  "canary",
+  "capybara",
+  "cat",
+  "chameleon",
+  "cheetah",
+  "chimpanzee",
+  "chinchilla",
+  "chipmunk",
+  "cougar",
+  "cow",
+  "coyote",
+  "crocodile",
+  "crow",
+  "deer",
+  "dingo",
+  "dog",
+  "donkey",
+  "dromedary",
+  "elephant",
+  "elk",
+  "ewe",
+  "ferret",
+  "finch",
+  "fish",
+  "fox",
+  "frog",
+  "gazelle",
+  "gila monster",
+  "giraffe",
+  "gnu",
+  "goat",
+  "gopher",
+  "gorilla",
+  "grizzly bear",
+  "ground hog",
+  "guinea pig",
+  "hamster",
+  "hedgehog",
+  "hippopotamus",
+  "hog",
+  "horse",
+  "hyena",
+  "ibex",
+  "iguana",
+  "impala",
+  "jackal",
+  "jaguar",
+  "kangaroo",
+  "koala",
+  "lamb",
+  "lemur",
+  "leopard",
+  "lion",
+  "lizard",
+  "llama",
+  "lynx",
+  "mandrill",
+  "marmoset",
+  "mink",
+  "mole",
+  "mongoose",
+  "monkey",
+  "moose",
+  "mountain goat",
+  "mouse",
+  "mule",
+  "muskrat",
+  "mustang",
+  "mynah bird",
+  "newt",
+  "ocelot",
+  "opossum",
+  "orangutan",
+  "oryx",
+  "otter",
+  "ox",
+  "panda",
+  "panther",
+  "parakeet",
+  "parrot",
+  "pig",
+  "platypus",
+  "polar bear",
+  "porcupine",
+  "porpoise",
+  "prairie dog",
+  "puma",
+  "rabbit",
+  "raccoon",
+  "ram",
+  "rat",
+  "reindeer",
+  "reptile",
+  "rhinoceros",
+  "salamander",
+  "seal",
+  "sheep",
+  "shrew",
+  "silver fox",
+  "skunk",
+  "sloth",
+  "snake",
+  "squirrel",
+  "tapir",
+  "tiger",
+  "toad",
+  "turtle",
+  "walrus",
+  "warthog",
+  "weasel",
+  "whale",
+  "wildcat",
+  "wolf",
+  "wolverine",
+  "wombat",
+  "woodchuck",
+  "yak",
+  "zebra",
+];
 
 let state = `title`; //can be title or game
 
@@ -162,21 +160,22 @@ let score = 0;
 let voice = "UK English Female";
 // responsiveVoice parameters
 var parameters = {
-  onend: voiceEndCallback
-}
+  onend: voiceEndCallback,
+};
 // text and variables for the instructions() function
-let instructions =
-`Welcome to Slamina!
+let instructions = `Welcome to Slamina!
 
 Slamina is a guessing game in which I will pronounce the name of an animal backwards and you must figure out what it was and say the name forwards.
 
-For example, I might say Gorf. You would then say FROG and gain a point.
+For example, I might say Gorf. You would then say Is it FROG? and gain a point.
 
 You can say WHAT or press the space bar to hear me repeat the word.
 
-Say SKIP to skip the word, but you will not gain a point.
+Say SKIP to skip that round, but you will not gain a point.
 
-If the level is too difficult, say HELP and I will spell out the word for you.`
+If the level is too difficult, say HELP and I will spell out the word for you.
+
+To begin the game press the space bar or say Slamina!`;
 let index = 0;
 let lastMillis = 0;
 
@@ -189,7 +188,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
 
   // checks if responsiveVoice is available which promts the browser to allow play speech
-  if(responsiveVoice.voiceSupport()){
+  if (responsiveVoice.voiceSupport()) {
     responsiveVoice.speak(" ");
   }
   // checks if annyang available
@@ -218,41 +217,38 @@ Changes the state to `instructions` and speaks
  */
 function howToPlay() {
   state = `instructions`;
-  //typewriter(instructions);
   responsiveVoice.speak(instructions, voice);
 }
 
 /**
 Changes the state to `game`
  */
-function startGame(){
+function startGame() {
   state = `game`;
-  //sayAnimalBackwards(currentAnimal);
+  nextQuestion();
 }
 
 /**
-Display the title screen and the current answer.
- */
+Displays each state
+*/
 function draw() {
   background(0);
-  if (state === `title`){
+  if (state === `title`) {
     titleScreen();
-  }
-  else if (state === `instructions`){
+  } else if (state === `instructions`) {
     instructionsText();
-  }
-  else if (state === `game`){
+  } else if (state === `game`) {
     displayAnswer();
   }
 }
 
 /**
-Display the intructions and animates the text like a typewriter.
+Display the intructions and calls typewriter()
  */
-function instructionsText(){
+function instructionsText() {
   push();
   textAlign(LEFT, TOP);
-  textSize(40);
+  textSize(35);
   text(instructions.substring(0, index), 0, 0, width, height);
   pop();
 
@@ -264,28 +260,27 @@ typewriter effect by cfoss at
 https://editor.p5js.org/cfoss/sketches/SJggPXhcQ
 */
 function typewriter(text) {
-  if (millis() > lastMillis + 200) {
-  	index = index + 1;
+  if (millis() > lastMillis + 5) {
+    index = index + 1;
     // display one word at a time
-    while(text.charAt(index) != ' ' &&
-     index < text.length){
-       index = index + 1;
-     }
-  	lastMillis = millis();
-  	}
+    while (text.charAt(index) != " " && index < text.length) {
+      index = index + 1;
+    }
+    lastMillis = millis();
+  }
 }
 
 /**
 Display the title screen.
  */
 function titleScreen() {
-  text(`Slamina!`, width / 2, 300)
+  text(`Slamina!`, width / 2, 300);
   push();
   textSize(25);
-  text(`Say`, width / 2, 175)
-  text(`to start the game...`, width / 2, 400)
+  text(`Say`, width / 2, 175);
+  text(`to start the game...`, width / 2, 400);
   textSize(16);
-  text(`...or ask me how to play for instructions`, width / 2, height - 100)
+  text(`...or ask me how to play for instructions`, width / 2, height - 100);
   pop();
 }
 
@@ -312,7 +307,7 @@ function displayAnswer() {
 /**
 spell out the animal with ResponsiveVoice when commanded
 */
-function help(){
+function help() {
   let splitAnimal = splitString(currentAnimal);
   responsiveVoice.speak(splitAnimal, voice);
 }
@@ -342,7 +337,7 @@ function splitString(string) {
   let characters = string.split("");
   let reverseCharacters = characters.reverse();
   // Adds a period to the end of each character in the array
-  let spacedCharacters = reverseCharacters.map(i => `.` + i)
+  let spacedCharacters = reverseCharacters.map((i) => `.` + i);
   let result = spacedCharacters.join("");
   return result;
 }
@@ -357,10 +352,9 @@ function guessAnimal(animal) {
   currentAnswer = animal.toLowerCase();
 
   // calls the correct() or incorrect() function
-  if (currentAnswer === currentAnimal){
+  if (currentAnswer === currentAnimal) {
     correct();
-  }
-  else {
+  } else {
     incorrect();
   }
 }
@@ -368,18 +362,35 @@ function guessAnimal(animal) {
 /**
 Increases score if the answer is correct and says the guess was correct.
 */
-function correct(){
-  let responses = [`yes! `, `That's it. `, `yup. `, `You got it. `, `good job. `]
+function correct() {
+  let responses = [
+    `yes! `,
+    `That's it. `,
+    `yup. `,
+    `You got it. `,
+    `good job. `,
+  ];
   let randResponse = random(responses);
-  responsiveVoice.speak(randResponse + currentAnswer + ` is correct.`, voice, parameters);
-  score++
+  responsiveVoice.speak(
+    randResponse + currentAnswer + ` is correct.`,
+    voice,
+    parameters
+  );
+  score++;
 }
 
 /**
-Tells the user they guess was wrong.
+Tells the user their guess was wrong.
 */
-function incorrect(){
-  let responses = [`no.`, `nope.`, `no, that's wrong.`, `no, try again.`, `no, it is not.`, `thats not it.`]
+function incorrect() {
+  let responses = [
+    `no.`,
+    `nope.`,
+    `no, that's wrong.`,
+    `no, try again.`,
+    `no, it is not.`,
+    `thats not it.`,
+  ];
   let randResponse = random(responses);
   responsiveVoice.speak(randResponse, voice);
 }
@@ -387,9 +398,9 @@ function incorrect(){
 /**
 calls nextQuestion() after a the player guesses correctly and a delay
 */
-function voiceEndCallback(){
-  setTimeout(nextQuestion, 1000)
-;}
+function voiceEndCallback() {
+  setTimeout(nextQuestion, 1000);
+}
 
 /**
 Reset the answer text, get a new random animal, say its name
@@ -400,24 +411,22 @@ function nextQuestion() {
   sayAnimalBackwards(currentAnimal);
 }
 
-function repeat(){
+/**
+say the name of the current animal
+*/
+function repeat() {
   sayAnimalBackwards(currentAnimal);
 }
 
 /**
 Press space to begin the game, and to repeat the animal
 */
-function keyPressed(){
-  if (keyCode === 32){
-    console.log(state)
-    console.log(currentAnswer)
-    if (state === `title` || state === `instructions`){
-      state = `game`
+function keyPressed() {
+  if (keyCode === 32) {
+    if (state === `title` || state === `instructions`) {
+      state = `game`;
       startGame();
-      nextQuestion();
-    }
-    else if (state === `game` || !currentAnswer === currentAnimal){
-      // nextQuestion();
+    } else if (state === `game` || !currentAnswer === currentAnimal) {
       repeat();
     }
   }
