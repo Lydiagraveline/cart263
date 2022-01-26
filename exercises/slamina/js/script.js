@@ -157,7 +157,7 @@ let currentAnimal;
 // the player's score
 let score = 0;
 // accent
-let voice = "French Female";
+let voice = "UK English Female";
 // responsiveVoice parameters
 var parameters = {
   onend: voiceEndCallback,
@@ -196,8 +196,8 @@ function setup() {
     // Create the guessing command
     let commands = {
       "is it *animal": guessAnimal,
-      "what": repeat,
-      "skip": nextQuestion,
+      what: repeat,
+      skip: nextQuestion,
       "help(me)": help,
       "(tell me) how (do i)(to) play": howToPlay,
       "(S)lamina": startGame,
