@@ -188,7 +188,7 @@ Set text defaults
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  // checks if responsiveVoice is available and speaks
+  // checks if responsiveVoice is available which promts the browser to allow play speech
   if(responsiveVoice.voiceSupport()){
     responsiveVoice.speak(" ");
   }
