@@ -9,8 +9,8 @@ name forwards.
 
 "use strict";
 
-// An array of animal names from
-// https://github.com/dariusk/corpora/blob/master/data/animals/common.json
+//An array of animal names from
+//https://github.com/dariusk/corpora/blob/master/data/animals/common.json
 // const animals = [
 //       "aardvark",
 //       "alligator",
@@ -157,7 +157,7 @@ let currentAnswer = `Click to begin.`;
 // The current animal name the user is trying to guess
 let currentAnimal = `...`;
 
-let helpText = ``
+let score = 0
 
 /**
 Create a canvas
@@ -184,7 +184,6 @@ function setup() {
 }
 
 
-
 /**
 Display the current answer.
  */
@@ -206,10 +205,15 @@ function displayAnswer() {
   }
   text(currentAnswer, width / 2, height / 2);
 
+  push();
+  textSize(24);
+  text(score, 100, 100);
+  pop();
+
 }
 
 /**
-spell out the animal with ResponsiveVoice when commanded "help"
+spell out the animal with ResponsiveVoice when commanded
 */
 function help(){
   let splitAnimal = splitString(currentAnimal);
@@ -250,10 +254,16 @@ function splitString(string) {
 Called by annyang when the user make a guess.
 animal parameter contains the guess as a string.
 Sets the answer text to the guess.
+Increases score if the answer is correct.
 */
 function guessAnimal(animal) {
   // Convert the guess to lowercase to match the answer format
   currentAnswer = animal.toLowerCase();
+
+  // increase score of correct
+  if (currentAnswer === currentAnimal){
+    score++
+  }
 }
 
 /**
@@ -270,9 +280,17 @@ function nextQuestion() {
 When the user clicks, go to the next question or repeat current animal
 */
 function mousePressed() {
+  console.log(`score: ` + score);
   if (currentAnswer === currentAnimal || currentAnimal === `...`) {
     nextQuestion();
   } else {
     sayAnimalBackwards(currentAnimal);
+  }
+}
+
+function keyPressed(){
+  if (keyCode === 32){
+  //  guessAnimal();
+    currentAnswer = currentAnimal;
   }
 }
