@@ -157,7 +157,7 @@ let currentAnimal;
 // the player's score
 let score = 0;
 // accent
-let voice = "UK English Female";
+let voice = "French Female";
 // responsiveVoice parameters
 var parameters = {
   onend: voiceEndCallback,
