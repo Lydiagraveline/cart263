@@ -158,6 +158,12 @@ let currentAnswer = `Click to begin.`;
 let currentAnimal = `...`;
 // the player's score
 let score = 0
+// accent
+let voice = "UK English Female"
+
+var parameters = {
+  onend: voiceEndCallback
+}
 
 /**
 Create a canvas
@@ -171,6 +177,9 @@ function setup() {
     // Create the guessing command
     let commands = {
       "is it *animal": guessAnimal,
+      //"next": nextQuestion,
+      "ok": nextQuestion,
+      //"go": nextQuestion,
       "skip": nextQuestion,
       "help": help,
     };
@@ -182,7 +191,6 @@ function setup() {
   textAlign(CENTER);
   textFont("courier");
 }
-
 
 /**
 Display the current answer.
@@ -207,9 +215,10 @@ function displayAnswer() {
 
   push();
   textSize(24);
+  //display the score
+  fill(255);
   text(score, 100, 100);
   pop();
-
 }
 
 /**
@@ -217,7 +226,7 @@ spell out the animal with ResponsiveVoice when commanded
 */
 function help(){
   let splitAnimal = splitString(currentAnimal);
-  responsiveVoice.speak(splitAnimal);
+  responsiveVoice.speak(splitAnimal, voice);
 }
 
 /**
@@ -225,7 +234,7 @@ Reverse the animal name and say it with ResponsiveVoice
 */
 function sayAnimalBackwards(animal) {
   let reverseAnimal = reverseString(animal);
-  responsiveVoice.speak(reverseAnimal);
+  responsiveVoice.speak(reverseAnimal, voice);
 }
 
 /**
@@ -259,7 +268,7 @@ function guessAnimal(animal) {
   // Convert the guess to lowercase to match the answer format
   currentAnswer = animal.toLowerCase();
 
-  // calls the correct() function
+  // calls the correct() or incorrect() function
   if (currentAnswer === currentAnimal){
     correct();
   }
@@ -272,9 +281,9 @@ function guessAnimal(animal) {
 Increases score if the answer is correct and says the guess was correct.
 */
 function correct(){
-  let responses = [`yes!`, `That's it.`, `yup.`, `You got it.`, `good job.`]
+  let responses = [`yes! `, `That's it. `, `yup. `, `You got it. `, `good job. `]
   let randResponse = random(responses);
-  responsiveVoice.speak(randResponse + currentAnswer + `is correct.`);
+  responsiveVoice.speak(randResponse + currentAnswer + ` is correct.`, voice, parameters);
   score++
 }
 
@@ -284,8 +293,16 @@ Tells the user they guess was wrong.
 function incorrect(){
   let responses = [`no.`, `nope.`, `no, that's wrong.`, `no, try again.`, `no, it is not.`, `thats not it.`]
   let randResponse = random(responses);
-  responsiveVoice.speak(randResponse);
+  responsiveVoice.speak(randResponse, voice);
 }
+
+/**
+calls nextQuestion() after a the player guesses correctly and a delay
+*/
+function voiceEndCallback(){
+  console.log(`voice ended`);
+  setTimeout(nextQuestion, 1000)
+;}
 
 /**
 Reset the answer text, get a new random animal, say its name
@@ -293,7 +310,6 @@ Reset the answer text, get a new random animal, say its name
 function nextQuestion() {
   currentAnswer = `is it ___?`;
   currentAnimal = random(animals);
-
   sayAnimalBackwards(currentAnimal);
 }
 
@@ -311,7 +327,6 @@ function mousePressed() {
 
 function keyPressed(){
   if (keyCode === 32){
-  //  guessAnimal();
     currentAnswer = currentAnimal;
   }
 }
