@@ -40,27 +40,42 @@ function preload() {
   instrumentsData = loadJSON(INSTRUMENT_DATA_URL);
 }
 
-
 /**
-Description of setup
+Creates a canvas then handles loading profile data, checking password,
+and generating a profile as necessary.
 */
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  generateSpyProfile()
-
+  let data = JSON.parse(localStorage.getItem(`spy-profile-data`));
+  if (data !== null){
+    let password = prompt(`What is your password?`);
+    if (password === data.password){
+      spyProfile.name = data.name;
+      spyProfile.alias = data.alias;
+      spyProfile.secretWeapon = data.secretWeapon;
+      spyProfile.password = data.password;
+    }
+  }
+  else {
+    generateSpyProfile();
+  }
 }
 
-function generateSpyProfile(){
-    spyProfile.name = prompt(`What is your name?`);
-    let instrument = random(instrumentsData.instruments);
-    spyProfile.alias = `The ${instrument}`;
-    spyProfile.secretWeapon = random(objectsData.objects);
-    let card = random(tarotData.tarot_interpretations);
-    spyProfile.password = random(card.keywords);
+/**
+Generates a spy profile from JSON data
+*/
+function generateSpyProfile() {
+  spyProfile.name = prompt(`What is your name?`);
+  let instrument = random(instrumentsData.instruments);
+  spyProfile.alias = `The ${instrument}`;
+  spyProfile.secretWeapon = random(objectsData.objects);
+  let card = random(tarotData.tarot_interpretations);
+  spyProfile.password = random(card.keywords);
 
+  // saves the resulting profile to local storage
+  localStorage.setItem(`spy-profile-data`,JSON.stringify(spyProfile));
 }
-
 
 /**
 Displays the current spy profile.
@@ -84,5 +99,4 @@ Password: ${spyProfile.password}`;
   fill(0);
   text(spyText, 0, 0);
   pop();
-
 }
