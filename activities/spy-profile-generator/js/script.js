@@ -1,11 +1,22 @@
-/**
+"use strict";
+
+/*****************
+
 Spy Profile activity
 Author Name
 
 generates a randomized spy profile for the user, and password protects it
-*/
 
-"use strict";
+Uses:
+Darius Kazemi's corpora project:
+https://github.com/dariusk/corpora/
+
+******************/
+
+// URLs to JSON data
+const TAROT_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/master/data/divination/tarot_interpretations.json`;
+const OBJECT_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/master/data/objects/objects.json`;
+const INSTRUMENT_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/master/data/music/instruments.json`;
 
 // The spy profile data while the program is running
 let spyProfile = {
@@ -15,11 +26,18 @@ let spyProfile = {
   password: `**REDACTED**`,
 };
 
+// Variables to store JSON data for generating the profile
+let tarotData;
+let objectsData;
+let instrumentsData;
+
 /**
-Description of preload
+Loads the JSON data used to generate the profile
 */
 function preload() {
-
+  tarotData = loadJSON(TAROT_DATA_URL);
+  objectsData = loadJSON(OBJECT_DATA_URL);
+  instrumentsData = loadJSON(INSTRUMENT_DATA_URL);
 }
 
 
@@ -29,7 +47,18 @@ Description of setup
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  spyProfile.name = prompt(`What is your name?`);
+  generateSpyProfile()
+
+}
+
+function generateSpyProfile(){
+    spyProfile.name = prompt(`What is your name?`);
+    let instrument = random(instrumentsData.instruments);
+    spyProfile.alias = `The ${instrument}`;
+    spyProfile.secretWeapon = random(objectsData.objects);
+    let card = random(tarotData.tarot_interpretations);
+    spyProfile.password = random(card.keywords);
+
 }
 
 
