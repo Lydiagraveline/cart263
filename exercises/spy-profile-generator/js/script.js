@@ -5,7 +5,7 @@
 Spy Profile activity
 Author Name
 
-generates a randomized spy profile for the user, and password protects it
+generates a randomized spy profile for the user, and ability protects it
 
 Uses:
 Darius Kazemi's corpora project:
@@ -17,13 +17,14 @@ https://github.com/dariusk/corpora/
 const TAROT_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/master/data/divination/tarot_interpretations.json`;
 const OBJECT_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/master/data/objects/objects.json`;
 const INSTRUMENT_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/master/data/music/instruments.json`;
+const FISRT_NAME_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/master/data/humans/wrestlers.json`
 
 // The spy profile data while the program is running
 let spyProfile = {
   name: `**REDACTED**`,
   alias: `**REDACTED**`,
   secretWeapons: `**REDACTED**`,
-  password: `**REDACTED**`,
+  ability: `**REDACTED**`,
 };
 
 // User input variables
@@ -31,10 +32,11 @@ let nameInput;
 // The buttons
 let aliasButton;
 let secretWeaponButton;
-let passwordButton;
+let abilityButton;
 let randomProfileButton;
 
 // Variables to store JSON data for generating the profile
+let nameData;
 let tarotData;
 let objectsData;
 let instrumentsData;
@@ -43,13 +45,14 @@ let instrumentsData;
 Loads the JSON data used to generate the profile
 */
 function preload() {
+  nameData = loadJSON(FISRT_NAME_DATA_URL);
   tarotData = loadJSON(TAROT_DATA_URL);
   objectsData = loadJSON(OBJECT_DATA_URL);
   instrumentsData = loadJSON(INSTRUMENT_DATA_URL);
 }
 
 /**
-Creates a canvas then handles loading profile data, checking password,
+Creates a canvas then handles loading profile data, checking ability,
 and generating a profile as necessary.
 */
 function setup() {
@@ -61,12 +64,12 @@ function setup() {
 
   // let data = JSON.parse(localStorage.getItem(`spy-profile-data`));
   // if (data !== null){
-  //   let password = prompt(`What is your password?`);
-  //   if (password === data.password){
+  //   let ability = prompt(`What is your ability?`);
+  //   if (ability === data.ability){
   //     spyProfile.name = data.name;
   //     spyProfile.alias = data.alias;
   //     spyProfile.secretWeapon = data.secretWeapon;
-  //     spyProfile.password = data.password;
+  //     spyProfile.ability = data.ability;
   //   }
   // }
   // else {
@@ -103,11 +106,12 @@ function sendData(){
 Generates a spy profile from JSON data
 */
 function generateSpyProfile() {
+  spyProfile.name = random(nameData.wrestlers);
   let instrument = random(instrumentsData.instruments);
   spyProfile.alias = `The ${instrument}`;
   spyProfile.secretWeapon = random(objectsData.objects);
   let card = random(tarotData.tarot_interpretations);
-  spyProfile.password = random(card.keywords);
+  spyProfile.ability = random(card.keywords);
 
   // // saves the resulting profile to local storage
   // localStorage.setItem(`spy-profile-data`,JSON.stringify(spyProfile));
@@ -125,7 +129,7 @@ function draw() {
 Name: ${spyProfile.name}
 Alias: ${spyProfile.alias}
 Secret Weapon: ${spyProfile.secretWeapon}
-Password: ${spyProfile.password}`;
+ability: ${spyProfile.ability}`;
 
   // Display the profile
   push();
