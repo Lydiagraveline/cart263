@@ -15,16 +15,20 @@ https://github.com/dariusk/corpora/
 
 // URLs to JSON data
 const TAROT_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/master/data/divination/tarot_interpretations.json`;
+const ENCOURAGING_WORDS_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/master/data/words/encouraging_words.json`
+const WEAPON_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/master/data/objects/premodern_weapons.json`
 const OBJECT_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/master/data/objects/objects.json`;
 const INSTRUMENT_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/master/data/music/instruments.json`;
-const FISRT_NAME_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/master/data/humans/wrestlers.json`
-
+const NAME_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/master/data/words/literature/infinitejest.json`
+const STATES_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/master/data/words/states_of_drunkenness.json`
 // The spy profile data while the program is running
 let spyProfile = {
   name: `**REDACTED**`,
   alias: `**REDACTED**`,
   secretWeapon: `**REDACTED**`,
   ability: `**REDACTED**`,
+  strength: `**REDACTED**`,
+  fear: `**REDACTED**`,
 };
 
 // User input variables
@@ -33,11 +37,14 @@ let nameInput;
 let aliasButton;
 let secretWeaponButton;
 let abilityButton;
+let strengthButton;
 let randomProfileButton;
 
 // Variables to store JSON data for generating the profile
 let nameData;
 let tarotData;
+let encouragingWordsData;
+let weaponData;
 let objectsData;
 let instrumentsData;
 
@@ -45,8 +52,10 @@ let instrumentsData;
 Loads the JSON data used to generate the profile
 */
 function preload() {
-  nameData = loadJSON(FISRT_NAME_DATA_URL);
+  nameData = loadJSON(NAME_DATA_URL);
   tarotData = loadJSON(TAROT_DATA_URL);
+  encouragingWordsData = loadJSON(ENCOURAGING_WORDS_DATA_URL)
+  weaponData = loadJSON(WEAPON_DATA_URL);
   objectsData = loadJSON(OBJECT_DATA_URL);
   instrumentsData = loadJSON(INSTRUMENT_DATA_URL);
 }
@@ -70,6 +79,9 @@ function setup() {
 
   abilityButton = createButton("Ability");
   abilityButton.mousePressed(newAbility);
+
+  strengthButton = createButton("Strength");
+  strengthButton.mousePressed(newStrength);
 
   randomProfileButton = createButton("Randomize All");
   randomProfileButton.mousePressed(generateSpyProfile);
@@ -114,6 +126,10 @@ function newAbility(){
   spyProfile.ability = random(card.keywords);
 }
 
+function newStrength(){
+  spyProfile.strength = random(encouragingWordsData.encouraging_words)
+}
+
 function sendData(){
   spyProfile.name = nameInput.value();
   generateSpyProfile()
@@ -123,10 +139,11 @@ function sendData(){
 Generates a spy profile from JSON data
 */
 function generateSpyProfile() {
-  spyProfile.name = random(nameData.wrestlers);
+  spyProfile.name = random(nameData.infinitejest);
   newAlias();
   newSecretWeapon();
   newAbility();
+  newStrength();
 
   // // saves the resulting profile to local storage
   // localStorage.setItem(`spy-profile-data`,JSON.stringify(spyProfile));
@@ -144,7 +161,9 @@ function draw() {
 Name: ${spyProfile.name}
 Alias: ${spyProfile.alias}
 Secret Weapon: ${spyProfile.secretWeapon}
-ability: ${spyProfile.ability}`;
+Ability: ${spyProfile.ability}
+Strength: ${spyProfile.strength}
+Fear: ${spyProfile.fear}`
 
   // Display the profile
   push();
