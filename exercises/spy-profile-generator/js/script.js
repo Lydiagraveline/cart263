@@ -40,6 +40,8 @@ let spyProfile = {
   weakness: `**REDACTED**`,
 };
 
+let img;
+
 // User input variables
 let nameInput;
 // The buttons
@@ -85,6 +87,8 @@ function preload() {
   colorData = loadJSON(COLOR_DATA_URL);
   wineDescriptionsData = loadJSON(WINE_DESCRIPTIONS_DATA_URL);
   diseaseSymptomsData = loadJSON(DISEASE_SYMPTOMS_DATA_URL);
+
+  img = loadImage("assets/images/spy.jpeg");
 }
 
 /**
@@ -92,52 +96,47 @@ Creates a canvas then handles loading profile data, checking weakness,
 and generating a profile as necessary.
 */
 function setup() {
-  createCanvas(700, 500);
+  var canvas = createCanvas(425, 550);
+
+
 
   createSpan("What's your name? "); //label for name input
   nameInput = createInput();
+  //nameInput.position(static);
   nameInput.changed(nameCallback);
-
-  missionButton = createButton("Mission");
-  missionButton.mousePressed(newMission);
-
-  aliasButton = createButton("Alias");
-  aliasButton.mousePressed(newAlias);
-
-  descriptionButton = createButton("Description");
-  descriptionButton.mousePressed(newDescription);
-
-  secretWeaponButton = createButton("Secret Weapon");
-  secretWeaponButton.mousePressed(newSecretWeapon);
-
-  disguiseButton = createButton("Disguise");
-  disguiseButton.mousePressed(newDiguise);
-
-  skillsButton = createButton("Special Skill");
-  skillsButton.mousePressed(newSkills);
-
-  weaknessButton = createButton("Weakness");
-  weaknessButton.mousePressed(newWeakness);
+  // nameInput.addClass('menu');
 
   randomProfileButton = createButton("Randomize All");
   randomProfileButton.mousePressed(generateSpyProfile);
+  //randomProfileButton.parent('menu');
 
-  // let data = JSON.parse(localStorage.getItem(`spy-profile-data`));
-  // if (data !== null){
-  //   let weakness = prompt(`What is your weakness?`);
-  //   if (weakness === data.weakness){
-  //     spyProfile.name = data.name;
-  //     spyProfile.alias = data.alias;
-  //     spyProfile.secretWeapon = data.secretWeapon;
-  //     spyProfile.weakness = data.weakness;
-  //   }
-  // }
-  // else {
-  //   generateSpyProfile();
-  // }
-// aliasButton = createButton(`alias`);
-// aliasButton.mousePressed(generateAlias);
+  missionButton = createButton("Mission");
+  missionButton.mousePressed(newMission);
+  //missionButton.parent('menu');
 
+  aliasButton = createButton("Alias");
+  aliasButton.mousePressed(newAlias);
+  //aliasButton.parent('menu');
+
+  descriptionButton = createButton("Description");
+  descriptionButton.mousePressed(newDescription);
+  //descriptionButton.parent('menu');
+
+  secretWeaponButton = createButton("Secret Weapon");
+  secretWeaponButton.mousePressed(newSecretWeapon);
+  //secretWeaponButton.parent('menu');
+
+  disguiseButton = createButton("Disguise");
+  disguiseButton.mousePressed(newDiguise);
+  //disguiseButton.parent('menu');
+
+  skillsButton = createButton("Special Skill");
+  skillsButton.mousePressed(newSkills);
+  //skillsButton.parent('menu');
+
+  weaknessButton = createButton("Weakness");
+  weaknessButton.mousePressed(newWeakness);
+  //weaknessButton.parent('menu');
 }
 
 /**
@@ -205,7 +204,7 @@ function newWeakness(){
   let card = random(tarotData.tarot_interpretations);
   let shadow = random(card.meanings.shadow);
   let diseaseSymptom = random(diseaseSymptomsData.symptoms);
-  spyProfile.weakness = shadow + `, and ` + diseaseSymptom;
+  spyProfile.weakness = `${shadow}, and ${diseaseSymptom}`;
 }
 
 /**
@@ -238,25 +237,50 @@ Displays the current spy profile.
 function draw() {
   background(255, 20, 150);
 
+push();
+blendMode(ADD);
+image(img, width - 210, 65, 200, 200);
+pop();
+
+
 // Generate the profile as a string using the data
-  let spyText = `** TOP SECRET SPY PROFILE **
+  let spyText = `Agent Name: ${spyProfile.name}
 
-** MISSION ${spyProfile.mission} **
-
-Agent Name: ${spyProfile.name}
-Alias: ${spyProfile.alias}
 Description: ${spyProfile.desciption}
+
 Secret Weapon: ${spyProfile.secretWeapon}
-Disguise: ${spyProfile.disguise}
-Special Skills: ${spyProfile.skills}
-Weaknesses: ${spyProfile.weakness}`
+
+Disguise: ${spyProfile.disguise}`
+
+
 
   // Display the profile
   push();
+
+
+
+  fill(255);
+  noStroke();
+  rect(10, 10, width - 20, 45)
+  rect(10, height - 110, width - 20, 100 )
+  rect(10, height - 200, width - 20, 80 )
+
+  // the text
   textFont(`Courier, monospace`);
   textSize(16);
-  textAlign(LEFT, TOP);
+
   fill(0);
-  text(spyText, 0, 0, width);
+  textAlign(CENTER, TOP);
+  text(`** TOP SECRET SPY PROFILE **`, width/2 , 15);
+  text(`** MISSION ${spyProfile.mission} **`, width/2, 35);
+  text(`Alias: `, width / 4, 275, width);
+  text(`${spyProfile.alias}`, width / 2, 295, 195);
+
+  textAlign(LEFT, TOP);
+
+  text(spyText, 15, 70, 200);
+  text(`Special Skills: ${spyProfile.skills}`, 15, height - 190, width - 15, height);
+  text(`Weaknesses: ${spyProfile.weakness}`, 15, height - 100, width - 15, height);
+
   pop();
 }
