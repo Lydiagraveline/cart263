@@ -5,7 +5,7 @@
 Spy Profile activity
 Author Name
 
-generates a randomized spy profile for the user, and ability protects it
+generates a randomized spy profile for the user, and weakness protects it
 
 Uses:
 Darius Kazemi's corpora project:
@@ -26,8 +26,8 @@ let spyProfile = {
   name: `**REDACTED**`,
   alias: `**REDACTED**`,
   secretWeapon: `**REDACTED**`,
-  ability: `**REDACTED**`,
   strength: `**REDACTED**`,
+  weakness: `**REDACTED**`,
   fear: `**REDACTED**`,
 };
 
@@ -36,8 +36,8 @@ let nameInput;
 // The buttons
 let aliasButton;
 let secretWeaponButton;
-let abilityButton;
 let strengthButton;
+let weaknessButton;
 let randomProfileButton;
 
 // Variables to store JSON data for generating the profile
@@ -61,11 +61,11 @@ function preload() {
 }
 
 /**
-Creates a canvas then handles loading profile data, checking ability,
+Creates a canvas then handles loading profile data, checking weakness,
 and generating a profile as necessary.
 */
 function setup() {
-  createCanvas(500, 500);
+  createCanvas(700, 500);
 
   createSpan("What's your name? "); //label for name input
   nameInput = createInput();
@@ -77,23 +77,23 @@ function setup() {
   secretWeaponButton = createButton("Secret Weapon");
   secretWeaponButton.mousePressed(newSecretWeapon);
 
-  abilityButton = createButton("Ability");
-  abilityButton.mousePressed(newAbility);
-
   strengthButton = createButton("Strength");
   strengthButton.mousePressed(newStrength);
+
+  weaknessButton = createButton("weakness");
+  weaknessButton.mousePressed(newweakness);
 
   randomProfileButton = createButton("Randomize All");
   randomProfileButton.mousePressed(generateSpyProfile);
 
   // let data = JSON.parse(localStorage.getItem(`spy-profile-data`));
   // if (data !== null){
-  //   let ability = prompt(`What is your ability?`);
-  //   if (ability === data.ability){
+  //   let weakness = prompt(`What is your weakness?`);
+  //   if (weakness === data.weakness){
   //     spyProfile.name = data.name;
   //     spyProfile.alias = data.alias;
   //     spyProfile.secretWeapon = data.secretWeapon;
-  //     spyProfile.ability = data.ability;
+  //     spyProfile.weakness = data.weakness;
   //   }
   // }
   // else {
@@ -112,18 +112,18 @@ function nameCallback() {
   spyProfile.name = nameInput.value();
   }
 
-  function newAlias(){
-    let instrument = random(instrumentsData.instruments);
-    spyProfile.alias = `The ${instrument}`;
-  }
+function newAlias(){
+  let instrument = random(instrumentsData.instruments);
+  spyProfile.alias = `The ${instrument}`;
+}
 
 function newSecretWeapon(){
   spyProfile.secretWeapon = random(objectsData.objects);
 }
 
-function newAbility(){
+function newweakness(){
   let card = random(tarotData.tarot_interpretations);
-  spyProfile.ability = random(card.keywords);
+  spyProfile.weakness = random(card.meanings.shadow);
 }
 
 function newStrength(){
@@ -142,7 +142,7 @@ function generateSpyProfile() {
   spyProfile.name = random(nameData.infinitejest);
   newAlias();
   newSecretWeapon();
-  newAbility();
+  newweakness();
   newStrength();
 
   // // saves the resulting profile to local storage
@@ -158,11 +158,11 @@ function draw() {
 // Generate the profile as a string using the data
   let spyText = `** TOP SECRET SPY PROFILE **
 
-Name: ${spyProfile.name}
+Agent Name: ${spyProfile.name}
 Alias: ${spyProfile.alias}
 Secret Weapon: ${spyProfile.secretWeapon}
-Ability: ${spyProfile.ability}
 Strength: ${spyProfile.strength}
+weakness: ${spyProfile.weakness}
 Fear: ${spyProfile.fear}`
 
   // Display the profile
