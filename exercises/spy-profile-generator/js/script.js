@@ -26,6 +26,14 @@ let spyProfile = {
   password: `**REDACTED**`,
 };
 
+// User input variables
+let nameInput;
+// The buttons
+let aliasButton;
+let secretWeaponButton;
+let passwordButton;
+let randomProfileButton;
+
 // Variables to store JSON data for generating the profile
 let tarotData;
 let objectsData;
@@ -45,36 +53,64 @@ Creates a canvas then handles loading profile data, checking password,
 and generating a profile as necessary.
 */
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(500, 500);
 
-  let data = JSON.parse(localStorage.getItem(`spy-profile-data`));
-  if (data !== null){
-    let password = prompt(`What is your password?`);
-    if (password === data.password){
-      spyProfile.name = data.name;
-      spyProfile.alias = data.alias;
-      spyProfile.secretWeapon = data.secretWeapon;
-      spyProfile.password = data.password;
-    }
-  }
-  else {
-    generateSpyProfile();
-  }
+  createSpan("What's your name? "); //label for name input
+  nameInput = createInput();
+  nameInput.changed(nameCallback);
+
+  // let data = JSON.parse(localStorage.getItem(`spy-profile-data`));
+  // if (data !== null){
+  //   let password = prompt(`What is your password?`);
+  //   if (password === data.password){
+  //     spyProfile.name = data.name;
+  //     spyProfile.alias = data.alias;
+  //     spyProfile.secretWeapon = data.secretWeapon;
+  //     spyProfile.password = data.password;
+  //   }
+  // }
+  // else {
+  //   generateSpyProfile();
+  // }
+// aliasButton = createButton(`alias`);
+// aliasButton.mousePressed(generateAlias);
+
+randomProfileButton = createButton("Randomize All");
+randomProfileButton.mousePressed(generateSpyProfile);
+//generateSpyProfile();
 }
+
+/**
+Generates a spy profile from JSON data
+allows the name displayed to change when there is a new input
+*/
+function nameCallback() {
+  spyProfile.name = nameInput.value();
+  }
+
+function sendData(){
+  spyProfile.name = nameInput.value();
+  generateSpyProfile()
+}
+
+// function generateAlias(){
+//   let instrument = random(instrumentsData.instruments);
+//   spyProfile.alias = `The ${instrument}`;
+//   spyProfile.secretWeapon = random(objectsData.objects);
+// }
 
 /**
 Generates a spy profile from JSON data
 */
 function generateSpyProfile() {
-  spyProfile.name = prompt(`What is your name?`);
   let instrument = random(instrumentsData.instruments);
   spyProfile.alias = `The ${instrument}`;
   spyProfile.secretWeapon = random(objectsData.objects);
   let card = random(tarotData.tarot_interpretations);
   spyProfile.password = random(card.keywords);
 
-  // saves the resulting profile to local storage
-  localStorage.setItem(`spy-profile-data`,JSON.stringify(spyProfile));
+  // // saves the resulting profile to local storage
+  // localStorage.setItem(`spy-profile-data`,JSON.stringify(spyProfile));
 }
 
 /**
@@ -83,7 +119,7 @@ Displays the current spy profile.
 function draw() {
   background(255, 20, 150);
 
-  // Generate the profile as a string using the data
+// Generate the profile as a string using the data
   let spyText = `** TOP SECRET SPY PROFILE **
 
 Name: ${spyProfile.name}

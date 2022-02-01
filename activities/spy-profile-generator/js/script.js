@@ -45,7 +45,7 @@ Creates a canvas then handles loading profile data, checking password,
 and generating a profile as necessary.
 */
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(500, 500);
 
   let data = JSON.parse(localStorage.getItem(`spy-profile-data`));
   if (data !== null){
