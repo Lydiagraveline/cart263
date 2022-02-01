@@ -23,7 +23,7 @@ const FISRT_NAME_DATA_URL = `https://raw.githubusercontent.com/dariusk/corpora/m
 let spyProfile = {
   name: `**REDACTED**`,
   alias: `**REDACTED**`,
-  secretWeapons: `**REDACTED**`,
+  secretWeapon: `**REDACTED**`,
   ability: `**REDACTED**`,
 };
 
@@ -62,6 +62,18 @@ function setup() {
   nameInput = createInput();
   nameInput.changed(nameCallback);
 
+  aliasButton = createButton("Alias");
+  aliasButton.mousePressed(newAlias);
+
+  secretWeaponButton = createButton("Secret Weapon");
+  secretWeaponButton.mousePressed(newSecretWeapon);
+
+  abilityButton = createButton("Ability");
+  abilityButton.mousePressed(newAbility);
+
+  randomProfileButton = createButton("Randomize All");
+  randomProfileButton.mousePressed(generateSpyProfile);
+
   // let data = JSON.parse(localStorage.getItem(`spy-profile-data`));
   // if (data !== null){
   //   let ability = prompt(`What is your ability?`);
@@ -78,9 +90,6 @@ function setup() {
 // aliasButton = createButton(`alias`);
 // aliasButton.mousePressed(generateAlias);
 
-randomProfileButton = createButton("Randomize All");
-randomProfileButton.mousePressed(generateSpyProfile);
-//generateSpyProfile();
 }
 
 /**
@@ -91,27 +100,33 @@ function nameCallback() {
   spyProfile.name = nameInput.value();
   }
 
+  function newAlias(){
+    let instrument = random(instrumentsData.instruments);
+    spyProfile.alias = `The ${instrument}`;
+  }
+
+function newSecretWeapon(){
+  spyProfile.secretWeapon = random(objectsData.objects);
+}
+
+function newAbility(){
+  let card = random(tarotData.tarot_interpretations);
+  spyProfile.ability = random(card.keywords);
+}
+
 function sendData(){
   spyProfile.name = nameInput.value();
   generateSpyProfile()
 }
-
-// function generateAlias(){
-//   let instrument = random(instrumentsData.instruments);
-//   spyProfile.alias = `The ${instrument}`;
-//   spyProfile.secretWeapon = random(objectsData.objects);
-// }
 
 /**
 Generates a spy profile from JSON data
 */
 function generateSpyProfile() {
   spyProfile.name = random(nameData.wrestlers);
-  let instrument = random(instrumentsData.instruments);
-  spyProfile.alias = `The ${instrument}`;
-  spyProfile.secretWeapon = random(objectsData.objects);
-  let card = random(tarotData.tarot_interpretations);
-  spyProfile.ability = random(card.keywords);
+  newAlias();
+  newSecretWeapon();
+  newAbility();
 
   // // saves the resulting profile to local storage
   // localStorage.setItem(`spy-profile-data`,JSON.stringify(spyProfile));
