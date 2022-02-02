@@ -97,7 +97,12 @@ function preload() {
 Creates a canvas then creates buttons and inputs
 */
 function setup() {
-  var canvas = createCanvas(425, 550);
+  var cnv = createCanvas(425, 550);
+  //center the canvas
+  // var x = (windowWidth - width) / 2;
+  // var y = (windowHeight - height) / 2;
+  // cnv.position(x, y);
+  // cnv.style(`display`, `block`);
 
   createSpan("What's your name? "); //label for name input
   nameInput = createInput();

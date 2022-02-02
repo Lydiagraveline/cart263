@@ -12,23 +12,50 @@ Also hides overflow.
 body {
   padding: 0;
   margin: 0;
-  display: grid; /* Set up the grid and justify/align to center */
+  display: grid; /*Set up the grid and justify/align to center */
   justify-content: center;
   align-content: center;
-  height: 100vh; /* Body is the height of the viewport */
+  /* height: 100vh; /* Body is the height of the viewport */ 
   overflow: hidden; /* Hide anything that goes off the window size */
 }
 
-/* .menu {
-  width: 25%;
-  float: left;
-  padding: 15px;
-  border: 1px solid red;
+h1{
+  text-align: center;
 }
 
-.canvas {
-  width: 75%;
-  float: left;
-  padding: 15px;
-  border: 1px solid red;
-} */
+
+/*
+  CSS button by Dribble
+  https://getcssscan.com/css-buttons-examples
+*/
+button {
+  background-color: #EA4C89;
+  border-radius: 8px;
+  border-style: none;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Courier";
+  font-size: 14px;
+  font-weight: 500;
+  height: 40px;
+  line-height: 20px;
+  list-style: none;
+  margin: 0;
+  outline: none;
+  padding: 10px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: color 100ms;
+  vertical-align: baseline;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+button:hover,
+button:focus {
+  background-color: #F082AC;
+}
