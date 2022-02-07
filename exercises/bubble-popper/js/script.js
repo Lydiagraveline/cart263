@@ -40,12 +40,14 @@ let pin = {
 Starts the webcam and the Handpose, creates a bubble object
 */
 function setup() {
+  // canvas is same resolution as webcam
   createCanvas(640, 480);
+  pixelDensity(1);
 
   // Start webcam and hide the resulting HTML element
   video = createCapture(VIDEO);
+  video.size(width, height);
   video.hide();
-  video.position(0, 0);
 
   // Load the Handpose model
   handpose = ml5.handpose(
@@ -77,6 +79,13 @@ function setup() {
 function draw() {
   background(0);
 
+  // draw the webcam mirrored
+    push();
+    translate(width, 0);
+    scale(-1, 1);
+    image(video, 0, 0);
+    pop();
+
   // Check if there currently predictions to display
   if (predictions.length > 0) {
     // If yes, then get the positions of the tip and base of the index finger
@@ -95,9 +104,9 @@ function draw() {
 
   // Handle the bubble's movement and display (independent of hand detection
   // so it doesn't need to be inside the predictions check)
-  moveBubble();
-  checkOutOfBounds();
-  displayBubble();
+  //moveBubble();
+  //checkOutOfBounds();
+  //displayBubble();
 }
 
 /**
