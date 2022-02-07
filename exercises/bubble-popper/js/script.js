@@ -12,6 +12,7 @@ https://learn.ml5js.org/#/reference/handpose
 
 "use strict";
 
+let faceapi;
 //the user's webcam
 let video = undefined;
 // The name of our model
@@ -20,6 +21,8 @@ let modelName = `Handpose`;
 let handpose;
 // The current set of predictions made by Handpose once it's running
 let predictions = [];
+// The current set of detections made by faceapi once it's running
+let detections = [];
 
 // The bubble we will be popping
 let bubble = undefined;
@@ -44,15 +47,26 @@ function setup() {
       flipHorizontal: true,
     },
     function () {
-      console.log(`Model loaded.`);
+      console.log(`Hand model loaded.`);
     }
   );
 
-  // Listen for predictions
+  // load the faceapi model
+  faceapi = ml5.faceApi(
+    video,
+    function () {
+      console.log(`Face model loaded.`);
+    }
+  );
+
+  // Listen for hand predictions
   handpose.on(`predict`, function (results) {
     // console.log(results);
     predictions = results;
   });
+
+  // Listen for face detections
+  faceapi.detect(updateFace);
 
   // Our bubble
   bubble = {
@@ -62,6 +76,18 @@ function setup() {
     vx: 0,
     vy: -2,
   };
+}
+
+/**
+Updates the faceapi when the face is detected
+*/
+function updateFace(error, result) {
+  if (error) {
+    console.log(error);
+    return;
+  }
+  detections = result;
+  faceapi.detect(updateFace);
 }
 
 function draw() {
@@ -79,9 +105,9 @@ function draw() {
     for (let j = 0; j < prediction.landmarks.length; j += 1) {
       const keypoint = prediction.landmarks[j];
       //draw the keypoints
-        fill(0, 255, 0);
-        noStroke();
-        ellipse(keypoint[0], keypoint[1], 10, 10);
+      fill(0, 255, 0);
+      noStroke();
+      ellipse(keypoint[0], keypoint[1], 10, 10);
 
       // Check if the keypoints are touching the bubble
       let d = dist(keypoint[0], keypoint[1], bubble.x, bubble.y);
@@ -96,7 +122,7 @@ function draw() {
   // so it doesn't need to be inside the predictions check)
   moveBubble();
   checkOutOfBounds();
-  displayBubble();
+  //displayBubble();
 }
 
 /**
@@ -133,4 +159,21 @@ function displayBubble() {
   fill(100, 100, 200, 150);
   ellipse(bubble.x, bubble.y, bubble.size);
   pop();
+}
+
+// draw a box around the detected face
+function drawBox(detections){
+    for(let i = 0; i < detections.length; i++){
+        const alignedRect = detections[i].alignedRect;
+        const x = alignedRect._box._x
+        const y = alignedRect._box._y
+        const boxWidth = alignedRect._box._width
+        const boxHeight  = alignedRect._box._height
+
+        noFill();
+        stroke(161, 95, 251);
+        strokeWeight(2);
+        rect(x, y, boxWidth, boxHeight);
+    }
+
 }
