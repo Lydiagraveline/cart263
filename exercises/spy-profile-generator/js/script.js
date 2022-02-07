@@ -98,11 +98,6 @@ Creates a canvas then creates buttons and inputs
 */
 function setup() {
   var cnv = createCanvas(425, 550);
-  //center the canvas
-  // var x = (windowWidth - width) / 2;
-  // var y = (windowHeight - height) / 2;
-  // cnv.position(x, y);
-  // cnv.style(`display`, `block`);
 
   createSpan("What's your name? "); //label for name input
   nameInput = createInput();
@@ -166,7 +161,6 @@ function handleFile(file) {
     img = loadImage("assets/images/spy.jpeg");
   }
 }
-
 
 /**
   Generates a new mission name from a cannabis name JSON and capializes it
