@@ -40,7 +40,7 @@ let pin = {
 Starts the webcam and the Handpose, creates a bubble object
 */
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(640, 480);
 
   // Start webcam and hide the resulting HTML element
   video = createCapture(VIDEO);
@@ -82,6 +82,13 @@ function draw() {
     // If yes, then get the positions of the tip and base of the index finger
     updatePin(predictions[0]);
 
+    // Check if the tip of the "pin" is touching the bubble
+    let d = dist(pin.tip.x, pin.tip.y, bubble.x, bubble.y);
+    if (d < bubble.size / 2) {
+      // Pop!
+      resetBubble();
+    }
+
     // Display the current position of the pin
     displayPin();
   }
@@ -90,7 +97,7 @@ function draw() {
   // so it doesn't need to be inside the predictions check)
   moveBubble();
   checkOutOfBounds();
-  displayBubble(); 
+  displayBubble();
 }
 
 /**
@@ -101,6 +108,14 @@ function updatePin(prediction) {
   pin.tip.y = prediction.annotations.indexFinger[3][1];
   pin.head.x = prediction.annotations.indexFinger[0][0];
   pin.head.y = prediction.annotations.indexFinger[0][1];
+}
+
+/**
+Resets the bubble to the bottom of the screen in a new x position
+*/
+function resetBubble() {
+  bubble.x = random(width);
+  bubble.y = height;
 }
 
 /**
