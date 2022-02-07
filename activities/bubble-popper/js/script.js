@@ -22,7 +22,7 @@ let handpose;
 let predictions = [];
 
 // The bubble we will be popping
-let bubble;
+let bubble = undefined;
 // The pin
 let pin = {
   tip: {
@@ -37,7 +37,7 @@ let pin = {
 };
 
 /**
-Description of setup
+Starts the webcam and the Handpose, creates a bubble object
 */
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -63,6 +63,15 @@ function setup() {
     // console.log(results);
     predictions = results;
   });
+
+  // Our bubble
+  bubble = {
+    x: random(width),
+    y: height,
+    size: 100,
+    vx: 0,
+    vy: -2,
+  };
 }
 
 function draw() {
@@ -76,6 +85,12 @@ function draw() {
     // Display the current position of the pin
     displayPin();
   }
+
+  // Handle the bubble's movement and display (independent of hand detection
+  // so it doesn't need to be inside the predictions check)
+  moveBubble();
+  checkOutOfBounds();
+  displayBubble(); 
 }
 
 /**
@@ -86,6 +101,34 @@ function updatePin(prediction) {
   pin.tip.y = prediction.annotations.indexFinger[3][1];
   pin.head.x = prediction.annotations.indexFinger[0][0];
   pin.head.y = prediction.annotations.indexFinger[0][1];
+}
+
+/**
+Moves the bubble according to its velocity
+*/
+function moveBubble() {
+  bubble.x += bubble.vx;
+  bubble.y += bubble.vy;
+}
+
+/**
+Resets the bubble if it moves off the top of the canvas
+*/
+function checkOutOfBounds() {
+  if (bubble < 0) {
+    resetBubble();
+  }
+}
+
+/**
+Displays the bubble as a circle
+*/
+function displayBubble() {
+  push();
+  noStroke();
+  fill(100, 100, 200, 150);
+  ellipse(bubble.x, bubble.y, bubble.size);
+  pop();
 }
 
 /**
