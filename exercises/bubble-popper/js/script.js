@@ -12,6 +12,8 @@ https://learn.ml5js.org/#/reference/handpose
 
 "use strict";
 
+// Current state of program
+let state = `loading`; // loading, running
 //the user's webcam
 let video = undefined;
 // The name of our model
@@ -29,37 +31,49 @@ let pg;
 
 // Create an empty array and assign it to the bubbles variable
 let bubbles = [];
-let numBubbles = 5; // Amount of bubbles in the game
+let numBubbles = 5; // Total number of bubbles
+
+// The hand
+let hand = {
+  index: {
+    x: undefined,
+    y: undefined
+  },
+   middle: {
+    x: undefined,
+    y: undefined,
+    size: 20
+  }
+};
 
 /**
-Starts the webcam and the Handpose, creates a bubble object
+Starts the webcam and the Handpose, creates a bubble array
 */
 function setup() {
   // canvas is same resolution as webcam
   createCanvas(640, 480);
   pg = createGraphics(200, 200, WEBGL);
   pg.rotateY(500);
-  pixelDensity(1);
+  //pixelDensity(1);
 
   // Start webcam and hide the resulting HTML element
   video = createCapture(VIDEO);
   video.size(width, height);
   video.hide();
 
-  // Load the Handpose model
+  // Load the Handpose model then switch to our running state
   handpose = ml5.handpose(
     video,
     {
       flipHorizontal: true,
     },
     function () {
-      console.log(`Hand model loaded.`);
+      state = `running`;
     }
   );
 
   // Listen for hand predictions
   handpose.on(`predict`, function (results) {
-    // console.log(results);
     predictions = results;
   });
 
@@ -84,9 +98,36 @@ function createBubble(x, y) {
   return bubble;
 }
 
+/**
+Handles the states of the program: loading and running
+*/
 function draw() {
+if (state === `loading`){
+   loading();
+ }
+ else if (state === `running`){
+   running();
+ }
+}
+
+/**
+Displays a simple loading screen with the loading model's name
+*/
+function loading(){
+  push();
+  textSize(32);
+  textStyle(BOLD);
+  textAlign(CENTER, CENTER);
+  text(`Loading ${modelName}...`, width / 2, height / 2);
+  pop();
+}
+
+/**
+Displays the webcam, detects a hand, and handles the bubbles
+*/
+function running(){
   background(0);
-  // draw the webcam mirrored
+  // display the webcam mirrored
   push();
   translate(width, 0);
   scale(-1, 1);
