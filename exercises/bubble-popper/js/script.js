@@ -12,7 +12,6 @@ https://learn.ml5js.org/#/reference/handpose
 
 "use strict";
 
-let faceapi;
 //the user's webcam
 let video = undefined;
 // The name of our model
@@ -21,11 +20,9 @@ let modelName = `Handpose`;
 let handpose;
 // The current set of predictions made by Handpose once it's running
 let predictions = [];
-// The current set of detections made by faceapi once it's running
-let detections = [];
 // The bubble we will be popping
 let bubble = undefined;
-// Section of the webcam video containing the face, tracked by faceapi
+// Section of the webcam video used as the bubble texture
 let face;
 // create graphics variable to store 3d objects
 let pg;
@@ -60,40 +57,17 @@ function setup() {
     }
   );
 
-  // //load the faceapi model
-  // faceapi = ml5.faceApi(
-  //   video,
-  //   function () {
-  //     console.log(`Face model loaded.`);
-  //   }
-  // );
-
   // Listen for hand predictions
   handpose.on(`predict`, function (results) {
     // console.log(results);
     predictions = results;
   });
 
-  // //Listen for face detections
-  // faceapi.detect(updateFace);
-
   // Create bubbles at random positions
   for (let i = 0; i < numBubbles; i++) {
     bubbles[i] = createBubble(random(200, width - 200), random(height, height + 300));
   }
 }
-
-/**
-Updates the faceapi when the face is detected
-*/
-// function updateFace(error, result) {
-//   if (error) {
-//     console.log(error);
-//     return;
-//   }
-//   detections = result;
-//   faceapi.detect(updateFace);
-// }
 
 /**
 Create a new JavaScript Object describing a bubble and returns it
@@ -118,11 +92,6 @@ function draw() {
   scale(-1, 1);
   image(video, 0, 0);
   pop();
-
-  //draw a box around the detected face
-  if (detections.length > 0) {
-    //drawBox(detections)
-  }
 
   // draw ellipses over the detected keypoints
   for (let i = 0; i < predictions.length; i += 1) {
@@ -202,25 +171,4 @@ function displayBubble(bubble) {
   pg.sphere(85);
   image(pg, bubble.x, bubble.y, bubble.size, bubble.size);
   pop();
-}
-
-/**
-Displays a box around the detected face
-*/
-function drawBox(detections) {
-  for (let i = 0; i < detections.length; i++) {
-    const alignedRect = detections[i].alignedRect;
-    let x = alignedRect._box._x;
-    const y = alignedRect._box._y;
-    const boxWidth = alignedRect._box._width;
-    const boxHeight = alignedRect._box._height;
-
-    noFill();
-    stroke(161, 95, 251);
-    strokeWeight(2);
-    rect(x, y, boxWidth, boxHeight);
-
-    //let face = get(x, y, boxWidth, boxHeight);
-    //image(face, 0, 0, 100, 100);
-  }
 }
