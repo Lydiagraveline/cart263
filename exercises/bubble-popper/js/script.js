@@ -12,8 +12,10 @@ https://learn.ml5js.org/#/reference/handpose
 
 "use strict";
 
-// bubble pop sound effect
-let popSFX;
+// total number of popping sound effects
+const NUM_SOUND_EFFECTS = 7;
+// array to store the bubble pop sound effects
+let popsSFX = [];
 // Current state of program
 let state = `loading`; // loading, running
 //the user's webcam
@@ -43,10 +45,13 @@ let hand = {
 };
 
 /**
-Preload sound effects
+Preload sound effects and store them in an array
 */
 function preload() {
-popSFX = loadSound(`assets/sounds/pop.wav`);
+  for (let i = 0; i < NUM_SOUND_EFFECTS; i++){
+    let pop = loadSound(`assets/sounds/pop${i}.wav`);
+    popsSFX.push(pop);
+  }
 }
 
 /**
@@ -163,6 +168,7 @@ function handleBubblePop(bubble) {
     //console.log(d)
     if (d < bubble.size / 2) {
       // Pop!
+      let popSFX = random(popsSFX);
       popSFX.play();
       resetBubble(bubble);
     }
