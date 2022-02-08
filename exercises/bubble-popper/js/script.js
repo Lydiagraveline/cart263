@@ -12,6 +12,8 @@ https://learn.ml5js.org/#/reference/handpose
 
 "use strict";
 
+// bubble pop sound effect
+let popSFX;
 // Current state of program
 let state = `loading`; // loading, running
 //the user's webcam
@@ -39,6 +41,13 @@ let hand = {
     y: undefined,
   },
 };
+
+/**
+Preload sound effects
+*/
+function preload() {
+popSFX = loadSound(`assets/sounds/pop.wav`);
+}
 
 /**
 Starts the webcam and the Handpose, creates a bubble array
@@ -154,7 +163,7 @@ function handleBubblePop(bubble) {
     //console.log(d)
     if (d < bubble.size / 2) {
       // Pop!
-      console.log(`pop!`);
+      popSFX.play();
       resetBubble(bubble);
     }
     // Display the current position of the fingers
@@ -166,7 +175,7 @@ function handleBubblePop(bubble) {
 Resets the bubble to the bottom of the screen in a new x position
 */
 function resetBubble(bubble) {
-  bubble.x = random(bubble.size / 2, width - bubble.size / 2);
+  bubble.x = random(1 + bubble.size / 2, width - 1 - bubble.size / 2);
   bubble.y = height + bubble.size;
   bubble.size = random(50, 200);
   bubble.speed = random(2, 6);
@@ -210,6 +219,10 @@ function displayBubble(bubble) {
   pg.noStroke();
   pg.texture(video);
   pg.sphere(85);
+  pop();
+
+  push()
+  //blendMode(OVERLAY);
   imageMode(CENTER);
   image(pg, bubble.x, bubble.y, bubble.size, bubble.size);
   pop();
