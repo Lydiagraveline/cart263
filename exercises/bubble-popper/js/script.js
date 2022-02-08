@@ -24,8 +24,6 @@ let handpose;
 let predictions = [];
 // The bubble we will be popping
 let bubble = undefined;
-// Section of the webcam video used as the bubble texture
-let face;
 // create graphics variable to store 3d objects
 let pg;
 
@@ -37,13 +35,12 @@ let numBubbles = 5; // Total number of bubbles
 let hand = {
   index: {
     x: undefined,
-    y: undefined
+    y: undefined,
   },
-   middle: {
+  middle: {
     x: undefined,
     y: undefined,
-    size: 20
-  }
+  },
 };
 
 /**
@@ -79,7 +76,10 @@ function setup() {
 
   // Create bubbles at random positions
   for (let i = 0; i < numBubbles; i++) {
-    bubbles[i] = createBubble(random(200, width - 200), random(height, height + 300));
+    bubbles[i] = createBubble(
+      random(200, width - 200),
+      random(height, height + 300)
+    );
   }
 }
 
@@ -102,18 +102,17 @@ function createBubble(x, y) {
 Handles the states of the program: loading and running
 */
 function draw() {
-if (state === `loading`){
-   loading();
- }
- else if (state === `running`){
-   running();
- }
+  if (state === `loading`) {
+    loading();
+  } else if (state === `running`) {
+    running();
+  }
 }
 
 /**
 Displays a simple loading screen with the loading model's name
 */
-function loading(){
+function loading() {
   push();
   textSize(32);
   textStyle(BOLD);
@@ -123,39 +122,21 @@ function loading(){
 }
 
 /**
-Displays the webcam, detects a hand, and handles the bubbles
+Displays the webcam and handles the bubbles
 */
-function running(){
+function running() {
   background(0);
   // display the webcam mirrored
   push();
-  translate(width, 0);
-  scale(-1, 1);
-  image(video, 0, 0);
+  let flippedVideo = ml5.flipImage(video);
+  image(flippedVideo, 0, 0);
   pop();
 
-  // draw ellipses over the detected keypoints
-  for (let i = 0; i < predictions.length; i += 1) {
-    const prediction = predictions[i];
-    for (let j = 0; j < prediction.landmarks.length; j += 1) {
-      const keypoint = prediction.landmarks[j];
-      //draw the keypoints
-      fill(0, 255, 0);
-      noStroke();
-      ellipse(keypoint[0], keypoint[1], 10, 10);
-
-      // Check if the keypoints are touching the bubble
-      let d = dist(keypoint[0], keypoint[1], bubble.x, bubble.y);
-      if (d < bubble.size / 2) {
-        // Pop!
-        resetBubble();
-      }
-    }
-  }
-
+  // Call handle bubble popping
   // Handle the bubble's movement and display (independent of hand detection
   // so it doesn't need to be inside the predictions check)
   for (let i = 0; i < bubbles.length; i++) {
+    handleBubblePop(bubbles[i]);
     moveBubble(bubbles[i]);
     checkOutOfBounds(bubbles[i]);
     displayBubble(bubbles[i]);
@@ -163,10 +144,39 @@ function running(){
 }
 
 /**
+Detects the hand and if it has popped a bubble, then reset the bubble
+*/
+function handleBubblePop(bubble) {
+  // Check if there currently predictions to display
+  if (predictions.length > 0) {
+    // If yes, then get the positions of the tip and base of the index finger
+    updateHand(predictions[0]);
+
+    // Check if the tip of the index finger is touching the bubble
+    let d = dist(hand.index.x, hand.index.y, bubble.x, bubble.y);
+    //console.log(d)
+    if (d < bubble.size / 2) {
+      // Pop!
+      resetBubble(bubble);
+    }
+    // Display the current position of the fingers
+    displayKeypoints();
+  }
+}
+
+/**
+Updates the position of the pin according to the latest prediction
+*/
+function updateHand(prediction) {
+  hand.index.x = prediction.annotations.indexFinger[3][0];
+  hand.index.y = prediction.annotations.indexFinger[3][1];
+}
+
+/**
 Resets the bubble to the bottom of the screen in a new x position
 */
-function resetBubble() {
-  //bubble.size = random(50, 200);
+function resetBubble(bubble) {
+  console.log(`pop!`)
   bubble.x = random(bubble.size, width - bubble.size);
   bubble.y = height;
 }
@@ -206,10 +216,23 @@ Displays the bubble as a circle
 */
 function displayBubble(bubble) {
   push();
-  //  pg.background(255);
+  //pg.background(255);
   pg.noStroke();
   pg.texture(video);
   pg.sphere(85);
+  imageMode(CENTER);
   image(pg, bubble.x, bubble.y, bubble.size, bubble.size);
+  pop();
+}
+
+/**
+Displays the relevant keypoints on the hand
+*/
+function displayKeypoints() {
+  // Draw index fingertip
+  push();
+  fill(255, 0, 0);
+  noStroke();
+  ellipse(hand.index.x, hand.index.y, 20);
   pop();
 }
