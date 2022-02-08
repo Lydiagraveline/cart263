@@ -23,9 +23,13 @@ let handpose;
 let predictions = [];
 // The current set of detections made by faceapi once it's running
 let detections = [];
-
 // The bubble we will be popping
 let bubble = undefined;
+// Section of the webcam video containing the face, tracked by faceapi
+let face;
+// create graphics variable to store 3d objects
+let pg;
+
 
 /**
 Starts the webcam and the Handpose, creates a bubble object
@@ -33,6 +37,8 @@ Starts the webcam and the Handpose, creates a bubble object
 function setup() {
   // canvas is same resolution as webcam
   createCanvas(640, 480);
+  pg = createGraphics(200, 200, WEBGL)
+  pg.rotateY(500);
   pixelDensity(1);
 
   // Start webcam and hide the resulting HTML element
@@ -51,13 +57,13 @@ function setup() {
     }
   );
 
-  // load the faceapi model
-  faceapi = ml5.faceApi(
-    video,
-    function () {
-      console.log(`Face model loaded.`);
-    }
-  );
+  // //load the faceapi model
+  // faceapi = ml5.faceApi(
+  //   video,
+  //   function () {
+  //     console.log(`Face model loaded.`);
+  //   }
+  // );
 
   // Listen for hand predictions
   handpose.on(`predict`, function (results) {
@@ -65,30 +71,30 @@ function setup() {
     predictions = results;
   });
 
-  // Listen for face detections
-  faceapi.detect(updateFace);
+  // //Listen for face detections
+  // faceapi.detect(updateFace);
 
   // Our bubble
   bubble = {
-    x: random(width),
+    x: random(this.size, width - this.size),
     y: height,
-    size: 100,
+    size: random(50, 100),
     vx: 0,
-    vy: -2,
+    vy: -5,
   };
 }
 
 /**
 Updates the faceapi when the face is detected
 */
-function updateFace(error, result) {
-  if (error) {
-    console.log(error);
-    return;
-  }
-  detections = result;
-  faceapi.detect(updateFace);
-}
+// function updateFace(error, result) {
+//   if (error) {
+//     console.log(error);
+//     return;
+//   }
+//   detections = result;
+//   faceapi.detect(updateFace);
+// }
 
 function draw() {
   background(0);
@@ -98,6 +104,13 @@ function draw() {
   scale(-1, 1);
   image(video, 0, 0);
   pop();
+
+
+
+  //draw a box around the detected face
+  if (detections.length > 0) {
+           //drawBox(detections)
+       }
 
   // draw ellipses over the detected keypoints
   for (let i = 0; i < predictions.length; i += 1) {
@@ -122,14 +135,15 @@ function draw() {
   // so it doesn't need to be inside the predictions check)
   moveBubble();
   checkOutOfBounds();
-  //displayBubble();
+  displayBubble();
 }
 
 /**
 Resets the bubble to the bottom of the screen in a new x position
 */
 function resetBubble() {
-  bubble.x = random(width);
+  bubble.size = random(50, 200);
+  bubble.x = random(200, width - bubble.size);
   bubble.y = height;
 }
 
@@ -145,7 +159,7 @@ function moveBubble() {
 Resets the bubble if it moves off the top of the canvas
 */
 function checkOutOfBounds() {
-  if (bubble < 0) {
+  if (bubble.y < 0) {
     resetBubble();
   }
 }
@@ -155,17 +169,20 @@ Displays the bubble as a circle
 */
 function displayBubble() {
   push();
-  noStroke();
-  fill(100, 100, 200, 150);
-  ellipse(bubble.x, bubble.y, bubble.size);
+  pg.noStroke();
+  pg.texture(video);
+  pg.sphere(85);
+  image(pg, bubble.x, bubble.y, bubble.size, bubble.size);
   pop();
 }
 
-// draw a box around the detected face
+/**
+Displays a box around the detected face
+*/
 function drawBox(detections){
     for(let i = 0; i < detections.length; i++){
         const alignedRect = detections[i].alignedRect;
-        const x = alignedRect._box._x
+        let x = alignedRect._box._x
         const y = alignedRect._box._y
         const boxWidth = alignedRect._box._width
         const boxHeight  = alignedRect._box._height
@@ -174,6 +191,8 @@ function drawBox(detections){
         stroke(161, 95, 251);
         strokeWeight(2);
         rect(x, y, boxWidth, boxHeight);
-    }
 
+        //let face = get(x, y, boxWidth, boxHeight);
+        //image(face, 0, 0, 100, 100);
+    }
 }
