@@ -30,14 +30,11 @@ let pg;
 // Create an empty array and assign it to the bubbles variable
 let bubbles = [];
 let numBubbles = 5; // Total number of bubbles
+let numPopped = 0;
 
 // The hand
 let hand = {
   index: {
-    x: undefined,
-    y: undefined,
-  },
-  middle: {
     x: undefined,
     y: undefined,
   },
@@ -91,9 +88,9 @@ function createBubble(x, y) {
   bubble = {
     x: x,
     y: y,
-    size: random(50, 100),
+    size: random(50, 150),
     vx: 0,
-    speed: random(2, 4),
+    speed: random(2, 6),
   };
   return bubble;
 }
@@ -157,6 +154,7 @@ function handleBubblePop(bubble) {
     //console.log(d)
     if (d < bubble.size / 2) {
       // Pop!
+      console.log(`pop!`)
       resetBubble(bubble);
     }
     // Display the current position of the fingers
@@ -165,20 +163,13 @@ function handleBubblePop(bubble) {
 }
 
 /**
-Updates the position of the pin according to the latest prediction
-*/
-function updateHand(prediction) {
-  hand.index.x = prediction.annotations.indexFinger[3][0];
-  hand.index.y = prediction.annotations.indexFinger[3][1];
-}
-
-/**
 Resets the bubble to the bottom of the screen in a new x position
 */
 function resetBubble(bubble) {
-  console.log(`pop!`)
-  bubble.x = random(bubble.size, width - bubble.size);
-  bubble.y = height;
+  bubble.x = random(bubble.size/2, width - bubble.size/2);
+  bubble.y = random(height + bubble.size, height + 200);
+  bubble.size = random(50, 100);
+  bubble.speed = random(2, 4);
 }
 
 /**
@@ -195,7 +186,7 @@ function moveBubble(bubble) {
   }
 
   // Bounce off the left and right sides on the canvas
-  if (bubble.x > width - bubble.size || bubble.x < 0) {
+  if (bubble.x > width - bubble.size/2 || bubble.x < bubble.size/2) {
     bubble.vx = -bubble.vx;
   }
 }
@@ -205,9 +196,7 @@ Resets the bubble if it moves off the top of the canvas
 */
 function checkOutOfBounds(bubble) {
   if (bubble.y <= -bubble.size) {
-    //resetBubble();
-    bubble.y = random(height, height + 300);
-    bubble.x = random(bubble.size / 2, width - bubble.size / 2);
+    resetBubble(bubble);
   }
 }
 
@@ -223,6 +212,14 @@ function displayBubble(bubble) {
   imageMode(CENTER);
   image(pg, bubble.x, bubble.y, bubble.size, bubble.size);
   pop();
+}
+
+/**
+Updates the position of the pin according to the latest prediction
+*/
+function updateHand(prediction) {
+  hand.index.x = prediction.annotations.indexFinger[3][0];
+  hand.index.y = prediction.annotations.indexFinger[3][1];
 }
 
 /**
