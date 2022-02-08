@@ -75,7 +75,7 @@ function setup() {
   for (let i = 0; i < numBubbles; i++) {
     bubbles[i] = createBubble(
       random(200, width - 200),
-      random(height, height + 300)
+      random(height, height + 400)
     );
   }
 }
@@ -88,7 +88,7 @@ function createBubble(x, y) {
   bubble = {
     x: x,
     y: y,
-    size: random(50, 150),
+    size: random(50, 175),
     vx: 0,
     speed: random(2, 6),
   };
@@ -154,7 +154,7 @@ function handleBubblePop(bubble) {
     //console.log(d)
     if (d < bubble.size / 2) {
       // Pop!
-      console.log(`pop!`)
+      console.log(`pop!`);
       resetBubble(bubble);
     }
     // Display the current position of the fingers
@@ -166,10 +166,10 @@ function handleBubblePop(bubble) {
 Resets the bubble to the bottom of the screen in a new x position
 */
 function resetBubble(bubble) {
-  bubble.x = random(bubble.size/2, width - bubble.size/2);
-  bubble.y = random(height + bubble.size, height + 200);
-  bubble.size = random(50, 100);
-  bubble.speed = random(2, 4);
+  bubble.x = random(bubble.size / 2, width - bubble.size / 2);
+  bubble.y = height + bubble.size;
+  bubble.size = random(50, 200);
+  bubble.speed = random(2, 6);
 }
 
 /**
@@ -178,6 +178,7 @@ Moves the bubble according to its velocity and speed
 function moveBubble(bubble) {
   bubble.y -= bubble.speed;
   bubble.x += bubble.vx;
+  //  bubble.x = constrain(bubble.x, bubble.size/2, width - bubble.size/2);
 
   // Choose whether to change direction
   let change = random(0, 1);
@@ -186,7 +187,7 @@ function moveBubble(bubble) {
   }
 
   // Bounce off the left and right sides on the canvas
-  if (bubble.x > width - bubble.size/2 || bubble.x < bubble.size/2) {
+  if (bubble.x >= width - bubble.size / 2 || bubble.x <= bubble.size / 2) {
     bubble.vx = -bubble.vx;
   }
 }
