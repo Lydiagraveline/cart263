@@ -28,6 +28,8 @@ let handpose;
 let predictions = [];
 // The bubble we will be popping
 let bubble = undefined;
+// image of a bubble
+let bubbleIMG;
 // create graphics variable to store 3d objects
 let pg;
 
@@ -48,10 +50,12 @@ let hand = {
 Preload sound effects and store them in an array
 */
 function preload() {
-  for (let i = 0; i < NUM_SOUND_EFFECTS; i++){
+  for (let i = 0; i < NUM_SOUND_EFFECTS; i++) {
     let pop = loadSound(`assets/sounds/pop${i}.wav`);
     popsSFX.push(pop);
   }
+
+  bubbleIMG = loadImage(`assets/images/bubble.png`);
 }
 
 /**
@@ -221,16 +225,19 @@ Displays the bubble as a circle
 */
 function displayBubble(bubble) {
   push();
+  //let flippedVideo = ml5.flipImage(video);
   //pg.background(255);
   pg.noStroke();
+
   pg.texture(video);
+  pg.tint(255, 175);
   pg.sphere(85);
   pop();
 
-  push()
-  //blendMode(OVERLAY);
+  push();
   imageMode(CENTER);
   image(pg, bubble.x, bubble.y, bubble.size, bubble.size);
+  image(bubbleIMG,bubble.x, bubble.y, bubble.size, bubble.size);
   pop();
 }
 
