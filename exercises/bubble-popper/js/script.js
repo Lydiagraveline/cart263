@@ -2,8 +2,9 @@
 Bubble Popper
 Lydia Graveline
 
-Lets the user use their hand as seen through the webcam to pop
-bubbles on the screen.
+Turns the index finger as seen through the webcam into a pin that can pop
+bubbles reflecting the webcam video floating from the bottom
+of the screen to the top.
 
 Uses:
 ml5.js Handpose:
@@ -38,11 +39,16 @@ let bubbles = [];
 let numBubbles = 5; // Total number of bubbles
 let numPopped = 0;
 
-// The hand
-let hand = {
-  index: {
+// The pin
+let pin = {
+  tip: {
     x: undefined,
     y: undefined,
+  },
+  head: {
+    x: undefined,
+    y: undefined,
+    size: 20,
   },
 };
 
@@ -165,10 +171,10 @@ function handleBubblePop(bubble) {
   // Check if there currently predictions to display
   if (predictions.length > 0) {
     // If yes, then get the positions of the tip and base of the index finger
-    updateHand(predictions[0]);
+    updatePin(predictions[0]);
 
     // Check if the tip of the index finger is touching the bubble
-    let d = dist(hand.index.x, hand.index.y, bubble.x, bubble.y);
+    let d = dist(pin.tip.x, pin.tip.y, bubble.x, bubble.y);
     //console.log(d)
     if (d < bubble.size / 2) {
       // Pop!
@@ -176,9 +182,19 @@ function handleBubblePop(bubble) {
       popSFX.play();
       resetBubble(bubble);
     }
-    // Display the current position of the fingers
-    displayKeypoints();
+    // Display the current position of the pin
+    displayPin();
   }
+}
+
+/**
+Updates the position of the pin according to the latest prediction
+*/
+function updatePin(prediction) {
+  pin.tip.x = prediction.annotations.indexFinger[3][0];
+  pin.tip.y = prediction.annotations.indexFinger[3][1];
+  pin.head.x = prediction.annotations.indexFinger[0][0];
+  pin.head.y = prediction.annotations.indexFinger[0][1];
 }
 
 /**
@@ -225,10 +241,7 @@ Displays the bubble as a circle
 */
 function displayBubble(bubble) {
   push();
-  //let flippedVideo = ml5.flipImage(video);
-  //pg.background(255);
   pg.noStroke();
-
   pg.texture(video);
   pg.tint(255, 175);
   pg.sphere(85);
@@ -237,26 +250,26 @@ function displayBubble(bubble) {
   push();
   imageMode(CENTER);
   image(pg, bubble.x, bubble.y, bubble.size, bubble.size);
-  image(bubbleIMG,bubble.x, bubble.y, bubble.size, bubble.size);
+  image(bubbleIMG, bubble.x, bubble.y, bubble.size, bubble.size);
   pop();
 }
 
 /**
-Updates the position of the pin according to the latest prediction
+Displays the pin based on the tip and base coordinates. Draws
+a line between them and adds a red pinhead.
 */
-function updateHand(prediction) {
-  hand.index.x = prediction.annotations.indexFinger[3][0];
-  hand.index.y = prediction.annotations.indexFinger[3][1];
-}
+function displayPin() {
+  // Draw pin
+  push();
+  stroke(255);
+  strokeWeight(2);
+  line(pin.tip.x, pin.tip.y, pin.head.x, pin.head.y);
+  pop();
 
-/**
-Displays the relevant keypoints on the hand
-*/
-function displayKeypoints() {
-  // Draw index fingertip
+  // Draw pinhead
   push();
   fill(255, 0, 0);
   noStroke();
-  ellipse(hand.index.x, hand.index.y, 20);
+  ellipse(pin.head.x, pin.head.y, pin.head.size);
   pop();
 }
