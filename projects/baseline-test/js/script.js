@@ -8,26 +8,24 @@ unwanted emotional responses in a "replicant."
 
 "use strict";
 
-
 /**
-Description of preload
-*/
-function preload() {
-
-}
-
-
-/**
-Description of setup
+Create a canvas
+Set up annyang
 */
 function setup() {
+  createCanvas(windowWidth, windowHeight);
 
+  // Is annyang available?
+  if (annyang) {
+    // Create the guessing command
+    let commands = {};
+    // Setup annyang and start
+    annyang.addCommands(commands);
+    annyang.start();
+  }
 }
-
 
 /**
 Description of draw()
 */
-function draw() {
-
-}
+function draw() {}
