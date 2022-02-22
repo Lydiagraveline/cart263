@@ -13,10 +13,16 @@ let state = `test`; // can be start, test, (end?)
 let json;
 
 // starts the test at the beginning, increases when
-let lineNum = 0;
+let lineNum = 72;
 
+// The test question
 let question;
+// The user's detected answer, can be true or false
+let speech = false;
 
+/**
+preload the json file
+*/
 function preload() {
   json = loadJSON(`assets/data/baselineTestScript.json`);
 }
@@ -27,17 +33,35 @@ Set up annyang
 */
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  formatQuestion();
+  console.log(`${lineNum}: ${question}`);
 
   // Is annyang available?
   if (annyang) {
     // Create the guessing command
-    let commands = {};
+    let commands = {
+      test: nextQuestion,
+      "(the) system": nextQuestion,
+      "(a system of) cells": nextQuestion,
+      "(within cells) interlinked (within cells interlinked within cells interlinked)": nextQuestion,
+      within: nextQuestion,
+      "(Within one) Stem": nextQuestion,
+      Dreadfully: nextQuestion,
+      "(and)(Dreadfully) Distinct": nextQuestion,
+      "(Against the) Dark": nextQuestion,
+      "(A tall) (white) fountain (played)": nextQuestion,
+      "A blood black nothingness": nextQuestion,
+      cells: nextQuestion,
+    };
     // Setup annyang and start
     annyang.addCommands(commands);
     annyang.start();
   }
 }
 
+/**
+Display each state
+*/
 function draw() {
   background(0);
   if (state === `test`) {
@@ -46,9 +70,10 @@ function draw() {
 }
 
 /**
-Format the test question to repeat or not repeat the answer on specific lines
+Format the test question
 */
 function formatQuestion() {
+  // don't display the answer for these specific lines
   if (
     lineNum === 0 ||
     lineNum === 17 ||
@@ -63,6 +88,8 @@ function formatQuestion() {
     lineNum === 58 ||
     lineNum === 59 ||
     lineNum === 71 ||
+    lineNum === 72 ||
+    lineNum === 74 ||
     lineNum === 79 ||
     lineNum === 85 ||
     lineNum === 89 ||
@@ -70,7 +97,8 @@ function formatQuestion() {
   ) {
     question = `${json.line[lineNum].question}`;
   } else {
-    question = `${json.line[lineNum].question} ${json.line[lineNum].answer}`;
+    // display the answer
+    question = `${json.line[lineNum].question} ${json.line[lineNum].answer}.`;
   }
 }
 
@@ -78,18 +106,46 @@ function formatQuestion() {
 Display the question and answer
 */
 function runTest() {
-  formatQuestion();
+  let answer = json.line[lineNum].answer;
   fill(255);
   textSize(24);
   textAlign(CENTER);
-  text(question, width / 2, height / 2 - 50);
-  text(json.line[lineNum].answer, width / 2, height / 2 + 50);
+  text(`${lineNum}: ${question}`, width / 2, height / 2 - 50);
+  text(answer, width / 2, height / 2 + 50);
+}
+
+/**
+Display the next question if the answer was correct
+ */
+function nextQuestion(speech) {
+  checkSpeech();
+  if ((speech = true)) {
+    lineNum++;
+    formatQuestion();
+    console.log(`${lineNum}: ${question}`);
+  }
+}
+
+/**
+Checks if the detected speech is the correct answer
+*/
+function checkSpeech() {
+  annyang.addCallback("resultMatch", function (userSaid, commandText, phrases) {
+    // capitalize the first letter of the detected speech to match the correct answer
+    let userSaidtoUpperCase =
+      userSaid.charAt(0).toUpperCase() + userSaid.slice(1);
+    console.log(`"${userSaidtoUpperCase}"`);
+    if (userSaidtoUpperCase === json.line[lineNum].answer) {
+      speech = true;
+    }
+  });
+  return speech;
 }
 
 /**
 Go to the next line of the question when mouse is pressed
 */
 function mousePressed() {
-  lineNum++;
-  console.log(lineNum);
+  nextQuestion();
+  //console.log(currentAnswer);
 }
