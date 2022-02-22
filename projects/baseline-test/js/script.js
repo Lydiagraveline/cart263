@@ -12,8 +12,8 @@ let state = `test`; // can be start, test, (end?)
 //json file
 let json;
 
-// starts the test at the beginning, increases when
-let lineNum = 72;
+// starts the test at the first line
+let lineNum = 0;
 
 // The test question
 let question;
@@ -51,7 +51,7 @@ function setup() {
       "(Against the) Dark": nextQuestion,
       "(A tall) (white) fountain (played)": nextQuestion,
       "A blood black nothingness": nextQuestion,
-      cells: nextQuestion,
+      sell: nextQuestion,
     };
     // Setup annyang and start
     annyang.addCommands(commands);
@@ -115,28 +115,29 @@ function runTest() {
 }
 
 /**
-Display the next question if the answer was correct
+Display the next question
  */
-function nextQuestion(speech) {
-  checkSpeech();
-  if ((speech = true)) {
-    lineNum++;
-    formatQuestion();
-    console.log(`${lineNum}: ${question}`);
-  }
+function nextQuestion() {
+  speech = checkSpeech();
+  lineNum++;
+  formatQuestion();
 }
 
 /**
 Checks if the detected speech is the correct answer
 */
 function checkSpeech() {
+  //let speech = false;
   annyang.addCallback("resultMatch", function (userSaid, commandText, phrases) {
     // capitalize the first letter of the detected speech to match the correct answer
     let userSaidtoUpperCase =
       userSaid.charAt(0).toUpperCase() + userSaid.slice(1);
-    console.log(`"${userSaidtoUpperCase}"`);
-    if (userSaidtoUpperCase === json.line[lineNum].answer) {
+    if (userSaidtoUpperCase === `${json.line[lineNum - 1].answer}`) {
       speech = true;
+      console.log(`"${userSaidtoUpperCase}" ` + speech);
+    } else {
+      speech = false;
+      console.log(`"${userSaidtoUpperCase}" ` + speech);
     }
   });
   return speech;
@@ -146,6 +147,8 @@ function checkSpeech() {
 Go to the next line of the question when mouse is pressed
 */
 function mousePressed() {
-  nextQuestion();
+  //nextQuestion();
+  lineNum++;
+  formatQuestion();
   //console.log(currentAnswer);
 }
