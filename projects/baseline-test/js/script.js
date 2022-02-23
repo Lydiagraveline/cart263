@@ -7,10 +7,12 @@ unwanted emotional responses in a "replicant."
 */
 
 "use strict";
-let state = `test`; // can be start, test, (end?)
+let state = `intro`; // can be start, test, (end?)
 
 //json file
 let json;
+// The key used to save and load the data for this program
+const PROFILE_DATA_KEY = `profile-data`;
 
 // starts the test at the first line
 let lineNum = 0;
@@ -20,11 +22,26 @@ let question;
 // The user's detected answer, can be true or false
 let speech = false;
 
+//Colors
+let bgColor = `#000a0d`;
+let strokeColor = `#3b4a4d`;
+let textColor = `#96aeb5`;
+
+let profile;
+let profileIMG;
+let cameraIMG;
+let font;
+
+let capture;
+
 /**
 preload the json file
 */
 function preload() {
   json = loadJSON(`assets/data/baselineTestScript.json`);
+  cameraIMG = loadImage(`assets/images/camera.png`);
+  profileIMG = loadImage(`assets/images/profile.png`);
+  font = loadFont(`assets/fonts/Tandysoft.ttf`);
 }
 
 /**
@@ -34,7 +51,6 @@ Set up annyang
 function setup() {
   createCanvas(windowWidth, windowHeight);
   formatQuestion();
-  console.log(`${lineNum}: ${question}`);
 
   // Is annyang available?
   if (annyang) {
@@ -44,29 +60,116 @@ function setup() {
       "(the) system": nextQuestion,
       "(a system of) cells": nextQuestion,
       "(within cells) interlinked (within cells interlinked within cells interlinked)": nextQuestion,
-      within: nextQuestion,
+      "within ": nextQuestion,
       "(Within one) Stem": nextQuestion,
-      Dreadfully: nextQuestion,
+      "dreadfully ": nextQuestion,
       "(and)(Dreadfully) Distinct": nextQuestion,
       "(Against the) Dark": nextQuestion,
       "(A tall) (white) fountain (played)": nextQuestion,
       "A blood black nothingness": nextQuestion,
-      sell: nextQuestion,
     };
     // Setup annyang and start
     annyang.addCommands(commands);
     annyang.start();
   }
+
+  profile = createProfile(
+    // setTimeout(function () {
+    //   prompt(`whats your name?`);
+    // }, 2000),
+    //prompt(`whats your name?`),
+    `Lydia`,
+    makeid(),
+    `${random([`Combat`, `Military`, `Engineer`, `Politics`])} / ${random([
+      `Leader`,
+      `Leisure`,
+      `Defense Prog.`,
+      `Loader (Nuc. Fiss.)`,
+      `Homocide`,
+    ])}`,
+    random([`a`, `b`, `c`]),
+    random([`a`, `b`, `c`])
+  );
+
+  capture = createCapture(VIDEO);
+  capture.size(440, 330);
+  capture.hide();
+}
+
+/**
+Create a new JavaScript Object describing the profile and return it
+*/
+function createProfile(name, id, func, physState, mentalState) {
+  // the profile
+  let profile = {
+    name: name,
+    id: id,
+    function: func,
+    physState: physState,
+    mentalState: mentalState,
+  };
+  return profile;
 }
 
 /**
 Display each state
 */
 function draw() {
-  background(0);
-  if (state === `test`) {
+  background(bgColor);
+  if (state === `intro`) {
+    displayProfile(profile);
+  } else if (state === `test`) {
     runTest();
   }
+}
+
+function displayProfile(profile) {
+  push();
+  stroke(strokeColor);
+  fill(bgColor);
+
+  //imageMode(CORNER)
+  imageMode(CENTER);
+  //image(capture, width/2 - 230, 0, 320, 240);
+  //image(capture, width/2 - 270, height/2 - 208, 100, 335 * capture.height / capture.width);
+  image(
+    capture,
+    width / 2 + 261,
+    height / 2 + 10,
+    capture.width,
+    capture.height
+  );
+
+  imageMode(CENTER);
+  image(profileIMG, width / 2, height / 2, 1100, 541);
+  //  image(cameraIMG, 100, 100, 100, 123)
+
+  rectMode(CORNERS);
+  //textAlign(CENTER, CENTER);
+  fill(textColor);
+  textFont(font, 30);
+  text(name, width / 2 + 55, height / 2 - 165);
+
+  textLeading(25);
+  let statsText = `${profile.id}
+date
+${profile.function}
+LEV ${profile.physState}                LEV ${profile.mentalState}
+`;
+  textFont(font, 21);
+  textAlign(RIGHT);
+  text(statsText, width / 2 - 1, height / 2 + 39);
+  pop();
+}
+
+//generate random ID
+function makeid() {
+  var id = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" + name;
+  id += `${name.charAt(0).split()}-`;
+  for (var i = 0; i < 5; i++)
+    id += possible.charAt(Math.floor(Math.random() * possible.length));
+  return id;
 }
 
 /**
@@ -148,7 +251,8 @@ Go to the next line of the question when mouse is pressed
 */
 function mousePressed() {
   //nextQuestion();
-  lineNum++;
-  formatQuestion();
+  //lineNum++;
+  //formatQuestion();
+  console.log(mouseX, mouseY);
   //console.log(currentAnswer);
 }
