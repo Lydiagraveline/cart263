@@ -37,6 +37,7 @@ let capture;
 let input;
 let nameInput = `K D6-3. 7`;
 
+
 /**
 preload the json file
 */
@@ -76,9 +77,9 @@ function setup() {
     annyang.start();
   }
 
-  input = createInput().attribute('placeholder', 'Your Name ');
+  input = createInput().attribute('placeholder', 'Your Name ').attribute('onfocus',"this.value=''");
 
-  input.position(width/2 - 152, height/2 + 215);
+  input.position(width/2 + 52, height/2 - 191);
   // input.changed(function nameCallback() {
   //   nameInput = input.value();
   // idInput = makeid();
@@ -165,8 +166,8 @@ function displayProfile(profile) {
   rectMode(CORNERS);
   //textAlign(CENTER, CENTER);
   fill(textColor);
-  textFont(font, 30);
-  text(nameInput, width / 2 + 55, height / 2 - 165);
+  //textFont(font, 30);
+  //text(nameInput, width / 2 + 55, height / 2 - 165);
 
   textLeading(25);
   let statsText = `DES:   (${nameInput.substring(0, 3)}) ${nameInput.charAt(0).split()}-${profile.id}

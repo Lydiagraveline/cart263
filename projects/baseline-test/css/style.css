@@ -25,13 +25,14 @@ body {
 }
 
 input{
-  width: 614px;
-  height: 31px;
-  background-color: #000a0d;
-  border-style: none;
+  width: 300px;
+  height: 25px;
+  background-color: #121d20;
+  border: none;
   color: #96aeb5;
-  font-size: 24px;
+  font-size: 30px;
   font-family: "font", "Courier New", monospace;
+  outline: none;
 }
 
 ::placeholder {
