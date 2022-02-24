@@ -9,12 +9,31 @@ Also hides overflow.
 
 **********************************************/
 
+@font-face {
+    font-family: 'font'; /*a name to be used later*/
+    src: url('/assets/fonts/Tandysoft.ttf') format('truetype'); /*URL to font*/
+}
+
 body {
   padding: 0;
   margin: 0;
-  display: grid; /* Set up the grid and justify/align to center */
+  /* display: grid; /* Set up the grid and justify/align to center */
   justify-content: center;
   align-content: center;
   height: 100vh; /* Body is the height of the viewport */
   overflow: hidden; /* Hide anything that goes off the window size */
+}
+
+input{
+  width: 614px;
+  height: 31px;
+  background-color: #000a0d;
+  border-style: none;
+  color: #96aeb5;
+  font-size: 24px;
+  font-family: "font", "Courier New", monospace;
+}
+
+::placeholder {
+  color: #3b4a4d;
 }

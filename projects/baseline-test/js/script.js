@@ -7,7 +7,7 @@ unwanted emotional responses in a "replicant."
 */
 
 "use strict";
-let state = `intro`; // can be start, test, (end?)
+let state = `profile`; // can be prompt, start, test, (end?)
 
 //json file
 let json;
@@ -33,6 +33,9 @@ let cameraIMG;
 let font;
 
 let capture;
+
+let input;
+let nameInput = `K D6-3. 7`;
 
 /**
 preload the json file
@@ -73,12 +76,23 @@ function setup() {
     annyang.start();
   }
 
+  input = createInput().attribute('placeholder', 'Your Name ');
+
+  input.position(width/2 - 152, height/2 + 215);
+  // input.changed(function nameCallback() {
+  //   nameInput = input.value();
+  // idInput = makeid();
+  //
+  //
+  // });
+
   profile = createProfile(
     // setTimeout(function () {
     //   prompt(`whats your name?`);
     // }, 2000),
     //prompt(`whats your name?`),
-    `Lydia`,
+    //profile.namename,
+    //nameInput,
     makeid(),
     `${random([`Combat`, `Military`, `Engineer`, `Politics`])} / ${random([
       `Leader`,
@@ -99,14 +113,15 @@ function setup() {
 /**
 Create a new JavaScript Object describing the profile and return it
 */
-function createProfile(name, id, func, physState, mentalState) {
+function createProfile(id, func, physState, mentalState) {
   // the profile
   let profile = {
-    name: name,
+    name: nameInput, //input.value(),
     id: id,
     function: func,
     physState: physState,
     mentalState: mentalState,
+    status: `Training`,
   };
   return profile;
 }
@@ -116,7 +131,8 @@ Display each state
 */
 function draw() {
   background(bgColor);
-  if (state === `intro`) {
+  input.style(`font-family`, font);
+  if (state === `profile`) {
     displayProfile(profile);
   } else if (state === `test`) {
     runTest();
@@ -124,6 +140,8 @@ function draw() {
 }
 
 function displayProfile(profile) {
+  nameInput = input.value();
+  input.style('font-family', font);
   push();
   stroke(strokeColor);
   fill(bgColor);
@@ -148,26 +166,28 @@ function displayProfile(profile) {
   //textAlign(CENTER, CENTER);
   fill(textColor);
   textFont(font, 30);
-  text(name, width / 2 + 55, height / 2 - 165);
+  text(nameInput, width / 2 + 55, height / 2 - 165);
 
   textLeading(25);
-  let statsText = `${profile.id}
+  let statsText = `DES:   (${nameInput.substring(0, 3)}) ${nameInput.charAt(0).split()}-${profile.id}
 date
 ${profile.function}
 LEV ${profile.physState}                LEV ${profile.mentalState}
+${profile.status}
 `;
   textFont(font, 21);
   textAlign(RIGHT);
   text(statsText, width / 2 - 1, height / 2 + 39);
+
   pop();
 }
 
 //generate random ID
 function makeid() {
   var id = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" + name;
-  id += `${name.charAt(0).split()}-`;
-  for (var i = 0; i < 5; i++)
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789..--#:/";
+  //id += `${nameInput.charAt(0).split()}-`;
+  for (var i = 0; i < 9; i++)
     id += possible.charAt(Math.floor(Math.random() * possible.length));
   return id;
 }
@@ -255,4 +275,6 @@ function mousePressed() {
   //formatQuestion();
   console.log(mouseX, mouseY);
   //console.log(currentAnswer);
+  if (state === `profile`) {
+  }
 }
