@@ -19,11 +19,11 @@ let lineNum = 1;
 
 // The test question
 let question;
+let questionSpeech;
 // The user's detected answer, can be true or false
 let speech = false;
 let micStatus;
 let detections;
-
 
 //Colors
 let bgColor = `#000a0d`;
@@ -57,6 +57,11 @@ Set up annyang
 function setup() {
   createCanvas(windowWidth, windowHeight);
   formatQuestion();
+
+  // checks if responsiveVoice is available which promts the browser to allow play speech
+ if (responsiveVoice.voiceSupport()) {
+   responsiveVoice.speak(" ");
+ }
 
   // Is annyang available?
   if (annyang) {
@@ -103,8 +108,6 @@ function setup() {
   capture.hide();
 }
 
-
-
 /**
 Create a new JavaScript Object describing the profile and return it
 */
@@ -125,6 +128,7 @@ function createProfile(id, func, physState, mentalState) {
 Display each state
 */
 function draw() {
+
   background(bgColor);
   displayProfile(profile);
 
@@ -156,10 +160,7 @@ function displayProfile(profile) {
   stroke(strokeColor);
   fill(bgColor);
 
-  //imageMode(CORNER)
   imageMode(CENTER);
-  //image(capture, width/2 - 230, 0, 320, 240);
-  //image(capture, width/2 - 270, height/2 - 208, 100, 335 * capture.height / capture.width);
   image(
     capture,
     width / 2 + 261,
@@ -170,13 +171,9 @@ function displayProfile(profile) {
 
   imageMode(CENTER);
   image(profileIMG, width / 2, height / 2, 1100, 541);
-  //  image(cameraIMG, 100, 100, 100, 123)
 
   rectMode(CORNERS);
-  //textAlign(CENTER, CENTER);
   fill(textColor);
-  //textFont(font, 30);
-  //text(nameInput, width / 2 + 55, height / 2 - 165);
 
   textLeading(25);
   let statsText = `DES:   (${nameInput.substring(0, 3)}) ${nameInput
@@ -190,9 +187,6 @@ ${profile.status}
   textFont(font, 21);
   textAlign(RIGHT);
   text(statsText, width / 2 - 1, height / 2 + 39);
-
-
-
   pop();
 }
 
@@ -210,6 +204,7 @@ function makeid() {
 Format the test question
 */
 function formatQuestion() {
+  questionSpeech = `${json.line[lineNum].question}`
   // don't display the answer for these specific lines
   if (
     lineNum === 0 ||
@@ -235,6 +230,7 @@ function formatQuestion() {
     // display the answer
     question = `${json.line[lineNum].question}
 
+
 ${json.line[lineNum].answer}.`;
   }
 }
@@ -243,42 +239,34 @@ ${json.line[lineNum].answer}.`;
 Display the question and answer
 */
 function runTest() {
+    //responsiveVoice.speak(question);
   let answer = json.line[lineNum].answer;
+
   push();
-  //rectMode(CORNERS);
   fill(textColor);
   textFont(font, 22);
 
-  textSize(21)
+  textSize(21);
   textAlign(RIGHT);
-  annyang.addCallback('result', function(phrases) {
-    detections = phrases[0]
+  annyang.addCallback("resultMatch", function (phrases) {
+    detections = phrases;
   });
-//
-//   annyang.addCallback('resultNoMatch', function(phrases) {
-//   detections = `listening...`
-// });
+  //
+  //   annyang.addCallback('resultNoMatch', function(phrases) {
+  //   detections = `listening...`
+  // });
 
   // annyang.addCallback('result', function() {
   //   detections = `LISTENING...`
   // });
-  text(detections, width / 2 + 470, height / 2 + 240)
+  text(detections, width / 2 + 470, height / 2 + 240);
 
   textAlign(LEFT);
   blendMode(DIFFERENCE);
   text(`${question}`, width / 2 + 55, 250, width, 250);
 
-
-
-
-  //textSize(12);
-
-  //text(`${micStatus}`, width / 2 - 190, height /  2 + 209);
-  text(`${question}`);
-
   pop();
 }
-
 
 /**
 Display the next question
@@ -287,6 +275,7 @@ function nextQuestion() {
   speech = checkSpeech();
   lineNum++;
   formatQuestion();
+  responsiveVoice.speak(questionSpeech);
 }
 
 /**
@@ -296,8 +285,7 @@ function checkSpeech() {
   //let speech = false;
   annyang.addCallback("resultMatch", function (userSaid, commandText, phrases) {
     // capitalize the first letter of the detected speech to match the correct answer
-    userSaid =
-      userSaid.charAt(0).toUpperCase() + userSaid.slice(1);
+    userSaid = userSaid.charAt(0).toUpperCase() + userSaid.slice(1);
 
     console.log(phrases);
     text(`test`, 100, 100);
