@@ -15,15 +15,19 @@ let json;
 const PROFILE_DATA_KEY = `profile-data`;
 
 // starts the test at the first line
-let lineNum = 1;
+let lineNum = 0;
 
 // The test question
 let question;
 let questionSpeech;
 // The user's detected answer, can be true or false
 let speech = false;
-let micStatus;
+let micStatus; // mic is on or off
 let detections;
+
+// user's voice
+var finalTranscript;
+var interimTranscript;
 
 //Colors
 let bgColor = `#000a0d`;
@@ -59,15 +63,15 @@ function setup() {
   formatQuestion();
 
   // checks if responsiveVoice is available which promts the browser to allow play speech
- if (responsiveVoice.voiceSupport()) {
-   responsiveVoice.speak(" ");
- }
+  if (responsiveVoice.voiceSupport()) {
+    responsiveVoice.speak(" ");
+  }
 
   // Is annyang available?
   if (annyang) {
     // Create the guessing command
     let commands = {
-      test: nextQuestion,
+      //test: nextQuestion,
       "(the) system": nextQuestion,
       "(a system of) cells": nextQuestion,
       "(within cells) interlinked (within cells interlinked within cells interlinked)": nextQuestion,
@@ -78,7 +82,8 @@ function setup() {
       "(and)(Dreadfully) Distinct": nextQuestion,
       "(Against the) Dark": nextQuestion,
       "(A tall) (white) fountain (played)": nextQuestion,
-      "A blood black nothingness": nextQuestion,
+      "(A) blood black nothingness": nextQuestion,
+      "*anything": nextQuestion,
     };
     // Setup annyang and start
     annyang.addCommands(commands);
@@ -128,7 +133,6 @@ function createProfile(id, func, physState, mentalState) {
 Display each state
 */
 function draw() {
-
   background(bgColor);
   displayProfile(profile);
 
@@ -144,12 +148,12 @@ function draw() {
   input.style(`font-family`, font);
 
   if (state === `profile`) {
-    annyang.pause();
+    //annyang.pause();
     micStatus = `MIC OFF`;
   } else if (state === `test`) {
     runTest();
-    micStatus = `MIC ON, LISTENING FOR VOICE COMMANDS`;
-    annyang.start();
+
+    //annyang.start();
   }
 }
 
@@ -204,7 +208,7 @@ function makeid() {
 Format the test question
 */
 function formatQuestion() {
-  questionSpeech = `${json.line[lineNum].question}`
+  questionSpeech = `${json.line[lineNum].question}`;
   // don't display the answer for these specific lines
   if (
     lineNum === 0 ||
@@ -239,7 +243,6 @@ ${json.line[lineNum].answer}.`;
 Display the question and answer
 */
 function runTest() {
-    //responsiveVoice.speak(question);
   let answer = json.line[lineNum].answer;
 
   push();
@@ -248,18 +251,40 @@ function runTest() {
 
   textSize(21);
   textAlign(RIGHT);
-  annyang.addCallback("resultMatch", function (phrases) {
-    detections = phrases;
-  });
-  //
-  //   annyang.addCallback('resultNoMatch', function(phrases) {
-  //   detections = `listening...`
-  // });
 
-  // annyang.addCallback('result', function() {
-  //   detections = `LISTENING...`
-  // });
-  text(detections, width / 2 + 470, height / 2 + 240);
+  // stop annyang when responsiveVoice is speaking
+  if (responsiveVoice.isPlaying()) {
+    annyang.abort();
+    interimTranscript = "";
+    micStatus = `MIC OFF, SYSTEM SPEAKING`;
+  } else {
+    // start annyang when responsiveVoice isn't speaking
+    annyang.start({ autoRestart: false, continuous: false });
+  }
+
+  // Display text when listening for voice
+  annyang.addCallback(`start`, function () {
+    interimTranscript = "listening...";
+    micStatus = `MIC ON, LISTENING FOR VOICE COMMANDS`;
+  });
+
+  // Display interim results of the detected speech
+  // solution by @tar-gezed in https://github.com/TalAter/annyang/issues/101#issuecomment-216495177_
+  var recognition = annyang.getSpeechRecognizer();
+  recognition.interimResults = true;
+  recognition.onresult = function (event) {
+    finalTranscript = "";
+    for (var i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        finalTranscript += event.results[i][0].transcript;
+        annyang.trigger(finalTranscript);
+      } else {
+        interimTranscript = event.results[i][0].transcript;
+      }
+    }
+  };
+
+  text(interimTranscript, width / 2 + 470, height / 2 + 240);
 
   textAlign(LEFT);
   blendMode(DIFFERENCE);
@@ -272,10 +297,12 @@ function runTest() {
 Display the next question
  */
 function nextQuestion() {
+  interimTranscript = "";
   speech = checkSpeech();
   lineNum++;
   formatQuestion();
   responsiveVoice.speak(questionSpeech);
+  //annyang.abort()
 }
 
 /**
@@ -287,15 +314,15 @@ function checkSpeech() {
     // capitalize the first letter of the detected speech to match the correct answer
     userSaid = userSaid.charAt(0).toUpperCase() + userSaid.slice(1);
 
-    console.log(phrases);
+    //console.log(phrases);
     text(`test`, 100, 100);
     if (userSaid === `${json.line[lineNum - 1].answer}`) {
       speech = true;
 
-      console.log(`"${userSaid}" ` + speech);
+      //console.log(`"${userSaid}" ` + speech);
     } else {
       speech = false;
-      console.log(`"${userSaid}" ` + speech);
+      //  console.log(`"${userSaid}" ` + speech);
     }
   });
   return speech;
@@ -308,8 +335,8 @@ function mousePressed() {
   //nextQuestion();
   //lineNum++;
   //formatQuestion();
-  console.log(mouseX, mouseY);
-  console.log(`listening ${annyang.isListening()}`);
+  //console.log(mouseX, mouseY);
+  //  console.log(`listening ${annyang.isListening()}`);
   //console.log(currentAnswer);
   if (state === `profile`) {
   }
@@ -318,6 +345,7 @@ function mousePressed() {
 function keyPressed() {
   if (keyCode === ENTER) {
     state = `test`;
-    console.log(state);
+    nextQuestion();
+    //console.log(state);
   }
 }
