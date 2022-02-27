@@ -68,7 +68,7 @@ create text input and webcam capture
 */
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  createProfile()
+  createProfile();
   formatQuestion(); // generate initial profile
 
   // checks if responsiveVoice is available which promts the browser to allow play speech
@@ -112,17 +112,22 @@ function setup() {
 /**
 Generates a profile with random stats
 */
-function createProfile(){
-  profile.id = makeid()
-  profile.function = `${random([`Combat`, `Military`, `Engineer`, `Politics`])} / ${random([
-        `Leader`,
-        `Leisure`,
-        `Defense Prog.`,
-        `Loader (Nuc. Fiss.)`,
-        `Homocide`,
-      ])}`
-  profile.physState = random([`a`, `b`, `c`])
-  profile.mentalState = random([`a`, `b`, `c`])
+function createProfile() {
+  profile.id = makeid();
+  profile.function = `${random([
+    `Combat`,
+    `Military`,
+    `Engineer`,
+    `Politics`,
+  ])} / ${random([
+    `Leader`,
+    `Leisure`,
+    `Defense Prog.`,
+    `Loader (Nuc. Fiss.)`,
+    `Homocide`,
+  ])}`;
+  profile.physState = random([`a`, `b`, `c`]);
+  profile.mentalState = random([`a`, `b`, `c`]);
 }
 
 /**
@@ -144,12 +149,9 @@ function draw() {
   input.style(`font-family`, font);
 
   if (state === `profile`) {
-    //annyang.pause();
     micStatus = `MIC OFF`;
   } else if (state === `test`) {
     runTest();
-
-    //annyang.start();
   }
 }
 
@@ -175,21 +177,34 @@ function displayProfile(profile) {
   image(profileIMG, width / 2, height / 2, 1100, 541);
 
   let statsText = `ID:  ${nameInput.charAt(0).split()}-${profile.id}
-date
+${getDate()}
 ${profile.function}
 LEV ${profile.physState}                LEV ${profile.mentalState}
 ${profile.status}
 `;
-fill(textColor);
-textLeading(25);
+  fill(textColor);
+  textLeading(25);
   textFont(font, 21);
-  text(`(${nameInput.substring(0, 3)})`, width / 2 - 350, height / 2 + 38 )
+  text(`(${nameInput.substring(0, 3)})`, width / 2 - 350, height / 2 + 38);
   textAlign(RIGHT);
   text(statsText, width / 2 - 1, height / 2 + 39);
   pop();
 }
 
-//generate random ID
+/**
+Get the current date and format it
+*/
+function getDate() {
+  let date = new Date();
+  function formateDate() {
+    return date.toDateString().slice(4);
+  }
+  return formateDate();
+}
+
+/**
+generate random ID
+*/
 function makeid() {
   var id = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -239,13 +254,6 @@ Display the question and answer
 function runTest() {
   let answer = json.line[lineNum].answer;
 
-  push();
-  fill(textColor);
-  textFont(font, 22);
-
-  textSize(21);
-  textAlign(RIGHT);
-
   // stop annyang when responsiveVoice is speaking
   if (responsiveVoice.isPlaying()) {
     annyang.abort();
@@ -277,12 +285,17 @@ function runTest() {
       }
     }
   };
+  push();
+  //  rectMode(CORNERS);
+  fill(textColor);
+  textFont(font, 20);
+  textAlign(RIGHT);
 
-  text(interimTranscript, width / 2 + 470, height / 2 + 240);
+  text(interimTranscript, width / 2 - 145, height / 2 + 216, 630, 30);
 
   textAlign(LEFT);
   blendMode(DIFFERENCE);
-  text(`${question}`, width / 2 + 55, 250, width, 250);
+  text(`${question}`, width / 2 + 55, height/2 - 140, 440, 330);
 
   pop();
 }
@@ -344,7 +357,7 @@ function mousePressed() {
   //nextQuestion(); width/2 - 475, height/2 + 10, width/2 - 325, height/2 + 45
   //lineNum++;
   //formatQuestion();
-  //console.log(mouseX, mouseY);
+  console.log(mouseX, mouseY);
   //  console.log(`listening ${annyang.isListening()}`);
   //console.log(currentAnswer);
 }
