@@ -15,12 +15,15 @@ let json;
 const PROFILE_DATA_KEY = `profile-data`;
 
 // starts the test at the first line
-let lineNum = 0;
+let lineNum = 1;
 
 // The test question
 let question;
 // The user's detected answer, can be true or false
 let speech = false;
+let micStatus;
+let detections;
+
 
 //Colors
 let bgColor = `#000a0d`;
@@ -36,7 +39,6 @@ let capture;
 
 let input;
 let nameInput = `K D6-3. 7`;
-
 
 /**
 preload the json file
@@ -64,9 +66,10 @@ function setup() {
       "(the) system": nextQuestion,
       "(a system of) cells": nextQuestion,
       "(within cells) interlinked (within cells interlinked within cells interlinked)": nextQuestion,
-      "within ": nextQuestion,
+      //"with": nextQuestion,
+      within: nextQuestion,
       "(Within one) Stem": nextQuestion,
-      "dreadfully ": nextQuestion,
+      dreadfully: nextQuestion,
       "(and)(Dreadfully) Distinct": nextQuestion,
       "(Against the) Dark": nextQuestion,
       "(A tall) (white) fountain (played)": nextQuestion,
@@ -74,26 +77,15 @@ function setup() {
     };
     // Setup annyang and start
     annyang.addCommands(commands);
-    annyang.start();
+    //annyang.start();
   }
 
-  input = createInput().attribute('placeholder', 'Your Name ').attribute('onfocus',"this.value=''");
-
-  input.position(width/2 + 52, height/2 - 191);
-  // input.changed(function nameCallback() {
-  //   nameInput = input.value();
-  // idInput = makeid();
-  //
-  //
-  // });
+  input = createInput()
+    .attribute("placeholder", "Your Name ")
+    .attribute("onfocus", "this.value=''");
+  input.position(width / 2 + 52, height / 2 - 191);
 
   profile = createProfile(
-    // setTimeout(function () {
-    //   prompt(`whats your name?`);
-    // }, 2000),
-    //prompt(`whats your name?`),
-    //profile.namename,
-    //nameInput,
     makeid(),
     `${random([`Combat`, `Military`, `Engineer`, `Politics`])} / ${random([
       `Leader`,
@@ -110,6 +102,8 @@ function setup() {
   capture.size(440, 330);
   capture.hide();
 }
+
+
 
 /**
 Create a new JavaScript Object describing the profile and return it
@@ -132,17 +126,32 @@ Display each state
 */
 function draw() {
   background(bgColor);
+  displayProfile(profile);
+
+  push();
+  fill(textColor);
+  textFont(font, 12);
+  textAlign(LEFT);
+
+  text(micStatus, width / 2 - 190, height / 2 + 209);
+
+  pop();
+
   input.style(`font-family`, font);
+
   if (state === `profile`) {
-    displayProfile(profile);
+    annyang.pause();
+    micStatus = `MIC OFF`;
   } else if (state === `test`) {
     runTest();
+    micStatus = `MIC ON, LISTENING FOR VOICE COMMANDS`;
+    annyang.start();
   }
 }
 
 function displayProfile(profile) {
   nameInput = input.value();
-  input.style('font-family', font);
+  input.style("font-family", font);
   push();
   stroke(strokeColor);
   fill(bgColor);
@@ -170,7 +179,9 @@ function displayProfile(profile) {
   //text(nameInput, width / 2 + 55, height / 2 - 165);
 
   textLeading(25);
-  let statsText = `DES:   (${nameInput.substring(0, 3)}) ${nameInput.charAt(0).split()}-${profile.id}
+  let statsText = `DES:   (${nameInput.substring(0, 3)}) ${nameInput
+    .charAt(0)
+    .split()}-${profile.id}
 date
 ${profile.function}
 LEV ${profile.physState}                LEV ${profile.mentalState}
@@ -179,6 +190,8 @@ ${profile.status}
   textFont(font, 21);
   textAlign(RIGHT);
   text(statsText, width / 2 - 1, height / 2 + 39);
+
+
 
   pop();
 }
@@ -206,13 +219,11 @@ function formatQuestion() {
     lineNum === 33 ||
     lineNum === 37 ||
     lineNum === 38 ||
-    lineNum === 46 ||
     lineNum === 47 ||
     lineNum === 52 ||
     lineNum === 58 ||
     lineNum === 59 ||
     lineNum === 71 ||
-    lineNum === 72 ||
     lineNum === 74 ||
     lineNum === 79 ||
     lineNum === 85 ||
@@ -222,7 +233,9 @@ function formatQuestion() {
     question = `${json.line[lineNum].question}`;
   } else {
     // display the answer
-    question = `${json.line[lineNum].question} ${json.line[lineNum].answer}.`;
+    question = `${json.line[lineNum].question}
+
+${json.line[lineNum].answer}.`;
   }
 }
 
@@ -231,12 +244,41 @@ Display the question and answer
 */
 function runTest() {
   let answer = json.line[lineNum].answer;
-  fill(255);
-  textSize(24);
-  textAlign(CENTER);
-  text(`${lineNum}: ${question}`, width / 2, height / 2 - 50);
-  text(answer, width / 2, height / 2 + 50);
+  push();
+  //rectMode(CORNERS);
+  fill(textColor);
+  textFont(font, 22);
+
+  textSize(21)
+  textAlign(RIGHT);
+  annyang.addCallback('result', function(phrases) {
+    detections = phrases[0]
+  });
+//
+//   annyang.addCallback('resultNoMatch', function(phrases) {
+//   detections = `listening...`
+// });
+
+  // annyang.addCallback('result', function() {
+  //   detections = `LISTENING...`
+  // });
+  text(detections, width / 2 + 470, height / 2 + 240)
+
+  textAlign(LEFT);
+  blendMode(DIFFERENCE);
+  text(`${question}`, width / 2 + 55, 250, width, 250);
+
+
+
+
+  //textSize(12);
+
+  //text(`${micStatus}`, width / 2 - 190, height /  2 + 209);
+  text(`${question}`);
+
+  pop();
 }
+
 
 /**
 Display the next question
@@ -254,14 +296,18 @@ function checkSpeech() {
   //let speech = false;
   annyang.addCallback("resultMatch", function (userSaid, commandText, phrases) {
     // capitalize the first letter of the detected speech to match the correct answer
-    let userSaidtoUpperCase =
+    userSaid =
       userSaid.charAt(0).toUpperCase() + userSaid.slice(1);
-    if (userSaidtoUpperCase === `${json.line[lineNum - 1].answer}`) {
+
+    console.log(phrases);
+    text(`test`, 100, 100);
+    if (userSaid === `${json.line[lineNum - 1].answer}`) {
       speech = true;
-      console.log(`"${userSaidtoUpperCase}" ` + speech);
+
+      console.log(`"${userSaid}" ` + speech);
     } else {
       speech = false;
-      console.log(`"${userSaidtoUpperCase}" ` + speech);
+      console.log(`"${userSaid}" ` + speech);
     }
   });
   return speech;
@@ -275,7 +321,15 @@ function mousePressed() {
   //lineNum++;
   //formatQuestion();
   console.log(mouseX, mouseY);
+  console.log(`listening ${annyang.isListening()}`);
   //console.log(currentAnswer);
   if (state === `profile`) {
+  }
+}
+
+function keyPressed() {
+  if (keyCode === ENTER) {
+    state = `test`;
+    console.log(state);
   }
 }
