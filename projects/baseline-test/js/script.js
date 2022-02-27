@@ -17,13 +17,10 @@ const PROFILE_DATA_KEY = `profile-data`;
 // starts the test at the first line
 let lineNum = 0;
 
-// The test question
-let question;
+let question; // The test question
 let questionSpeech;
-// The user's detected answer, can be true or false
-let speech = false;
+let userAnswer = false; // The user's detected answer, can be true or false
 let micStatus; // mic is on or off
-let detections;
 
 // user's voice
 var finalTranscript;
@@ -34,18 +31,28 @@ let bgColor = `#000a0d`;
 let strokeColor = `#3b4a4d`;
 let textColor = `#96aeb5`;
 
-let profile;
-let profileIMG;
+//let profile; // the user's profile
+let profileIMG; // background image
 let cameraIMG;
-let font;
+let font; // universal font
 
-let capture;
+let capture; // the webcam
 
-let input;
-let nameInput = `K D6-3. 7`;
+let input; //text input
+let nameInput = `K D6-3. 7`; // Name inputed by user stored on their profile
+
+// profile
+let profile = {
+  name: nameInput,
+  id: undefined,
+  function: undefined,
+  physState: undefined,
+  mentalState: undefined,
+  status: `Training`,
+};
 
 /**
-preload the json file
+preload the json file, profile image, and font
 */
 function preload() {
   json = loadJSON(`assets/data/baselineTestScript.json`);
@@ -57,10 +64,12 @@ function preload() {
 /**
 Create a canvas
 Set up annyang
+create text input and webcam capture
 */
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  formatQuestion();
+  createProfile()
+  formatQuestion(); // generate initial profile
 
   // checks if responsiveVoice is available which promts the browser to allow play speech
   if (responsiveVoice.voiceSupport()) {
@@ -69,7 +78,7 @@ function setup() {
 
   // Is annyang available?
   if (annyang) {
-    // Create the guessing command
+    // Create the commands
     let commands = {
       //test: nextQuestion,
       "(the) system": nextQuestion,
@@ -85,48 +94,35 @@ function setup() {
       "(A) blood black nothingness": nextQuestion,
       "*anything": nextQuestion,
     };
-    // Setup annyang and start
     annyang.addCommands(commands);
-    //annyang.start();
   }
 
+  // Create a webcam capture and hide it
+  capture = createCapture(VIDEO);
+  capture.size(440, 330);
+  capture.hide();
+
+  // Create an input and add attributes
   input = createInput()
     .attribute("placeholder", "Your Name ")
     .attribute("onfocus", "this.value=''");
   input.position(width / 2 + 52, height / 2 - 191);
-
-  profile = createProfile(
-    makeid(),
-    `${random([`Combat`, `Military`, `Engineer`, `Politics`])} / ${random([
-      `Leader`,
-      `Leisure`,
-      `Defense Prog.`,
-      `Loader (Nuc. Fiss.)`,
-      `Homocide`,
-    ])}`,
-    random([`a`, `b`, `c`]),
-    random([`a`, `b`, `c`])
-  );
-
-  capture = createCapture(VIDEO);
-  capture.size(440, 330);
-  capture.hide();
 }
 
 /**
-Create a new JavaScript Object describing the profile and return it
+Generates a profile with random stats
 */
-function createProfile(id, func, physState, mentalState) {
-  // the profile
-  let profile = {
-    name: nameInput, //input.value(),
-    id: id,
-    function: func,
-    physState: physState,
-    mentalState: mentalState,
-    status: `Training`,
-  };
-  return profile;
+function createProfile(){
+  profile.id = makeid()
+  profile.function = `${random([`Combat`, `Military`, `Engineer`, `Politics`])} / ${random([
+        `Leader`,
+        `Leisure`,
+        `Defense Prog.`,
+        `Loader (Nuc. Fiss.)`,
+        `Homocide`,
+      ])}`
+  profile.physState = random([`a`, `b`, `c`])
+  profile.mentalState = random([`a`, `b`, `c`])
 }
 
 /**
@@ -161,6 +157,8 @@ function displayProfile(profile) {
   nameInput = input.value();
   input.style("font-family", font);
   push();
+  fill(255);
+
   stroke(strokeColor);
   fill(bgColor);
 
@@ -176,19 +174,16 @@ function displayProfile(profile) {
   imageMode(CENTER);
   image(profileIMG, width / 2, height / 2, 1100, 541);
 
-  rectMode(CORNERS);
-  fill(textColor);
-
-  textLeading(25);
-  let statsText = `DES:   (${nameInput.substring(0, 3)}) ${nameInput
-    .charAt(0)
-    .split()}-${profile.id}
+  let statsText = `ID:  ${nameInput.charAt(0).split()}-${profile.id}
 date
 ${profile.function}
 LEV ${profile.physState}                LEV ${profile.mentalState}
 ${profile.status}
 `;
+fill(textColor);
+textLeading(25);
   textFont(font, 21);
+  text(`(${nameInput.substring(0, 3)})`, width / 2 - 350, height / 2 + 38 )
   textAlign(RIGHT);
   text(statsText, width / 2 - 1, height / 2 + 39);
   pop();
@@ -197,8 +192,7 @@ ${profile.status}
 //generate random ID
 function makeid() {
   var id = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789..--#:/";
-  //id += `${nameInput.charAt(0).split()}-`;
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   for (var i = 0; i < 9; i++)
     id += possible.charAt(Math.floor(Math.random() * possible.length));
   return id;
@@ -298,17 +292,16 @@ Display the next question
  */
 function nextQuestion() {
   interimTranscript = "";
-  speech = checkSpeech();
+  userAnswer = checkAnswer();
   lineNum++;
   formatQuestion();
   responsiveVoice.speak(questionSpeech);
-  //annyang.abort()
 }
 
 /**
 Checks if the detected speech is the correct answer
 */
-function checkSpeech() {
+function checkAnswer() {
   //let speech = false;
   annyang.addCallback("resultMatch", function (userSaid, commandText, phrases) {
     // capitalize the first letter of the detected speech to match the correct answer
@@ -317,29 +310,43 @@ function checkSpeech() {
     //console.log(phrases);
     text(`test`, 100, 100);
     if (userSaid === `${json.line[lineNum - 1].answer}`) {
-      speech = true;
+      userAnswer = true;
 
       //console.log(`"${userSaid}" ` + speech);
     } else {
-      speech = false;
+      userAnswer = false;
       //  console.log(`"${userSaid}" ` + speech);
     }
   });
-  return speech;
+  return userAnswer;
+}
+
+function drawRect() {
+  rectMode(CORNERS);
+  rect(width / 2 - 480, height / 2 + 10, width / 2, height / 2 + 170);
 }
 
 /**
 Go to the next line of the question when mouse is pressed
 */
 function mousePressed() {
-  //nextQuestion();
+  // If the mouse clicks on a profile stat, that stat will be changed
+  // gender
+  if (
+    mouseX > width / 2 - 480 &&
+    mouseY > height / 2 + 10 &&
+    mouseX < width / 2 &&
+    mouseY < height / 2 + 170
+  ) {
+    console.log(`?`);
+    createProfile();
+  }
+  //nextQuestion(); width/2 - 475, height/2 + 10, width/2 - 325, height/2 + 45
   //lineNum++;
   //formatQuestion();
   //console.log(mouseX, mouseY);
   //  console.log(`listening ${annyang.isListening()}`);
   //console.log(currentAnswer);
-  if (state === `profile`) {
-  }
 }
 
 function keyPressed() {
