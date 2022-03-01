@@ -41,9 +41,10 @@ let input; //text input
 let nameInput = `K D6-3. 7`; // Name inputed by user stored on their profile
 //let status = `inception`; // the user's status displayed on the profile
 
-//the text displayed on the console user's voice
-let consoleText = `Input your name to generate stats and begin your training.`;
-
+// the text displayed on the console
+let consoleVoice = `Input your name to generate stats and begin your training.`;
+let consoleLine = 0;
+let trainingText = []
 // typewriter effect
 let index = 0;
 let lastMillis = 0;
@@ -75,7 +76,7 @@ create text input and webcam capture
 */
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  //formatQuestion();
+  //formatQuestions();
 
   // checks if responsiveVoice is available which promts the browser to allow play speech
   if (responsiveVoice.voiceSupport()) {
@@ -125,9 +126,23 @@ function inputCallback() {
   // start training
   if (state === `intro`) {
     state = `training`;
-    consoleText = `Welcome, ${nameInput}. You are a Nexus 9 model replicant created by the Wallace Corporation`;
-    resetTypewriter();
-    responsiveVoice.speak(consoleText);
+
+     trainingText = [`Welcome, ${nameInput}. You are a Nexus 9 model replicant created by the Wallace Corporation.
+
+
+ A replicant is a genetically engineered, bio-enhanced person with para-physical capabilities, composed entirely of organic substance.`,
+ `As a NEXUS 9 replicant you are equipt with an open ended lifespan and increased compliance.
+
+
+ Additionally you have been gifted with a past through implanted memories, allowing you to feel and identify as more human.`,
+ `In a moment, we will begin the Baseline Test. The baseline test is an examination designed to measure any emotional deviance experienced by Nexus-9 replicants. A series of questions and statements will be verbally delivered, and you must correctly recite the line displayed on the webcam.`,
+
+
+`Let's start with a practice round.
+
+Press ENTER to begin.`];
+
+resetTypewriter();
   }
 }
 
@@ -183,9 +198,38 @@ function makeid() {
 }
 
 /**
+Display each state
+*/
+function draw() {
+  background(bgColor);
+  displayProfile(profile);
+
+  if (state === `intro`) {
+    displayConsole();
+    typewriter(consoleVoice);
+  } else if (state === `training`) {
+    profile.status = `Training`;
+    displayConsole();
+    typewriter(consoleVoice);
+
+    if (index > consoleVoice.length && !responsiveVoice.isPlaying() && consoleLine < 3){
+      consoleLine++
+      resetTypewriter()
+      displayConsole();
+      typewriter(consoleVoice)
+    } else if (consoleLine === 3 && !responsiveVoice.isPlaying()) {
+     }
+  } else if (state === `practice`) {
+    runTest();
+  } else if (state === `test`){
+    runTest();
+  }
+}
+
+/**
 Format the test question
 */
-function formatQuestion() {
+function formatQuestions() {
   questionSpeech = `${json.line[lineNum].question}`;
   // don't display the answer for these specific lines
   if (
@@ -218,74 +262,11 @@ ${json.line[lineNum].answer}.`;
 }
 
 /**
-Display each state
-*/
-function draw() {
-  background(bgColor);
-  displayProfile(profile);
-
-  if (state === `intro`) {
-    displayConsole();
-    typewriter(consoleText);
-  } else if (state === `training`) {
-
-
-    //lastMillis = 0;
-    displayConsole();
-    typewriter(consoleText);
-    profile.status = `Training`;
-  } else if (state === `test`) {
-    runTest();
-  }
-}
-
-/**
-Displays the background image, webcam, and text
-*/
-function displayProfile(profile) {
-  nameInput = input.value();
-  input.style("font-family", font);
-  push();
-
-  // Display the user's webcam
-  imageMode(CENTER);
-  image(
-    capture,
-    width / 2 + 261,
-    height / 2 + 10,
-    capture.width,
-    capture.height
-  );
-
-  // Display the background image
-  image(profileIMG, width / 2, height / 2, 1100, 541);
-
-  // Display the mic status
-  fill(textColor);
-  textFont(font, 12);
-  textAlign(LEFT);
-  text(micStatus, width / 2 - 190, height / 2 + 209);
-
-  // Display the profile stats
-  let statsText = `ID:  ${profile.id}
-${getDate()}
-${profile.function}
-${profile.physState}                ${profile.mentalState}
-${profile.status}
-`;
-  textLeading(25);
-  textFont(font, 21);
-  text(`(${nameInput.substring(0, 3)})`, width / 2 - 350, height / 2 + 38);
-  textAlign(RIGHT);
-  text(statsText, width / 2 - 1, height / 2 + 39);
-  pop();
-}
-
-/**
 Use annyang and responsive voice to run the test
 Display the question and answer
 */
 function runTest() {
+  formatQuestions();
   let answer = json.line[lineNum].answer;
 
   // stop annyang when responsiveVoice is speaking
@@ -329,10 +310,11 @@ function runTest() {
   text(interimTranscript, width / 2 - 145, height / 2 + 216, 630, 30);
 
   textAlign(LEFT);
-  //blendMode(DIFFERENCE);
+  blendMode(DIFFERENCE);
   text(`${question}`, width / 2 + 55, height / 2 - 140, 440, 330);
   pop();
 }
+
 
 /**
 Display the console text
@@ -341,13 +323,8 @@ function displayConsole() {
   push();
   fill(textColor);
   textFont(font, 20);
-  text(
-    consoleText.substring(0, index),
-    width / 2 - 470,
-    height / 2 - 175,
-    500,
-    150
-  );
+//textAlign(LEFT, BOTTOM);
+text(consoleVoice.substring(0, index), width / 2 - 470, height / 2 - 175 , 480, 300);
   pop();
 }
 
@@ -356,13 +333,14 @@ typewriter effect by cfoss at
 https://editor.p5js.org/cfoss/sketches/SJggPXhcQ
 */
 function typewriter(text) {
-  if (millis() > lastMillis + 200) {
+  if (millis() > lastMillis + 60) {
     index = index + 1;
-    // display one word at a time
-    while (text.charAt(index) != " " && index < text.length) {
-      index = index + 1;
-    }
-    lastMillis = millis();
+		//ONE WORD AT A TIME
+		// while(message.charAt(index) != ' ' &&
+		// 		 index < message.length){
+		// 	index = index + 1;
+		// }
+		lastMillis = millis();
   }
 }
 
@@ -370,8 +348,16 @@ function typewriter(text) {
 Resets the typewritter
 */
 function resetTypewriter() {
-  index = 0;
-  lastMillis = millis();
+  if (state === `training`){
+    index = 0;
+    lastMillis = millis();
+    consoleVoice = trainingText[consoleLine]
+    responsiveVoice.speak(consoleVoice);
+  } else {
+    index = 0;
+    lastMillis = millis();
+  }
+
 }
 
 /**
@@ -381,7 +367,7 @@ function nextQuestion() {
   interimTranscript = "";
   userAnswer = checkAnswer();
   lineNum++;
-  formatQuestion();
+  formatQuestions();
   responsiveVoice.speak(questionSpeech);
 }
 
@@ -406,29 +392,76 @@ function checkAnswer() {
 }
 
 /**
+Displays the background image, webcam, and text
+*/
+function displayProfile(profile) {
+  nameInput = input.value();
+  input.style("font-family", font);
+  push();
+
+  // Display the user's webcam
+  imageMode(CENTER);
+  image(
+    capture,
+    width / 2 + 261,
+    height / 2 + 10,
+    capture.width,
+    capture.height
+  );
+
+  // Display the background image
+  image(profileIMG, width / 2, height / 2, 1100, 541);
+
+  // Display the mic status
+  fill(textColor);
+  textFont(font, 12);
+  textAlign(LEFT);
+  text(micStatus, width / 2 + 42, height / 2 + 207);
+
+  // Display the profile stats
+  let statsText = `ID:  ${profile.id}
+${getDate()}
+${profile.function}
+${profile.physState}                ${profile.mentalState}
+${profile.status}
+`;
+  textLeading(25);
+  textFont(font, 21);
+  text(`(${nameInput.substring(0, 3)})`, width / 2 - 350, height / 2 + 110);
+  textAlign(RIGHT);
+  text(statsText, width / 2 - 1, height / 2 + 112);
+  pop();
+}
+
+/**
 Go to the next line of the question when mouse is pressed
 */
 function mousePressed() {
-  // If the mouse clicks on a profile stat, that stat will be changed
-  // gender
-  if (
-    mouseX > width / 2 - 480 &&
-    mouseY > height / 2 + 10 &&
-    mouseX < width / 2 &&
-    mouseY < height / 2 + 170
-  ) {
-    console.log(`?`);
-    createProfile();
-  }
+  // // If the mouse clicks on a profile stat, that stat will be changed
+  // // gender
+  // if (
+  //   mouseX > width / 2 - 480 &&
+  //   mouseY > height / 2 + 10 &&
+  //   mouseX < width / 2 &&
+  //   mouseY < height / 2 + 170
+  // ) {
+  //   console.log(`?`);
+  //   createProfile();
+  // }
   console.log(mouseX, mouseY);
   //  console.log(`listening ${annyang.isListening()}`);
   //console.log(currentAnswer);
 }
 
-// function keyPressed() {
-//   if (keyCode === ENTER) {
-//     state = `test`;
-//     nextQuestion();
-//     //console.log(state);
-//   }
-// }
+function keyPressed() {
+  if (keyCode === ENTER) {
+    if (state === `training` && consoleLine === 3 ){
+      state = `practice`;
+      console.log(state)
+    }
+    consoleLine++
+    resetTypewriter()
+    displayConsole();
+    typewriter(consoleVoice)
+  }
+}
