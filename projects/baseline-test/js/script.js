@@ -20,9 +20,8 @@ let lineNum = 0;
 let question; // The test question
 let questionSpeech;
 let userAnswer = false; // The user's detected answer, can be true or false
-let micStatus; // mic is on or off
+let micStatus = `MIC OFF`; // mic is on or off
 
-// user's voice
 var finalTranscript;
 var interimTranscript;
 
@@ -40,7 +39,14 @@ let capture; // the webcam
 
 let input; //text input
 let nameInput = `K D6-3. 7`; // Name inputed by user stored on their profile
-let status = `inception`;
+//let status = `inception`; // the user's status displayed on the profile
+
+//the text displayed on the console user's voice
+let consoleText = `Input your name to generate stats and begin your training.`;
+
+// typewriter effect
+let index = 0;
+let lastMillis = 0;
 
 // The user's initial profile
 let profile = {
@@ -49,7 +55,7 @@ let profile = {
   function: `---------`,
   physState: `----  `,
   mentalState: `----`,
-  status: status,
+  status: `inception`,
 };
 
 /**
@@ -69,7 +75,7 @@ create text input and webcam capture
 */
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  formatQuestion();
+  //formatQuestion();
 
   // checks if responsiveVoice is available which promts the browser to allow play speech
   if (responsiveVoice.voiceSupport()) {
@@ -115,8 +121,15 @@ Generates a profile when the input is changed
 */
 function inputCallback() {
   createProfile(); // generate initial profile
-}
 
+  // start training
+  if (state === `intro`) {
+    state = `training`;
+    consoleText = `Welcome, ${nameInput}. You are a Nexus 9 model replicant created by the Wallace Corporation`;
+    resetTypewriter();
+    responsiveVoice.speak(consoleText);
+  }
+}
 
 /**
 Generates a profile with random stats
@@ -135,70 +148,9 @@ function createProfile() {
     `Loader (Nuc. Fiss.)`,
     `Homocide`,
   ])}`;
-  profile.physState = `LEV ${random([`a`, `b`, `c`])}`
-  profile.mentalState = `LEV ${random([`a`, `b`, `c`])}`
-}
-
-
-/**
-Display each state
-*/
-function draw() {
-  background(bgColor);
-  displayProfile(profile);
-
-  push();
-  fill(textColor);
-  textFont(font, 12);
-  textAlign(LEFT);
-
-  text(micStatus, width / 2 - 190, height / 2 + 209);
-
-  pop();
-
-  input.style(`font-family`, font);
-
-  if (state === `intro`) {
-    micStatus = `MIC OFF`;
-  } else if (state === `test`) {
-    runTest();
-  }
-}
-
-function displayProfile(profile) {
-  nameInput = input.value();
-  input.style("font-family", font);
-  push();
-  fill(255);
-
-  stroke(strokeColor);
-  fill(bgColor);
-
-  imageMode(CENTER);
-  image(
-    capture,
-    width / 2 + 261,
-    height / 2 + 10,
-    capture.width,
-    capture.height
-  );
-
-  imageMode(CENTER);
-  image(profileIMG, width / 2, height / 2, 1100, 541);
-
-  let statsText = `ID:  ${nameInput.charAt(0).split()}-${profile.id}
-${getDate()}
-${profile.function}
-${profile.physState}                ${profile.mentalState}
-${profile.status}
-`;
-  fill(textColor);
-  textLeading(25);
-  textFont(font, 21);
-  text(`(${nameInput.substring(0, 3)})`, width / 2 - 350, height / 2 + 38);
-  textAlign(RIGHT);
-  text(statsText, width / 2 - 1, height / 2 + 39);
-  pop();
+  profile.physState = `LEV ${random([`a`, `b`, `c`])}`;
+  profile.mentalState = `LEV ${random([`a`, `b`, `c`])}`;
+  //profile.status = status
 }
 
 /**
@@ -213,12 +165,19 @@ function getDate() {
 }
 
 /**
-generate random ID
+generates random ID and returns it
 */
 function makeid() {
-  var id = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  for (var i = 0; i < 9; i++)
+  var id = `N9-${nameInput.charAt(0).split()}`;
+
+  //two random letters from the user's name
+  var possible = `${nameInput}`;
+  for (var i = 0; i < 2; i++)
+    id += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  // add 5 random numbers
+  possible = "0123456789";
+  for (var i = 0; i < 5; i++)
     id += possible.charAt(Math.floor(Math.random() * possible.length));
   return id;
 }
@@ -259,6 +218,71 @@ ${json.line[lineNum].answer}.`;
 }
 
 /**
+Display each state
+*/
+function draw() {
+  background(bgColor);
+  displayProfile(profile);
+
+  if (state === `intro`) {
+    displayConsole();
+    typewriter(consoleText);
+  } else if (state === `training`) {
+
+
+    //lastMillis = 0;
+    displayConsole();
+    typewriter(consoleText);
+    profile.status = `Training`;
+  } else if (state === `test`) {
+    runTest();
+  }
+}
+
+/**
+Displays the background image, webcam, and text
+*/
+function displayProfile(profile) {
+  nameInput = input.value();
+  input.style("font-family", font);
+  push();
+
+  // Display the user's webcam
+  imageMode(CENTER);
+  image(
+    capture,
+    width / 2 + 261,
+    height / 2 + 10,
+    capture.width,
+    capture.height
+  );
+
+  // Display the background image
+  image(profileIMG, width / 2, height / 2, 1100, 541);
+
+  // Display the mic status
+  fill(textColor);
+  textFont(font, 12);
+  textAlign(LEFT);
+  text(micStatus, width / 2 - 190, height / 2 + 209);
+
+  // Display the profile stats
+  let statsText = `ID:  ${profile.id}
+${getDate()}
+${profile.function}
+${profile.physState}                ${profile.mentalState}
+${profile.status}
+`;
+  textLeading(25);
+  textFont(font, 21);
+  text(`(${nameInput.substring(0, 3)})`, width / 2 - 350, height / 2 + 38);
+  textAlign(RIGHT);
+  text(statsText, width / 2 - 1, height / 2 + 39);
+  pop();
+}
+
+/**
+Use annyang and responsive voice to run the test
 Display the question and answer
 */
 function runTest() {
@@ -295,8 +319,9 @@ function runTest() {
       }
     }
   };
+
+  // Display the user's detected voice and the question
   push();
-  //  rectMode(CORNERS);
   fill(textColor);
   textFont(font, 20);
   textAlign(RIGHT);
@@ -304,10 +329,49 @@ function runTest() {
   text(interimTranscript, width / 2 - 145, height / 2 + 216, 630, 30);
 
   textAlign(LEFT);
-  blendMode(DIFFERENCE);
-  text(`${question}`, width / 2 + 55, height/2 - 140, 440, 330);
-
+  //blendMode(DIFFERENCE);
+  text(`${question}`, width / 2 + 55, height / 2 - 140, 440, 330);
   pop();
+}
+
+/**
+Display the console text
+ */
+function displayConsole() {
+  push();
+  fill(textColor);
+  textFont(font, 20);
+  text(
+    consoleText.substring(0, index),
+    width / 2 - 470,
+    height / 2 - 175,
+    500,
+    150
+  );
+  pop();
+}
+
+/**
+typewriter effect by cfoss at
+https://editor.p5js.org/cfoss/sketches/SJggPXhcQ
+*/
+function typewriter(text) {
+  if (millis() > lastMillis + 200) {
+    index = index + 1;
+    // display one word at a time
+    while (text.charAt(index) != " " && index < text.length) {
+      index = index + 1;
+    }
+    lastMillis = millis();
+  }
+}
+
+/**
+Resets the typewritter
+*/
+function resetTypewriter() {
+  index = 0;
+  lastMillis = millis();
 }
 
 /**
@@ -361,10 +425,10 @@ function mousePressed() {
   //console.log(currentAnswer);
 }
 
-function keyPressed() {
-  if (keyCode === ENTER) {
-    state = `test`;
-    nextQuestion();
-    //console.log(state);
-  }
-}
+// function keyPressed() {
+//   if (keyCode === ENTER) {
+//     state = `test`;
+//     nextQuestion();
+//     //console.log(state);
+//   }
+// }
