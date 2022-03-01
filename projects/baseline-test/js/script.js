@@ -7,7 +7,7 @@ unwanted emotional responses in a "replicant."
 */
 
 "use strict";
-let state = `profile`; // can be prompt, start, test, (end?)
+let state = `intro`; // can be prompt, start, test, (end?)
 
 //json file
 let json;
@@ -40,15 +40,16 @@ let capture; // the webcam
 
 let input; //text input
 let nameInput = `K D6-3. 7`; // Name inputed by user stored on their profile
+let status = `inception`;
 
-// profile
+// The user's initial profile
 let profile = {
   name: nameInput,
-  id: undefined,
-  function: undefined,
-  physState: undefined,
-  mentalState: undefined,
-  status: `Training`,
+  id: `---------`,
+  function: `---------`,
+  physState: `----  `,
+  mentalState: `----`,
+  status: status,
 };
 
 /**
@@ -68,8 +69,7 @@ create text input and webcam capture
 */
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  createProfile();
-  formatQuestion(); // generate initial profile
+  formatQuestion();
 
   // checks if responsiveVoice is available which promts the browser to allow play speech
   if (responsiveVoice.voiceSupport()) {
@@ -106,8 +106,17 @@ function setup() {
   input = createInput()
     .attribute("placeholder", "Your Name ")
     .attribute("onfocus", "this.value=''");
+  input.changed(inputCallback); // call when user inputs their name
   input.position(width / 2 + 52, height / 2 - 191);
 }
+
+/**
+Generates a profile when the input is changed
+*/
+function inputCallback() {
+  createProfile(); // generate initial profile
+}
+
 
 /**
 Generates a profile with random stats
@@ -126,9 +135,10 @@ function createProfile() {
     `Loader (Nuc. Fiss.)`,
     `Homocide`,
   ])}`;
-  profile.physState = random([`a`, `b`, `c`]);
-  profile.mentalState = random([`a`, `b`, `c`]);
+  profile.physState = `LEV ${random([`a`, `b`, `c`])}`
+  profile.mentalState = `LEV ${random([`a`, `b`, `c`])}`
 }
+
 
 /**
 Display each state
@@ -148,7 +158,7 @@ function draw() {
 
   input.style(`font-family`, font);
 
-  if (state === `profile`) {
+  if (state === `intro`) {
     micStatus = `MIC OFF`;
   } else if (state === `test`) {
     runTest();
@@ -179,7 +189,7 @@ function displayProfile(profile) {
   let statsText = `ID:  ${nameInput.charAt(0).split()}-${profile.id}
 ${getDate()}
 ${profile.function}
-LEV ${profile.physState}                LEV ${profile.mentalState}
+${profile.physState}                ${profile.mentalState}
 ${profile.status}
 `;
   fill(textColor);
@@ -319,9 +329,6 @@ function checkAnswer() {
   annyang.addCallback("resultMatch", function (userSaid, commandText, phrases) {
     // capitalize the first letter of the detected speech to match the correct answer
     userSaid = userSaid.charAt(0).toUpperCase() + userSaid.slice(1);
-
-    //console.log(phrases);
-    text(`test`, 100, 100);
     if (userSaid === `${json.line[lineNum - 1].answer}`) {
       userAnswer = true;
 
@@ -332,11 +339,6 @@ function checkAnswer() {
     }
   });
   return userAnswer;
-}
-
-function drawRect() {
-  rectMode(CORNERS);
-  rect(width / 2 - 480, height / 2 + 10, width / 2, height / 2 + 170);
 }
 
 /**
@@ -354,9 +356,6 @@ function mousePressed() {
     console.log(`?`);
     createProfile();
   }
-  //nextQuestion(); width/2 - 475, height/2 + 10, width/2 - 325, height/2 + 45
-  //lineNum++;
-  //formatQuestion();
   console.log(mouseX, mouseY);
   //  console.log(`listening ${annyang.isListening()}`);
   //console.log(currentAnswer);
