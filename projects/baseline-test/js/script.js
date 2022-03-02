@@ -49,8 +49,7 @@ let consoleLine = 0;
 let trainingText = [];
 // typewriter effect
 let index = 0;
-let lastMillis = 0;
-
+let lastMillis = 0;s
 let startTime;
 
 // The user's initial profile
@@ -81,9 +80,6 @@ create text input and webcam capture
 */
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  //startTime = millis();
-  //formatQuestions();
-
   // checks if responsiveVoice is available which promts the browser to allow play speech
   if (responsiveVoice.voiceSupport()) {
     responsiveVoice.speak(consoleVoice);
@@ -94,7 +90,7 @@ function setup() {
     // Create the commands
     let commands = {
       //test: nextQuestion,
-      "system": nextQuestion,
+      system: nextQuestion,
       "the system": nextQuestion,
       "(a system of) cells": nextQuestion,
       "(within cells) interlinked (within cells interlinked within cells interlinked)": nextQuestion,
@@ -399,6 +395,9 @@ function consoleDialogue() {
   pop();
 }
 
+/**
+Stats displayed on the console during the official test
+ */
 function consoleStats() {
   push();
   fill(textColor);
@@ -461,7 +460,7 @@ function checkAnswer() {
     else if (json.line[1].answer) {
       userAnswer = true;
       score = 1;
-    } else if (!userSaid === `${json.line[lineNum - 1].answer}`){
+    } else if (!userSaid === `${json.line[lineNum - 1].answer}`) {
       userAnswer = false;
     }
   });
@@ -512,6 +511,9 @@ ${profile.physState}                ${profile.mentalState}
   pop();
 }
 
+/**
+ENTER key skips questions and changed states
+*/
 function keyPressed() {
   if (keyCode === ENTER) {
     //Start training
