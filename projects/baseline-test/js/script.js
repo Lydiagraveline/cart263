@@ -14,11 +14,12 @@ let json;
 let practiceJson;
 
 // starts the test at the first line
-let lineNum = 19;
+let lineNum = 0;
 
 let question; // The test question
 let questionSpeech;
-let userAnswer = false; // The user's detected answer, can be true or false
+let userAnswer; // The user's detected answer, can be true or false
+let score = 0; //how many questions the user got correct
 let micStatus = `MIC OFF`; // mic is on or off
 
 var finalTranscript;
@@ -43,11 +44,14 @@ let nameInput = `K D6-3. 7`; // Name inputed by user stored on their profile
 
 // the text displayed on the console
 let consoleVoice = `Input your name to generate stats and begin your training.`;
+let testStats; // stats displayed on the console
 let consoleLine = 0;
-let trainingText = []
+let trainingText = [];
 // typewriter effect
 let index = 0;
 let lastMillis = 0;
+
+let startTime;
 
 // The user's initial profile
 let profile = {
@@ -77,6 +81,7 @@ create text input and webcam capture
 */
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  //startTime = millis();
   //formatQuestions();
 
   // checks if responsiveVoice is available which promts the browser to allow play speech
@@ -89,7 +94,8 @@ function setup() {
     // Create the commands
     let commands = {
       //test: nextQuestion,
-      "(the) system": nextQuestion,
+      "system": nextQuestion,
+      "the system": nextQuestion,
       "(a system of) cells": nextQuestion,
       "(within cells) interlinked (within cells interlinked within cells interlinked)": nextQuestion,
       //"with": nextQuestion,
@@ -128,22 +134,23 @@ function inputCallback() {
   if (state === `intro`) {
     state = `training`;
 
-     trainingText = [`Welcome, ${nameInput}. You are a Nexus 9 model replicant created by the Wallace Corporation.
+    trainingText = [
+      `Welcome, ${nameInput}. You are a Nexus 9 model replicant created by the Wallace Corporation.
 
 
 A replicant is a genetically engineered, bio-enhanced person with para-physical capabilities, composed entirely of organic substance.`,
- `As a NEXUS 9 replicant you are equipt with an open ended lifespan and increased compliance.
+      `As a NEXUS 9 replicant you are equipt with an open ended lifespan and increased compliance.
 
 
 Additionally you have been gifted with a past through implanted memories, allowing you to feel and identify as more human.`,
- `In a moment, we will begin the Baseline Test. The baseline test is an examination designed to measure any emotional deviance experienced by Nexus-9 replicants. A series of questions and statements will be verbally delivered, and you must correctly recite the line displayed on the webcam.`,
+      `In a moment, we will begin the Baseline Test. The baseline test is an examination designed to measure any emotional deviance experienced by Nexus-9 replicants. A series of questions and statements will be verbally delivered, and you must correctly recite the line displayed on the webcam.`,
 
+      `Let's start with a practice round.
 
-`Let's start with a practice round.
+Press ENTER to begin.`,
+    ];
 
-Press ENTER to begin.`];
-
-resetTypewriter();
+    resetTypewriter();
   }
 }
 
@@ -166,7 +173,6 @@ function createProfile() {
   ])}`;
   profile.physState = `LEV ${random([`a`, `b`, `c`])}`;
   profile.mentalState = `LEV ${random([`a`, `b`, `c`])}`;
-  //profile.status = status
 }
 
 /**
@@ -204,39 +210,78 @@ Display each state
 function draw() {
   background(bgColor);
   displayProfile(profile);
-
   if (state === `intro`) {
-    displayConsole();
+    consoleDialogue();
     typewriter(consoleVoice);
   } else if (state === `training`) {
     profile.status = `Training`;
-    displayConsole();
+    consoleDialogue();
     typewriter(consoleVoice);
 
-    if (index > consoleVoice.length && !responsiveVoice.isPlaying() && consoleLine < 3){
-      consoleLine++
-      resetTypewriter()
-
+    if (
+      index > consoleVoice.length &&
+      !responsiveVoice.isPlaying() &&
+      consoleLine < 3
+    ) {
+      consoleLine++;
+      resetTypewriter();
     } else if (consoleLine === 3 && !responsiveVoice.isPlaying()) {
-     }
+    }
   } else if (state === `practice`) {
-    if (lineNum === 20){
-      consoleVoice = `Training completed. A bug was detected in youre physiological responses. A full version of the test including 100 questions will be conducted. You are being tested on the speed and accuracy of your responses. If the test concludes you are off baseline you will be retired.
+    if (lineNum === 20) {
+      consoleVoice = `Training completed. A bug was detected in your physiological responses. A full version of the test including 100 questions will be conducted. You are being tested on the speed and accuracy of your responses. If the test concludes you are off baseline you will be retired.
 
-Press ENTER to begin.`
-      resetTypewriter()
-      lineNum = 21
-    } else if (lineNum === 21){
+Press ENTER to begin.`;
+      resetTypewriter();
+      lineNum = 21;
+    } else if (lineNum === 21) {
       statusFill = `red`;
       profile.status = `significant deviance detected`;
-      displayConsole();
-      typewriter(consoleVoice)
-    }
-    else if (lineNum < 20){
+      consoleDialogue();
+      typewriter(consoleVoice);
+    } else if (lineNum < 20) {
       runTest();
     }
-  } else if (state === `test`){
-    runTest();
+  } else if (state === `test`) {
+    let s = millis();
+    let timeElapsed = millis() - startTime;
+    if (
+      lineNum === 101 &&
+      !responsiveVoice.isPlaying() &&
+      index > consoleVoice.length
+    ) {
+      state = `fin`;
+    } else if (lineNum < 100) {
+      runTest();
+      testStats = `${int((lineNum / 100) * 100)}% complete   ${int(
+        timeElapsed * 0.001
+      )} seconds elapsed
+
+${int((score / lineNum) * 100)}% accuracy
+  `;
+      consoleStats();
+    } else if (lineNum === 100) {
+      consoleVoice = `Test completed. You are off baseline.
+
+Illegal Memories have been detected.
+
+
+
+
+
+You will now be retired.`;
+      resetTypewriter();
+      lineNum = 101;
+    } else if (lineNum === 101) {
+      profile.status = `Arrest warrant no 29772
+counterfeiting/fraud`;
+
+      consoleDialogue();
+      typewriter(consoleVoice);
+    }
+  } else if (state === `fin`) {
+    input.hide();
+    background(`red`);
   }
 }
 
@@ -244,8 +289,7 @@ Press ENTER to begin.`
 Format the test question
 */
 function formatQuestions() {
-
-  if (state === `practice`){
+  if (state === `practice`) {
     questionSpeech = `${practiceJson.line[lineNum].question}`;
 
     question = `${practiceJson.line[lineNum].question}
@@ -253,36 +297,35 @@ function formatQuestions() {
 
 ${practiceJson.line[lineNum].answer}.`;
   } else {
-  questionSpeech = `${json.line[lineNum].question}`;
-  // don't display the answer for these specific lines
-  if (
-    lineNum === 0 ||
-    lineNum === 17 ||
-    lineNum === 21 ||
-    lineNum === 30 ||
-    lineNum === 33 ||
-    lineNum === 37 ||
-    lineNum === 38 ||
-    lineNum === 47 ||
-    lineNum === 52 ||
-    lineNum === 58 ||
-    lineNum === 59 ||
-    lineNum === 71 ||
-    lineNum === 74 ||
-    lineNum === 79 ||
-    lineNum === 85 ||
-    lineNum === 89 ||
-    lineNum > 93
-  ) {
-    question = `${json.line[lineNum].question}`;
-  } else {
-    // display the answer
-    question = `${json.line[lineNum].question}
+    questionSpeech = `${json.line[lineNum].question}`;
+    // don't display the answer for these specific lines
+    if (
+      lineNum === 17 ||
+      lineNum === 21 ||
+      lineNum === 30 ||
+      lineNum === 33 ||
+      lineNum === 37 ||
+      lineNum === 38 ||
+      lineNum === 47 ||
+      lineNum === 52 ||
+      lineNum === 58 ||
+      lineNum === 59 ||
+      lineNum === 71 ||
+      lineNum === 74 ||
+      lineNum === 79 ||
+      lineNum === 85 ||
+      lineNum === 89 ||
+      lineNum > 93
+    ) {
+      question = `${json.line[lineNum].question}`;
+    } else {
+      // display the answer
+      question = `${json.line[lineNum].question}
 
 
 ${json.line[lineNum].answer}.`;
+    }
   }
-}
 }
 
 /**
@@ -342,11 +385,25 @@ function runTest() {
 /**
 Display the console text
  */
-function displayConsole() {
+function consoleDialogue() {
   push();
   fill(textColor);
   textFont(font, 20);
-  text(consoleVoice.substring(0, index), width / 2 - 470, height / 2 - 175 , 480, 300);
+  text(
+    consoleVoice.substring(0, index),
+    width / 2 - 470,
+    height / 2 - 175,
+    480,
+    300
+  );
+  pop();
+}
+
+function consoleStats() {
+  push();
+  fill(textColor);
+  textFont(font, 20);
+  text(testStats, width / 2 - 470, height / 2 - 155);
   pop();
 }
 
@@ -357,7 +414,7 @@ https://editor.p5js.org/cfoss/sketches/SJggPXhcQ
 function typewriter(text) {
   if (millis() > lastMillis + 60) {
     index = index + 1;
-		lastMillis = millis();
+    lastMillis = millis();
   }
 }
 
@@ -367,20 +424,23 @@ Resets the typewritter
 function resetTypewriter() {
   index = 0;
   lastMillis = millis();
-  if (state === `training`){
-  consoleVoice = trainingText[consoleLine]
-  responsiveVoice.speak(consoleVoice);
-} else if (state === `practice`){
-  responsiveVoice.speak(consoleVoice);
-}
+  if (state === `training`) {
+    consoleVoice = trainingText[consoleLine];
+    responsiveVoice.speak(consoleVoice);
+  } else if (state === `practice` || state === `test`) {
+    responsiveVoice.speak(consoleVoice);
+  }
 }
 
 /**
 Display the next question
  */
 function nextQuestion() {
-  interimTranscript = "";
   userAnswer = checkAnswer();
+  if (userAnswer === true) {
+    score++;
+  }
+  interimTranscript = "";
   lineNum++;
   formatQuestions();
   responsiveVoice.speak(questionSpeech);
@@ -396,7 +456,12 @@ function checkAnswer() {
     userSaid = userSaid.charAt(0).toUpperCase() + userSaid.slice(1);
     if (userSaid === `${json.line[lineNum - 1].answer}`) {
       userAnswer = true;
-    } else {
+    }
+    // First question will always be correct
+    else if (json.line[1].answer) {
+      userAnswer = true;
+      score = 1;
+    } else if (!userSaid === `${json.line[lineNum - 1].answer}`){
       userAnswer = false;
     }
   });
@@ -441,47 +506,38 @@ ${profile.physState}                ${profile.mentalState}
   text(`(${nameInput.substring(0, 3)})`, width / 2 - 350, height / 2 + 110);
   textAlign(RIGHT);
   text(statsText, width / 2 - 1, height / 2 + 112);
-  fill(statusFill)
+  fill(statusFill);
+  textLeading(28);
   text(profile.status, width / 2 - 1, height / 2 + 212);
   pop();
 }
 
-/**
-Go to the next line of the question when mouse is pressed
-*/
-function mousePressed() {
-  // // If the mouse clicks on a profile stat, that stat will be changed
-  // // gender
-  // if (
-  //   mouseX > width / 2 - 480 &&
-  //   mouseY > height / 2 + 10 &&
-  //   mouseX < width / 2 &&
-  //   mouseY < height / 2 + 170
-  // ) {
-  //   console.log(`?`);
-  //   createProfile();
-  // }
-  console.log(mouseX, mouseY);
-  console.log(lineNum);
-  //  console.log(`listening ${annyang.isListening()}`);
-  //console.log(currentAnswer);
-}
-
 function keyPressed() {
   if (keyCode === ENTER) {
-    if (state === `training` && consoleLine === 3){
+    //Start training
+    if (state === `training` && consoleLine === 3) {
       state = `practice`;
-      //responsiveVoice.speak(`Lets start by learning the baseline, repeat what I say and remember these lines. A blood black nothingness.`);
+      responsiveVoice.speak(
+        `Lets start by learning the baseline, repeat what I say and remember these lines. A blood black nothingness.`
+      );
     }
-    // Press enter to skip introduction
-    else if (state === `training` && consoleLine < 3 && consoleLine >= 0){
-      consoleLine++
-      resetTypewriter()
-      displayConsole();
-      typewriter(consoleVoice)
-    } else if (state === `practice` && !responsiveVoice.isPlaying()){
+    // skip introduction
+    else if (state === `training` && consoleLine < 3 && consoleLine >= 0) {
+      consoleLine++;
+      resetTypewriter();
+      consoleDialogue();
+      typewriter(consoleVoice);
+      // Start the official test
+    } else if (state === `practice` && lineNum === 21) {
+      startTime = millis();
+      lineNum = 0;
       state = `test`;
+      responsiveVoice.speak(
+        `Replicant ${nameInput}. Let's begin. Recite your Baseline.`
+      );
+      // Skip practice questions
+    } else if (state === `practice` && lineNum < 21) {
+      lineNum++;
     }
-
   }
 }
