@@ -49,7 +49,7 @@ let consoleLine = 0;
 let trainingText = [];
 // typewriter effect
 let index = 0;
-let lastMillis = 0;s
+let lastMillis = 0;
 let startTime;
 
 // The user's initial profile
