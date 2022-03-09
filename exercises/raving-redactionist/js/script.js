@@ -2,10 +2,10 @@
 Raving Redactionist
 Lydia Graveline
 
-A webpage of text with some passages “redacted” (covered in black bars).
-Over time the redactions will disappear, revealing the shocking secret text
-beneath them. The user is in charge of keeping the information secret, so they
-click the secret text to restore the redaction
+A webpage of ancient greek poetry by Sappho that is quickly disintegrating,
+it is the user's job to recover the fragmented poems by clicking on the missing
+lines. This program is based on Anne Carson's translation of Sappho "If Not, Winter".
+
 */
 
 "use strict";
