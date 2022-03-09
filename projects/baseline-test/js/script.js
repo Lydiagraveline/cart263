@@ -89,15 +89,13 @@ function setup() {
   if (annyang) {
     // Create the commands
     let commands = {
-      //test: nextQuestion,
-      system: nextQuestion,
+      "system": nextQuestion,
       "the system": nextQuestion,
       "(a system of) cells": nextQuestion,
       "(within cells) interlinked (within cells interlinked within cells interlinked)": nextQuestion,
-      //"with": nextQuestion,
-      within: nextQuestion,
+      "within": nextQuestion,
       "(Within one) Stem": nextQuestion,
-      dreadfully: nextQuestion,
+      "dreadfully": nextQuestion,
       "(and)(Dreadfully) Distinct": nextQuestion,
       "(Against the) Dark": nextQuestion,
       "(A tall) (white) fountain (played)": nextQuestion,
@@ -205,7 +203,7 @@ Display each state
 */
 function draw() {
   background(bgColor);
-  displayProfile(profile);
+  displayProfile();
   if (state === `intro`) {
     consoleDialogue();
     typewriter(consoleVoice);
@@ -470,7 +468,7 @@ function checkAnswer() {
 /**
 Displays the background image, webcam, and text
 */
-function displayProfile(profile) {
+function displayProfile() {
   nameInput = input.value();
   input.style("font-family", font);
   push();
