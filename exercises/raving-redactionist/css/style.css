@@ -1,97 +1,19 @@
 
-.container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr;
-  gap: 0px 0px;
-  grid-template-areas:
-   "leftContainer poemContainer";
-  height: 95vh;
-  /* border: 2px solid black; */
-}
-  /* Left portion of the screen */
-.leftContainer {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 20% 80%;
-  gap: 0px 0px;
-  grid-template-areas:
-  "header"
-  "fragmentContainer";
-  align-self: center;
-  border: 1px solid yellow;
-  grid-area: leftContainer;
-  height: 100%;
-}
-.poemContainer {
-  grid-area: poemContainer;
-  align-self: center;
-  height: 100%;
-  border: 1px solid blue;
-  /* align-self: center;
-  border: 1px solid blue;
-  grid-area: poemContainer;
-  height: 100%;
-  width: 100%;
-  font-family: mrs-eaves, serif;
-  font-size: 2vh;
-  line-height: 1.4; */
-}
-
-/* The header
- including the h2 text and the button */
-.header {
-grid-area: header;
-/* border: 1px solid pink; */
-text-align: center;
-}
-
-.fragmentContainer {
-  /* align-self: center; */
-  grid-area: fragmentContainer;
-  border: 1px solid red;
-/* height: 100%; */
-}
-
-h2 {
-  /* position: absolute; */
-  width: 40%;
-  /* border: 2px solid black; */
-  font-family: mrs-eaves-roman-petite-caps;
-  letter-spacing: 5px;
-  color: #990000;
-}
-
-ul{
-  list-style: none;
-}
-
-ul button {
-  width: 100px;
-  border: 1px solid black;
-}
-#btnNext{
-  display: none;
-}
-
-/* #fragmentContainer {
+#fragmentContainer {
   width: 45%;
   height: 75%;
   border: 1px solid black;
   margin: auto;
   float: left;
-} */
-/*
+}
+
 #poemContainer {
   width: 45%;
   height: 100%;
   border: 1px solid black;
   float: right;
-} */
+}
 
-
-
-/*
 #poem{
 font-family: mrs-eaves, serif;
 font-size: 2vh;
@@ -116,4 +38,4 @@ h2 {
 .revealed {
   color: red;
   text-decoration: underline;
-} */
+}
