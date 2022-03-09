@@ -1,3 +1,81 @@
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+   "leftContainer poemContainer";
+  height: 95vh;
+  border: 2px solid black;
+}
+  /* Left portion of the screen */
+.leftContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 20%;
+  gap: 0px 0px;
+  grid-template-areas:
+  "header" "fragmentContainer";
+
+  align-self: center;
+  border: 1px solid black;
+  grid-area: leftContainer;
+  height: 100%;
+}
+  /* The header
+   including the h2 text and the button */
+.header{ grid-area: header; border: 1px solid pink;}
+.fragmentContainer { grid-area: fragmentContainer;
+  border: 1px solid red;}
+
+.poemContainer {
+  align-self: center;
+  border: 1px solid black;
+  grid-area: poemContainer;
+  height: 100%;
+}
+
+h2 {
+  /* position: absolute; */
+  width: 40%;
+  border: 2px solid black;
+  font-family: mrs-eaves-roman-petite-caps;
+  letter-spacing: 5px;
+  color: #990000;
+}
+
+ul{
+  list-style: none;
+}
+
+ul button {
+  /* position: absolute; */
+  width: 100px;
+  border: 1px solid black;
+}
+#btnNext{
+  display: none;
+}
+
+/* #fragmentContainer {
+  width: 45%;
+  height: 75%;
+  border: 1px solid black;
+  margin: auto;
+  float: left;
+} */
+/*
+#poemContainer {
+  width: 45%;
+  height: 100%;
+  border: 1px solid black;
+  float: right;
+} */
+
+
+
+/*
 #poem{
 font-family: mrs-eaves, serif;
 font-size: 2vh;
@@ -10,10 +88,8 @@ h2 {
   color: #990000;
 }
 
-/* Hanging indentation within paragraphs */
 .indent {
   padding-left: 3em;
-  /* text-indent: -36px; */
 }
 
 .redacted {
@@ -24,4 +100,4 @@ h2 {
 .revealed {
   color: red;
   text-decoration: underline;
-}
+} */
