@@ -10,7 +10,14 @@ lines. This program is based on Anne Carson's translation of Sappho "If Not, Win
 
 "use strict";
 
+$(`.lost`).on(`click`, recover);
+
 setInterval(update, 500);
+
+function recover(event){
+  $(this).removeClass(`redacted`);
+  $(this).addClass(`recovered`);
+}
 
 /**
 Update is called every 500 milliseconds and it updates all the secrets on the page
