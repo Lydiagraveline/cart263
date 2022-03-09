@@ -10,10 +10,19 @@ lines. This program is based on Anne Carson's translation of Sappho "If Not, Win
 
 "use strict";
 
+// The chance a span will be start disintegrating per update
+const REVEAL_PROBABILITY = 0.1;
+// How often to update the spans (potentially disintegrating them)
+const UPDATE_FREQUENCY = 500;
+
 $(`.lost`).on(`click`, recover);
 
-setInterval(update, 500);
+// Set an interval of 500 milliseconds to attempt fading the poem
+setInterval(update, UPDATE_FREQUENCY);
 
+/**
+When a line of the poem is clicked we remove its redacted class and add the recovered class
+*/
 function recover(event){
   $(this).removeClass(`redacted`);
   $(this).addClass(`recovered`);
@@ -28,6 +37,11 @@ function update() {
   $(`.recovered`).each(disintegrate);
 }
 
+/**
+With random chance it fading the current line by removing the
+recovered class and adding the revealed class. Because this function is called
+by each(), "this" refers to the current element that each has selected.
+*/
 function disintegrate(){
   let r = Math.random();
   if (r < 0.1) {
