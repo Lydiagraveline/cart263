@@ -4,3 +4,9 @@ Here is a description of any special CSS used.
 By default that's nothing.
 
 **********************************************/
+
+/* Hanging indentation within paragraphs */
+.indent {
+  padding-left: 36px;
+  text-indent: -36px;
+}
