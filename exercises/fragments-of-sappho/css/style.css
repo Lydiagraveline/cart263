@@ -1,0 +1,43 @@
+
+#fragmentContainer {
+  width: 45%;
+  height: 75%;
+  border: 1px solid black;
+  margin: auto;
+  float: left;
+}
+
+#poemContainer {
+  width: 45%;
+  height: 100%;
+  border: 1px solid black;
+  float: right;
+}
+
+#poem{
+font-family: mrs-eaves, serif;
+font-size: 2vh;
+line-height: 1.4;
+}
+
+h2 {
+  font-family: mrs-eaves-roman-petite-caps;
+  letter-spacing: 5px;
+  color: #990000;
+}
+
+.indent {
+  padding-left: 3em;
+}
+
+.recovered {
+  /* background-color: transparent; /* No background */
+  color: #990000;
+}
+
+.redacted {
+  /* background-color: black; */
+  color: white;
+  user-select: none;
+  border-bottom: 1px black solid;
+}
