@@ -9,5 +9,3 @@ lines. This program is based on Anne Carson's translation of Sappho "If Not, Win
 */
 
 "use strict";
-
-// Code goes here

@@ -16,25 +16,32 @@
 
   <body>
     <div class="container">
+        <!-- The poem-->
+      <div class="poemContainer">
+          <p> This is a <span class="redacted"> test </span>... just a test...</p>
+      </div>
 
+  <!-- The heading -->
+  <!-- including the button and the score -->
       <div class="leftContainer">
-
         <div class="header">
-          <h2>FRAGMENTS OF SAPPHO</h2>
-          <ul id="button">
-            <li> <button id="btnStart"> Start </button></li>
-            <li> <button id="btnNext"> Reset </button></li>
-          </ul>
+        <h2>FRAGMENTS OF SAPPHO</h2>
+        <ul id="button">
+          <li> <button id="btnStart"> Start </button></li>
+          <li> <button id="btnNext"> Reset </button></li>
+        </ul>
+        <p> Score: <text id:"score">0</test> </p>
         </div>
 
-        <div class="fragmentContainer"> </div>
+  <!-- The draggable fragments -->
+        <div class="fragmentContainer">
+          <div class="fragment" ondrop="dropEvent(event)">
+            <text ondragstart="dragStartEvent(event)" draggable="true" id="target001"> test </text>
+          </div>
 
+        </div>
       </div>
-      <div class="poemContainer"> </div>
-
     </div>
-
-
 
     <!-- <section id="poem">
     <h2>FRAGMENTS OF SAPPHO</h2>
