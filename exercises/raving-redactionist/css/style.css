@@ -1,12 +1,27 @@
-/*********************************************
+#poem{
+font-family: mrs-eaves, serif;
+font-size: 2vh;
+line-height: 1.4;
+}
 
-Here is a description of any special CSS used.
-By default that's nothing.
-
-**********************************************/
+h2 {
+  font-family: mrs-eaves-roman-petite-caps;
+  letter-spacing: 5px;
+  color: #990000;
+}
 
 /* Hanging indentation within paragraphs */
 .indent {
-  padding-left: 36px;
-  text-indent: -36px;
+  padding-left: 3em;
+  /* text-indent: -36px; */
+}
+
+.redacted {
+  background-color: black;
+  user-select: none;
+}
+
+.revealed {
+  color: red;
+  text-decoration: underline;
 }
