@@ -18,35 +18,29 @@ const UPDATE_FREQUENCY = 500;
 // The number of the current poem displayed
 var count = 0;
 // The total number of poems in the program
-var total = $("section").length;
-
-$("section").each(function () {
-  if (count === total - 1) {
-    // this is the last one
-    console.log(`thats all!`);
-  }
-});
+var total = $("section").length - 1;
 
 /**
 When the button is clicked, display the next poem
 */
 $(`:button`).on(`click`, function () {
   // If the last poem has been reached, start the counter over
-  if (count >= total - 1) {
+  if (count >= total) {
+    $("section").eq(total).hide();
     count = 1;
   } else {
     count++;
   }
+
   $("#counter").html(function (i, val) {
     return (val = count);
   });
   $("section").eq(count).show();
-  $("section")
-    .eq(count - 1)
-    .hide();
+  $("section").eq(count - 1).hide();
 });
 
-$(`.lost`).on(`mouseover`, recover);
+// recover the words when the mouse
+$(`.redacted`).on(`mouseover`, recover);
 
 // Set an interval of 500 milliseconds to attempt fading the poem
 setInterval(update, UPDATE_FREQUENCY);
