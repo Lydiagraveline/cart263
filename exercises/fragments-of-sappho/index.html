@@ -1,92 +1,142 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      width="device-width,"
+      initial-scale="1.0,"
+      maximum-scale="1.0,"
+      user-scalable="0"
+    />
 
     <title>Fragments of Sappho</title>
 
     <!-- CSS stylesheet(s) -->
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <link rel="stylesheet" href="https://use.typekit.net/vhb3cet.css">
+    <link rel="stylesheet" href="https://use.typekit.net/vhb3cet.css" />
 
     <!-- Library script(s) go here -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body>
     <div class="container">
-
       <div class="menu">
-         <h2>FRAGMENTS OF SAPPHO</h2>
-         <p class="desc">This webpage is an interactive way to read Anne Carson's translation of Sappho
-         from her book <i>If Not, Winter. </i> Sappho lived on the island of Lesbos from bout 630 B.C. She was a musical
-           genius who devoted her life to composing and performing songs. Of the nine
-           books of lyrics Sappho is said to have composed, only one poem has survived
-           complete. All the rest are fragments. Experience the drama of trying to read a paprus torn in half or riddled
-           with holes. Keep up with the actively disintegrating text by hovering your mouse
-           over the fading fragments.</p>
+        <h2>FRAGMENTS OF SAPPHO</h2>
+        <p class="desc">
+          This webpage is an interactive way to read Anne Carson's translation
+          of Sappho from her book <i>If Not, Winter. </i> Sappho lived on the
+          island of Lesbos from bout 630 B.C. She was a musical genius who
+          devoted her life to composing and performing songs. Of the nine books
+          of lyrics Sappho is said to have composed, only one poem has survived
+          complete. All the rest are fragments. Experience the drama of trying
+          to read a paprus torn in half or riddled with holes. Keep up with the
+          actively disintegrating text by hovering your mouse over the fading
+          fragments.
+        </p>
 
-           <button> start </button>
-           <div id="counter">0</div>
-           <div id="index">0</div>
+        <button>start</button>
       </div>
 
+      <!-- The poems -->
+      <!-- divided by <section> and hidden -->
       <div class="poemContainer">
-          <section hidden> <p>This is the first poem</p> </section>
-          <section hidden> <p>This is the second poem</p> </section>
-          <section hidden> <p>This is the third poem</p> </section>
-          <section hidden>
-        <p>
-          Deathless Aphrodite <span class="lost redacted"> of the spangled mind,</span><br>
-          child of Zeus, who twists lures, I beg you <br>
-          do not break with hard pains, <br>
-          <span class="indent">  O <span class="lost redacted"> lady, my heart </span></span>
-        </p>
-        <p>
-          but come here if ever before <br>
-          you caught my <span class="lost redacted"> voice </span> far off <br>
-          and listening left your father's <br>
-          <span class="indent"><span class="lost redacted"> golden house </span> and came, </span>
-        </p>
-        <p>
-          yoking your car. And fine birds brought you, <br>
-          quick sparrows over the black earth <br>
-          whipping their wings down the sky <br>
-          <span class="indent"> through midair— </span>
-        </p>
-        <p>
-          they arrived. But you, O blessed one, <br>
-          <span class="lost redacted"> smiled in your deathless face </span> <br>
-          and asked what (now again) I have suffered and why <br>
-          <span class="indent"> (now again) I am calling out </span>
-        </p>
-        <p>
-          and what I want to happen most of all <br>
-          in my <span class="lost redacted"> crazy heart. </span> Whom should I persuade (now again) <br>
-          to lead you back into her love? Who, O <br>
-          <span class="indent"> Sappho, is wronging you? </span>
-        </p>
-        <p>
-          For if she flees, soon she will pursue. <br>
-          If she refuses <span class="lost redacted"> gifts,</span> rather will she give them. <br>
-          If she does not love, soon she will love <br>
-          <span class="indent"> even unwilling. </span>
-        </p>
-        <p>
-          <span class="lost redacted">Come to me </span> now: loose me from hard <br>
-          care and all my heart longs <br>
-          to accomplish, accomplish. You <br>
-          <span class="indent"> be my ally. </span>
-        </p>
-      </section>
+        <p id="counter"></p>
+        <section> <p> test </p> </section>
+        <!-- poem 1 -->
+        <section hidden>
+          <p>
+            Deathless Aphrodite
+            <span class="lost redacted"> of the spangled mind,</span><br />
+            child of Zeus, who twists lures, I beg you <br />
+            do not break with hard pains, <br />
+            <span class="indent">
+              O <span class="lost redacted"> lady, my heart </span></span
+            >
+          </p>
+          <p>
+            but come here if ever before <br />
+            you caught my <span class="lost redacted"> voice </span> far off
+            <br />
+            and listening left your father's <br />
+            <span class="indent"
+              ><span class="lost redacted"> golden house </span> and came,
+            </span>
+          </p>
+          <p>
+            yoking your car. And fine birds brought you, <br />
+            quick sparrows over the black earth <br />
+            whipping their wings down the sky <br />
+            <span class="indent"> through midair— </span>
+          </p>
+          <p>
+            they arrived. But you, O blessed one, <br />
+            <span class="lost redacted"> smiled in your deathless face </span>
+            <br />
+            and asked what (now again) I have suffered and why <br />
+            <span class="indent"> (now again) I am calling out </span>
+          </p>
+          <p>
+            and what I want to happen most of all <br />
+            in my <span class="lost redacted"> crazy heart. </span> Whom should
+            I persuade (now again) <br />
+            to lead you back into her love? Who, O <br />
+            <span class="indent"> Sappho, is wronging you? </span>
+          </p>
+          <p>
+            For if she flees, soon she will pursue. <br />
+            If she refuses <span class="lost redacted"> gifts,</span> rather
+            will she give them. <br />
+            If she does not love, soon she will love <br />
+            <span class="indent"> even unwilling. </span>
+          </p>
+          <p>
+            <span class="lost redacted">Come to me </span> now: loose me from
+            hard <br />
+            care and all my heart longs <br />
+            to accomplish, accomplish. You <br />
+            <span class="indent"> be my ally. </span>
+          </p>
+        </section>
+        <!-- poem 2 -->
+        <section hidden>
+          <p>
+            ] <br />
+            here to me from Krete to this holy temple <br />
+            where is your graceful grove <br />
+            of apple trees and altars smoking <br />
+            <span class="indent"> with frankincense. </span>
+          </p>
+          <p>
+            And in it cold water makes a clear sound through <br />
+            apple branches and with roses the whole place <br />
+            is shadowed and down from radiant-shaking leaves <br>
+            <span class="indent"> sleep comes dropping. </span>
+          </p>
+          <p>
+            And in it a horse meadow has come into bloom <br />
+            with spring flowers and breezes <br />
+            like honey are blowing <br>
+            <span class="indent"> [&emsp;&emsp;&emsp;&emsp;&emsp;] </span>
+          </p>
+          <p>
+            In this place you Kypris taking up <br />
+            in gold cups delicately <br />
+            nectar mingled with festivities: <br>
+            <span class="indent"> pour. </span>
+          </p>
+        </section>
+        <!-- poem 3 -->
+        <!-- <section hidden></section> -->
       </div>
     </div>
 
-
-
-
-<!--
+    <!--
     <section id="poem">
     <h2>FRAGMENTS OF SAPPHO</h2>
       <p>
@@ -137,5 +187,4 @@
     <!-- My script(s) -->
     <script src="js/script.js"></script>
   </body>
-
 </html>

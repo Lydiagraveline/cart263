@@ -3,6 +3,7 @@
   grid-template-columns: 50% 50%;
   grid-template-rows: 100%;
   gap: 0px 10px;
+  height: 100vh;
   grid-auto-flow: row;
   grid-template-areas:
   "menu poemContainer";
@@ -29,7 +30,7 @@ h2 {
 p {
     margin: 30px;
     line-height: 1.4;
-    font-size: 2vh;
+    font-size: 1.2em;
     font-family: mrs-eaves, serif;
 }
 

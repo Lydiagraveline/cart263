@@ -16,16 +16,34 @@ const REVEAL_PROBABILITY = 0.1;
 const UPDATE_FREQUENCY = 500;
 
 // The number of the current poem displayed
-var count = -1;
+var count = 0;
+// The total number of poems in the program
+var total = $("section").length;
+
+$("section").each(function () {
+  if (count === total - 1) {
+    // this is the last one
+    console.log(`thats all!`);
+  }
+});
 
 /**
 When the button is clicked, display the next poem
 */
-$(`:button`).on(`click`, function(){
-  count++
- $('#counter').html(function(i, val) { return val*1+1 });
-  $('section').eq(count - 1).hide();
-  $('section').eq(count).show();
+$(`:button`).on(`click`, function () {
+  // If the last poem has been reached, start the counter over
+  if (count >= total - 1) {
+    count = 1;
+  } else {
+    count++;
+  }
+  $("#counter").html(function (i, val) {
+    return (val = count);
+  });
+  $("section").eq(count).show();
+  $("section")
+    .eq(count - 1)
+    .hide();
 });
 
 $(`.lost`).on(`mouseover`, recover);
@@ -36,7 +54,7 @@ setInterval(update, UPDATE_FREQUENCY);
 /**
 When a line of the poem is clicked we remove its redacted class and add the recovered class
 */
-function recover(event){
+function recover(event) {
   $(this).removeClass(`redacted`);
   $(this).addClass(`recovered`);
 }
@@ -55,7 +73,7 @@ With random chance it fading the current line by removing the
 recovered class and adding the revealed class. Because this function is called
 by each(), "this" refers to the current element that each has selected.
 */
-function disintegrate(){
+function disintegrate() {
   let r = Math.random();
   if (r < 0.1) {
     $(this).removeClass(`recovered`);
