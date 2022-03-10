@@ -15,11 +15,18 @@ const REVEAL_PROBABILITY = 0.1;
 // How often to update the spans (potentially disintegrating them)
 const UPDATE_FREQUENCY = 500;
 
-// hide()
-//
-// function hide(){
-//   $(`#poem`).hide()
-// }
+// The number of the current poem displayed
+var count = -1;
+
+/**
+When the button is clicked, display the next poem
+*/
+$(`:button`).on(`click`, function(){
+  count++
+ $('#counter').html(function(i, val) { return val*1+1 });
+  $('section').eq(count - 1).hide();
+  $('section').eq(count).show();
+});
 
 $(`.lost`).on(`mouseover`, recover);
 

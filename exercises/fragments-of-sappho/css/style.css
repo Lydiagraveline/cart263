@@ -5,7 +5,7 @@
   gap: 0px 10px;
   grid-auto-flow: row;
   grid-template-areas:
-  "menu poem";
+  "menu poemContainer";
 }
 
 .menu {
@@ -14,8 +14,8 @@
   text-align: center;
 }
 
-.poem {
-  grid-area: poem;
+.poemContainer {
+  grid-area: poemContainer;
   border: 1px solid black;
   padding-left: 60px;
 }
