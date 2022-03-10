@@ -73,7 +73,7 @@ p {
 
 .redacted {
   user-select: none;
-  animation: fadeOut ease 5s;
+  animation: fadeOut ease 8s;
   animation-fill-mode: forwards;
 }
 
