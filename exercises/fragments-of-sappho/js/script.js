@@ -13,7 +13,7 @@ lines. This program is based on Anne Carson's translation of Sappho "If Not, Win
 // The chance a span will be start disintegrating per update
 const REVEAL_PROBABILITY = 0.1;
 // How often to update the spans (potentially disintegrating them)
-const UPDATE_FREQUENCY = 500;
+const UPDATE_FREQUENCY = 1000;
 
 // The number of the current poem displayed
 var count = 0;
@@ -40,7 +40,7 @@ $(`:button`).on(`click`, function () {
 });
 
 // recover the words when the mouse
-$(`.redacted`).on(`mouseover`, recover);
+$(`.fragment`).on(`mouseover`, recover);
 
 // Set an interval of 500 milliseconds to attempt fading the poem
 setInterval(update, UPDATE_FREQUENCY);
