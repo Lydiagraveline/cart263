@@ -15,7 +15,13 @@ const REVEAL_PROBABILITY = 0.1;
 // How often to update the spans (potentially disintegrating them)
 const UPDATE_FREQUENCY = 500;
 
-$(`.lost`).on(`click`, recover);
+// hide()
+//
+// function hide(){
+//   $(`#poem`).hide()
+// }
+
+$(`.lost`).on(`mouseover`, recover);
 
 // Set an interval of 500 milliseconds to attempt fading the poem
 setInterval(update, UPDATE_FREQUENCY);
