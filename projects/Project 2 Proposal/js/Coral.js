@@ -2,7 +2,7 @@ class Coral {
   constructor(x, y, radius) {
     this.x = x;
     this.y = y;
-    this.r = radius; // Circle radius
+    this.r = 50//radius; // Circle radius
     this.rInit = radius; // initial radius (because it can grow)
     this.verts = random([20, 22, 24, 26, 28, 30]); // number of vetices that make up the circle
     this.nodes = []; // an array to store the vertices
