@@ -19,6 +19,20 @@ Description of setup
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
+  // create inital coral reef
+  for (let i = 0; i < 10; i++){
+    coral[0] = createCoral(510, 500, 50);
+    coral[1] = createCoral(500, 810, 70);
+    coral[2] = createCoral(520, 740, 40);
+    coral[3] = createCoral(600, 550, 50)
+    coral[4] = createCoral(510, 630, 85);
+    coral[5] = createCoral(220, 490, 25);
+    coral[6] = createCoral(250, 550, 20);
+    coral[7] = createCoral(333, 410, 50);
+    coral[8] = createCoral(300, 490, 50);
+    coral[9] = createCoral(405, 500, 80);
+    reef.push(coral[i]);
+  }
 }
 
 /**
