@@ -40,7 +40,7 @@ class Coral {
   draw() {
     this.display();
     //this.lines();
-    //this.updateNodes();
+    this.updateNodes();
     //this.hover();
   }
 
@@ -61,17 +61,28 @@ class Coral {
     endShape();
     pop();
   }
+
+  updateNodes(){
+     for(var i=0;i<this.nodes.length;i++){
+      let f = noise(50*cos(i/this.verts*TWO_PI)/this.smth + t, 50*sin(i/this.verts*TWO_PI)/this.smth + t)
+      let x = this.x + (this.r+this.wobble*f) * cos( (i/this.verts) *TWO_PI )
+      let y = this.y + (this.r+this.wobble*f) * sin( (i/this.verts) * TWO_PI)
+
+      this.nodes[i].pos.x = x
+      this.nodes[i].pos.y = y
+      }
+  }
+
+
+
 }
 
+
+
 /**
-creates the nodes
+The nodes
 */
 function Node(x, y) {
   this.pos = createVector(x, y);
-
   this.wobble = createVector(0, 0);
-
-  this.update = function () {
-    this.pos = this.wobble;
-  };
 }

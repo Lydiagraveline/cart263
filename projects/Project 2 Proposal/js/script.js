@@ -13,11 +13,14 @@ let reef = [];
 
 let coral = [];
 
+let t;
 /**
 Description of setup
 */
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  t = 1
 
   // create inital coral reef
   for (let i = 0; i < 10; i++){
@@ -43,6 +46,7 @@ Description of draw()
 */
 function draw() {
   background(250,236,222,255);
+    t+= 0.01
 
   // draw the coral reef
   for (let i = 0; i < reef.length; i++) {
