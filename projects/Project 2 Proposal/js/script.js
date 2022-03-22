@@ -7,20 +7,11 @@ author, and this description to match your project!
 */
 
 "use strict";
-
-
-/**
-Description of preload
-*/
-function preload() {
-
-}
-
-
 /**
 Description of setup
 */
 function setup() {
+  createCanvas(windowWidth, windowHeight);
 
 }
 
@@ -29,5 +20,6 @@ function setup() {
 Description of draw()
 */
 function draw() {
+  background(250,236,222,255);
 
 }
