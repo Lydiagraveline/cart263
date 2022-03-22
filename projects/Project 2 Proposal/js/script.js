@@ -21,16 +21,7 @@ function setup() {
 
   // create inital coral reef
   for (let i = 0; i < 10; i++){
-    coral[0] = createCoral(510, 500, 50);
-    coral[1] = createCoral(500, 810, 70);
-    coral[2] = createCoral(520, 740, 40);
-    coral[3] = createCoral(600, 550, 50)
-    coral[4] = createCoral(510, 630, 85);
-    coral[5] = createCoral(220, 490, 25);
-    coral[6] = createCoral(250, 550, 20);
-    coral[7] = createCoral(333, 410, 50);
-    coral[8] = createCoral(300, 490, 50);
-    coral[9] = createCoral(405, 500, 80);
+    coral[i] = createCoral(random(100, width - 100), random(100, height - 100));
     reef.push(coral[i]);
   }
 }
@@ -38,10 +29,11 @@ function setup() {
 /**
 creates a new coral object and sets it's parameters
 */
-function createCoral(x, y){
+function createCoral(x, y, radius){
  let coral = new Coral(
    x = x, //random(200, width-200),//x,
-   y = y //random(200, height - 200),//y,
+   y = y, //random(200, height - 200),//y,
+   radius = random(50,90)
  );
   return coral;
 }
