@@ -6,12 +6,12 @@ class Coral {
     this.rInit = radius; // initial radius (because it can grow)
     this.verts = random([20, 22, 24, 26, 28, 30]); // number of vetices that make up the circle
     this.nodes = []; // an array to store the vertices
-    this.points = [];
+    this.points = []; // an array to store the center point and outside nodes
     this.wobble = 50; //random(10, 100);  // How much the circle radius can vary
     this.smth = 500; //random(200, 500);  // How smooth the noise function is (higher is smoother)
-    this.strokeWeight = random(1, 8);
+    this.strokeWeight = 1 //random(1, 8);  // set to trandom for more variation (runs slower)
     this.lineType = random([`thick`, `thin`]);
-    this.showCircle = random([true, false]);
+    this.showCircle = false //random([true, false]); // set to true for more variation (runs slower)
     this.circleSize = random(10, 25);
     // the color palette
     //main color
