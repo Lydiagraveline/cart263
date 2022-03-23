@@ -25,6 +25,7 @@ function setup() {
   // create inital coral reef
   for (let i = 0; i < 10; i++){
     coral[i] = createCoral(random(100, width - 100), random(100, height - 100));
+    coral[i].setup();
     reef.push(coral[i]);
   }
 }
@@ -50,6 +51,7 @@ function draw() {
 
   // draw the coral reef
   for (let i = 0; i < reef.length; i++) {
+    reef[i].setup();
     reef[i].draw()
   }
 }
