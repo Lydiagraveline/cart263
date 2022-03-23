@@ -9,23 +9,24 @@ class Coral {
     this.points = [];
     this.wobble = 50; //random(10, 100);  // How much the circle radius can vary
     this.smth = 500; //random(200, 500);  // How smooth the noise function is (higher is smoother)
+    this.strokeWeight = random(1, 8);
     this.lineType = random([`thick`, `thin`]);
+    this.showCircle = random([true, false]);
+    this.circleSize = random(10, 25);
     // the color palette
-    this.c =
-      // the main color
-      {
-        r: random(87, 245), //r: random(130, 255),
-        g: random(92, 191), //g: random(100, 130),
-        b: random(75, 95), //b: random(100, 240),
-      };
-    this.c2 =
-      //color of the line segments
-      {
-        r: random(130, 255),
-        g: random(100, 255),
-        b: random(100, 240),
-        a: random(100, 255),
-      };
+    //main color
+    this.c = {
+      r: random(87, 245), //r: random(130, 255),
+      g: random(92, 191), //g: random(100, 130),
+      b: random(75, 95), //b: random(100, 240),
+    };
+    // detail color
+    this.c2 = {
+      r: random(130, 255),
+      g: random(100, 255),
+      b: random(100, 240),
+      a: random(100, 255),
+    };
 
     // create the nodes
     for (let i = 0; i < this.verts; i++) {
@@ -46,13 +47,16 @@ class Coral {
   }
 
   draw() {
-    this.display();
-    this.lines();
+    this.body();
+    this.details();
     this.wobbleFunc();
     this.hover();
   }
 
-  display() {
+  /**
+  display the ellipse or the "body" of the coral
+  */
+  body() {
     push();
     fill(this.c.r, this.c.g, this.c.b);
     noStroke();
@@ -64,13 +68,16 @@ class Coral {
       let x = this.nodes[i].pos.x;
       let y = this.nodes[i].pos.y;
       curveVertex(x, y);
+      if (this.showCircle === true) {
+        ellipse(x, y, this.circleSize);
+      }
     }
     curveVertex(this.nodes[0].pos.x, this.nodes[0].pos.y);
     endShape();
     pop();
   }
 
-  lines() {
+  details() {
     if (this.lineType === `thick`) {
       fill(this.c2.r, this.c2.g, this.c2.b, this.c2.a);
       //fill(0);
@@ -78,18 +85,48 @@ class Coral {
       beginShape();
       for (let i = 0; i < this.nodes.length; i++) {
         vertex(this.x, this.y);
+        if (this.showCircle === true) {
+          ellipse(this.nodes[i].pos.x, this.nodes[i].pos.y, this.circleSize);
+        }
         vertex(this.nodes[i].pos.x, this.nodes[i].pos.y);
         i += 1;
         vertex(this.nodes[i].pos.x, this.nodes[i].pos.y);
+        if (this.showCircle === true) {
+          ellipse(this.nodes[i].pos.x, this.nodes[i].pos.y, this.circleSize);
+        }
       }
       vertex(this.x, this.y);
       endShape();
+
+      // The thin lines are divided up into multiple segments because I wanted
+      // lines to "sqiggle" or "wave" like the body of the coral does, but I couldnt figure out a solution
     } else if (this.lineType === `thin`) {
       noFill();
       stroke(this.c2.r, this.c2.g, this.c2.b, this.c2.a);
+      strokeWeight(this.strokeWeight);
       for (let i = 0; i < this.nodes.length; i++) {
         let x = this.nodes[i].pos.x;
         let y = this.nodes[i].pos.y;
+        for (let i = 0; i < this.points.length - 1; i++) {
+          const current = this.points[i],
+            next = this.points[i + 1];
+          const count = floor(this.rInit / 10); //floor(dist(this.x, this.y, x, y) / (20));
+          const dir = createVector((x - this.x) / count, (y - this.y) / count);
+          beginShape();
+          for (let j = 0; j < count; j++) {
+            let x = current.x + dir.x * j;
+            let y = current.y + dir.y * j;
+            vertex(x, y);
+            if (this.showCircle === true) {
+              ellipse(x, y, 10);
+            }
+          }
+          if (this.showCircle === true) {
+            ellipse(x, y, 10);
+          }
+          vertex(x, y); // here x & y = this.nodes[i].pos. (x/y)
+          endShape();
+        }
       }
     }
   }
