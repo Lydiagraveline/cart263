@@ -11,19 +11,17 @@ author, and this description to match your project!
 // empty array to store all the generated coral
 let reef = [];
 
+// empty array to store new coral
 let coral = [];
 
-let t;
 /**
 Description of setup
 */
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
-  t = 1
-
   // create inital coral reef
-  for (let i = 0; i < 10; i++){
+  for (let i = 0; i < 10; i++) {
     coral[i] = createCoral(random(100, width - 100), random(100, height - 100));
     coral[i].setup();
     reef.push(coral[i]);
@@ -33,12 +31,12 @@ function setup() {
 /**
 creates a new coral object and sets it's parameters
 */
-function createCoral(x, y, radius){
- let coral = new Coral(
-   x = x, //random(200, width-200),//x,
-   y = y, //random(200, height - 200),//y,
-   radius = random(50,90)
- );
+function createCoral(x, y, radius) {
+  let coral = new Coral(
+    (x = x), //random(200, width-200),//x,
+    (y = y), //random(200, height - 200),//y,
+    (radius = random(50, 90))
+  );
   return coral;
 }
 
@@ -46,17 +44,16 @@ function createCoral(x, y, radius){
 Description of draw()
 */
 function draw() {
-  background(250,236,222,255);
-    t+= 0.01
+  background(250, 236, 222, 255);
 
   // draw the coral reef
   for (let i = 0; i < reef.length; i++) {
     reef[i].setup();
-    reef[i].draw()
+    reef[i].draw();
   }
 }
 
-function mousePressed(){
+function mousePressed() {
   let corals = createCoral(mouseX, mouseY);
-  reef.push(corals)
+  reef.push(corals);
 }

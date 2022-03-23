@@ -9,10 +9,11 @@ class Coral {
     this.points = []; // an array to store the center point and outside nodes
     this.wobble = 50; //random(10, 100);  // How much the circle radius can vary
     this.smth = 500; //random(200, 500);  // How smooth the noise function is (higher is smoother)
-    this.strokeWeight = 1 //random(1, 8);  // set to trandom for more variation (runs slower)
+    this.strokeWeight = 1; //random(1, 8);  // set to trandom for more variation (runs slower)
     this.lineType = random([`thick`, `thin`]);
-    this.showCircle = false //random([true, false]); // set to true for more variation (runs slower)
+    this.showCircle = false; //random([true, false]); // set to true for more variation (runs slower)
     this.circleSize = random(10, 25);
+    this.t = 1;
     // the color palette
     //main color
     this.c = {
@@ -39,6 +40,9 @@ class Coral {
     }
   }
 
+  /**
+  create a vector at the center of the coral and at the outermost nodes
+  */
   setup() {
     for (let i = 0; i < this.nodes.length; i++) {
       for (let i = 0; i < 2; i++) this.points[0] = createVector(this.x, this.y);
@@ -46,6 +50,9 @@ class Coral {
     }
   }
 
+  /**
+  run the coral functions
+  */
   draw() {
     this.body();
     this.details();
@@ -135,10 +142,11 @@ class Coral {
   make the coral ~wobble~
   */
   wobbleFunc() {
+    this.t += 0.01;
     for (var i = 0; i < this.nodes.length; i++) {
       let f = noise(
-        (50 * cos((i / this.verts) * TWO_PI)) / this.smth + t,
-        (50 * sin((i / this.verts) * TWO_PI)) / this.smth + t
+        (50 * cos((i / this.verts) * TWO_PI)) / this.smth + this.t,
+        (50 * sin((i / this.verts) * TWO_PI)) / this.smth + this.t
       );
       let x =
         this.x + (this.r + this.wobble * f) * cos((i / this.verts) * TWO_PI);
