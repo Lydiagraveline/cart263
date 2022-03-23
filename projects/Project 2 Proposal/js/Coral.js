@@ -54,10 +54,13 @@ class Coral {
   run the coral functions
   */
   draw() {
+    // display coral untill it decays
+    if(this.r > -20){
     this.body();
     this.details();
     this.wobbleFunc();
     this.hover();
+    }
   }
 
   /**
@@ -167,6 +170,8 @@ class Coral {
       this.r++;
     } else if (this.r > this.rInit && d > this.r + this.wobble) {
       this.r--;
+    } else {
+      this.r = this.r - 0.01; // coral will get smaller and smaller untill it decays
     }
   }
 }
