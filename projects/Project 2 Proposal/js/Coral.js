@@ -40,8 +40,8 @@ class Coral {
   draw() {
     this.display();
     //this.lines();
-    this.updateNodes();
-    //this.hover();
+    this.wobbleFunc();
+    this.hover();
   }
 
   display() {
@@ -62,7 +62,10 @@ class Coral {
     pop();
   }
 
-  updateNodes(){
+  /**
+  make the coral ~wobble~
+  */
+  wobbleFunc(){
      for(var i=0;i<this.nodes.length;i++){
       let f = noise(50*cos(i/this.verts*TWO_PI)/this.smth + t, 50*sin(i/this.verts*TWO_PI)/this.smth + t)
       let x = this.x + (this.r+this.wobble*f) * cos( (i/this.verts) *TWO_PI )
@@ -73,6 +76,17 @@ class Coral {
       }
   }
 
+  /**
+  Expand radius when mouse over
+  */
+  hover(){
+    let d = dist(mouseX, mouseY, this.x, this.y)
+    if (d < this.r+this.wobble && this.r <= this.rInit + 20){
+      this.r++
+    }else if (this.r > this.rInit && d > this.r+this.wobble){
+      this.r --
+    }
+  }
 
 
 }
