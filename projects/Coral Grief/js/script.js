@@ -87,7 +87,7 @@ function draw() {
       reef = [];
     }
     if (decay === true) {
-      makeDecay(numDecay);
+      makeDecay(1);
     }
   }
 
@@ -133,14 +133,15 @@ function draw() {
     text(textDisplay, width / 2, height / 2);
     pop();
   } else if (
-    lineNum === 11 ||
-    lineNum === 17 ||
-    lineNum === 21 ||
-    lineNum === 26
+    lineNum === 10 ||
+    lineNum === 16 ||
+    lineNum === 20 ||
+    lineNum === 25
   ) {
     push();
     textSize(50);
-    fill(textColor);
+    fill(39, 57, 64, fade);
+    //fill(textColor);
     text(textDisplay, width / 2, height / 2);
     pop();
   } else {
@@ -169,8 +170,8 @@ function draw() {
 /**
 Call the decay function for a specififed amount of coral in the reef
 */
-function makeDecay(amount) {
-  for (let i = 0; i < amount; i++) {
+function makeDecay() {
+  for (let i = 0; i < numDecay; i++) {
     reef[i].decay();
   }
 }
@@ -181,20 +182,19 @@ Call the decay function for a specififed amount of coral in the reef
 function mousePressed() {
   fade = 0;
   if (lineNum >= 0 && lineNum < 33) {
+    // show next line
     if (mouseX > width / 2) {
       lineNum++;
-      //forward.play();
 
       // create new corals
       if (lineNum >= 8) {
         positionCoral(1); //create 1 new coral each time user clicks
 
-          //if (!overlapping) {
-            //let corals = createCoral(x, y, r);
-            //reef.push(corals);
+        //if (!overlapping) {
+        //let corals = createCoral(x, y, r);
+        //reef.push(corals);
         //  }
         //}
-
 
         //make decay
         // if (lineNum >= 11) {
@@ -205,11 +205,20 @@ function mousePressed() {
         //   }
         // }
       }
+
+    // Go back one line
     } else if (mouseX < width / 2 && lineNum > 0) {
       lineNum--;
-      //back.play();
+
+      // make coral decay when the user goes back a line
+      if (lineNum < 4 || lineNum > 8){
+        decay = true;
+        numDecay += 1;
+      }
     }
-  } else if (lineNum === 33) {
+
+    //refresh the page
+  } else if (lineNum === 32) {
     lineNum = 0;
   }
 }
@@ -219,7 +228,7 @@ Generates a designated amount of coral (numCoral)
 that won't overlap eachother or the text box
 */
 function positionCoral(numCoral) {
-  numCoral += reef.length
+  numCoral += reef.length;
 
   // create inital coral reef without overlap
   while (reef.length < numCoral) {
