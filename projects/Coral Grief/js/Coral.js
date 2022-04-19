@@ -47,6 +47,7 @@ class Coral {
 
     // color fade
     this.decayRate = 0.1 //random(0.1, 0.08);
+    this.isDecaying = false;
     this.amt = 0;
     this.from = color(this.c.r, this.c.g, this.c.b);
     this.from2 = color(this.c2.r, this.c2.g, this.c2.b);
@@ -78,9 +79,10 @@ class Coral {
       this.points[1] = createVector(this.nodes[i].pos.x, this.nodes[i].pos.y);
     }
 
+    // When coral is spawned it grows untill full grown
     if (this.r <= this.rInit && this.fullGrown === false) {
       this.r += 0.5;
-    } else if (this.r > this.rInit) {
+    } else if (this.r > this.rInit && !this.isDecaying) {
       this.fullGrown = true;
     }
   }
@@ -200,9 +202,9 @@ class Coral {
 
   decay() {
     this.fullGrown = false;
+    this.isDecaying = true;
 
     this.r = this.r - this.decayRate
-
 
     this.amt += 0.001;
 

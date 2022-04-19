@@ -12,8 +12,8 @@ and feminist scholar Donna Haraway.
 
 // sound
 let music;
-let forward;
-let back;
+let forwardSFX;
+let backSFX;
 
 // text
 let textJson; // JSON file containing all the lines of text
@@ -27,7 +27,7 @@ let fadeAmount = 2;
 // coral
 let reef = []; // empty array to store all the generated coral
 
-let decay; // can be true or false //keeps track of coral that is actively decaying
+let decay = true; // can be true or false //keeps track of coral that is actively decaying
 let numDecay = 0; //The amount of coral that has decayed
 
 /**
@@ -35,8 +35,8 @@ Preload the audio files + a JSON file
 */
 function preload() {
   music = loadSound("assets/sounds/soundtrack.mp3");
-  forward = loadSound("assets/sounds/forward.wav");
-  back = loadSound("assets/sounds/back.wav");
+  forwardSFX = loadSound("assets/sounds/forward.wav");
+  backSFX = loadSound("assets/sounds/back.wav");
 
   //JSON file
   textJson = loadJSON(`assets/data/text.json`);
@@ -85,10 +85,12 @@ function draw() {
       makeDecay(reef.length);
     } else if (lineNum === 7) {
       reef = [];
+      numDecay = 0;
     }
-    if (decay === true) {
-      makeDecay(1);
-    }
+    //if (decay === true) {
+    //console.log(decay);
+    makeDecay(numDecay);
+    //}
   }
 
   textDisplay = `${textJson.line[lineNum]}`;
@@ -170,56 +172,64 @@ function draw() {
 /**
 Call the decay function for a specififed amount of coral in the reef
 */
-function makeDecay() {
-  for (let i = 0; i < numDecay; i++) {
+function makeDecay(amount) {
+  for (let i = 0; i < amount; i++) {
     reef[i].decay();
   }
 }
 
 /**
-Call the decay function for a specififed amount of coral in the reef
+Handle forward and back when user clicks on the left or right side of the screen
 */
 function mousePressed() {
   fade = 0;
-  if (lineNum >= 0 && lineNum < 33) {
-    // show next line
+  if (lineNum >= 0 && lineNum < 32) {
+    // Go forward if mouse is on RIGHT half of screen
     if (mouseX > width / 2) {
-      lineNum++;
+      forward();
 
-      // create new corals
-      if (lineNum >= 8) {
-        positionCoral(1); //create 1 new coral each time user clicks
+      // //make decay randomly
+      // if (lineNum >= 11) {
+      //   let c = random(0, 1);
+      //   if (c < 0.25) {
+      //     numDecay += 1;
+      //   }
+      // }
 
-        //if (!overlapping) {
-        //let corals = createCoral(x, y, r);
-        //reef.push(corals);
-        //  }
-        //}
-
-        //make decay
-        // if (lineNum >= 11) {
-        //   let c = random(0, 1);
-        //   if (c > 0.5) {
-        //     decay = true;
-        //     numDecay += 1;
-        //   }
-        // }
-      }
-
-    // Go back one line
+      // Go back mouse is on LEFT half of screen
     } else if (mouseX < width / 2 && lineNum > 0) {
-      lineNum--;
-
-      // make coral decay when the user goes back a line
-      if (lineNum < 4 || lineNum > 8){
-        decay = true;
-        numDecay += 1;
-      }
+      back();
     }
-
-    //refresh the page
-  } else if (lineNum === 32) {
+  }
+  //refresh the page
+  else if (lineNum === 32) {
     lineNum = 0;
+  }
+}
+
+/**
+Goes forward a line and creates a new coral
+*/
+function forward() {
+  // go forward 1 line
+  lineNum++;
+  // create new coral after line 8
+  if (lineNum >= 8) {
+    positionCoral(1); //create 1 new coral each time user clicks
+  }
+}
+
+/**
+Goes back a line and makes coral decay
+*/
+function back() {
+  // go back 1 line
+  lineNum--;
+  // make coral decay when the user goes back a line after line 8
+  if (lineNum >= 8) {
+    //decay = true;
+    numDecay += 1;
+    console.log(numDecay);
   }
 }
 
