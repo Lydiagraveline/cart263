@@ -4,13 +4,14 @@ Lydia Graveline
 
 Music by Jack Watkins
 
-Coral Grief is an interactive manifesto inspired by the Crochet Coral Reef project
+Coral Grief is an interactive digital manifesto inspired by the Crochet Coral Reef project
 and feminist scholar Donna Haraway.
 */
 
 "use strict";
 
 // sound
+let state = `title`; //can be title, manifesto, or playground
 let music;
 let forwardSFX;
 let backSFX;
@@ -72,6 +73,11 @@ Description of draw()
 function draw() {
   background(bg);
 
+  if (state === `title` || state === `manifesto`) {
+    displayText();
+  } else if (state === `playground`) {
+  }
+
   //draw the coral reef
   for (let i = 0; i < reef.length; i++) {
     reef[i].setup();
@@ -92,7 +98,9 @@ function draw() {
     makeDecay(numDecay);
     //}
   }
+}
 
+function displayText() {
   textDisplay = `${textJson.line[lineNum]}`;
   fade += fadeAmount;
 
@@ -126,12 +134,19 @@ function draw() {
     pop();
   } else if (lineNum === 2) {
     push();
-    textSize(22);
-    text(textDisplay, width / 2, height / 2);
+    textSize(50);
+    text("Coral Grief", width / 2, height / 2 - 50);
+    //text(textDisplay, width / 2, height / 2 - 50);
+    textSize(40);
+    fill(100, 100, 200, fade);
+    text(textDisplay, width / 2, height / 2 - 35);
+    //  textSize(35);
+    //text("Playground", width /3, height/2);
     pop();
   } else if (lineNum === 3) {
     push();
     textSize(22);
+    fill(39, 57, 64, fade);
     text(textDisplay, width / 2, height / 2);
     pop();
   } else if (
@@ -159,7 +174,7 @@ function draw() {
   }
 
   // display the "next" and "back" text
-  if (lineNum > 0) {
+  if (lineNum >= 4) {
     push();
     fill(textColor);
     textSize(35);
@@ -183,22 +198,29 @@ Handle forward and back when user clicks on the left or right side of the screen
 */
 function mousePressed() {
   fade = 0;
+
+  if (state === `title` && lineNum <= 2) {
+    forward();
+  }
+
   if (lineNum >= 0 && lineNum < 32) {
-    // Go forward if mouse is on RIGHT half of screen
+    // if mouse is on RIGHT half of screen
     if (mouseX > width / 2) {
-      forward();
+      if (lineNum === 3 && state === `title`) {
+        state = `manifesto`;
+        console.log(state);
+      } else if (state === `manifesto`) {
+        forward();
+      }
 
-      // //make decay randomly
-      // if (lineNum >= 11) {
-      //   let c = random(0, 1);
-      //   if (c < 0.25) {
-      //     numDecay += 1;
-      //   }
-      // }
-
-      // Go back mouse is on LEFT half of screen
+      // if mosuse is on LEFT half of screen
     } else if (mouseX < width / 2 && lineNum > 0) {
-      back();
+      if (lineNum === 3 && state === `title`) {
+        state = `playground`;
+        console.log(state);
+      } else if (state === `manifesto` && lineNum >= 4) {
+        back(); // go back a line
+      }
     }
   }
   //refresh the page
