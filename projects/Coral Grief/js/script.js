@@ -22,9 +22,8 @@ let textDisplay; // The text to be displayed derived from the JSON file
 let lineNum = 0; // Current "line" of text from the JSON file to be displayed
 let textColor; // The text color
 let subTextColor;
-let bg; // The background color
 let amt, startColor, newColor; // background colors
-
+let hover = false;
 let fade = 0;
 let fadeAmount = 2;
 
@@ -32,8 +31,6 @@ let reefSize = 12;
 
 let alive = [];
 let newArray = [];
-
-let hover = false;
 
 // coral
 let reef = []; // empty array to store all the generated coral
@@ -55,20 +52,19 @@ function preload() {
 Creates the initial coral and plays the music
 */
 function setup() {
-  textColor = color(255);
-  bg = color(43, 49, 77, 255);
-  subTextColor = color(255);
   createCanvas(windowWidth, windowHeight);
   // Play the music and make it loop
   music.loop();
   positionCoral(reefSize);
 
-  // background
+  // background colors
   startColor = color(43, 49, 77);
   newColor = color(49, 86, 87);
   amt = 0;
 
-  background(startColor);
+  // text colors
+  textColor = color(255);
+  subTextColor = color(160, 220, 255);
 }
 
 /**
@@ -103,6 +99,7 @@ and draw the coral
 */
 function draw() {
   backgroundColor();
+  subTextColor = color(160, 220, 255);
 
   //draw the coral reef
   for (let i = 0; i < reef.length; i++) {
@@ -341,7 +338,7 @@ function displayText() {
   if (lineNum === 0) {
     push();
     textSize(50);
-    fill(39, 57, 64, fade);
+    fill(255, fade);
     text(textDisplay, width / 2, height / 2 - 50);
     textSize(35);
     pop();
@@ -349,7 +346,7 @@ function displayText() {
     push();
     textSize(50);
     text("Coral Grief", width / 2, height / 2 - 50);
-    fill(39, 57, 64, fade);
+    fill(255, fade);
     text(textDisplay, width / 2, height / 2 - 50);
     pop();
   } else if (lineNum === 2) {
@@ -357,20 +354,60 @@ function displayText() {
     textSize(50);
     text("Coral Grief", width / 2, height / 2 - 50);
     textSize(40);
-    fill(subTextColor);
-    text(textDisplay, width / 2, height / 2 - 35);
+
+    //change text color on mouse over
+    subTextColor = color(160, 220, 255, fade);
+    if (mouseX > width / 2) {
+      fill(255);
+    } else {
+      fill(subTextColor);
+    }
+    text(`Manifesto`, (2 * width) / 3, height / 2 + 15);
+    if (mouseX < width / 2) {(2 * width) / 3
+      fill(255);
+    } else {
+      fill(subTextColor);
+    }
+    text(`Playground`, width / 3, height / 2 + 15);
     pop();
   } else if (lineNum === 3) {
     push();
     textSize(22);
-    fill(39, 57, 64, fade);
+    fill(255, fade);
     text(textDisplay, width / 2, height / 2);
+    subTextColor = color(160, 220, 255, fade);
+    fill(subTextColor);
+    textSize(35);
+    text("next >", width - 70, height - 30);
+    pop();
+  } else if (lineNum === 4) {
+    push();
+    fill(subTextColor);
+    textSize(35);
+    text("next >", width - 70, height - 30);
+    subTextColor = color(160, 220, 255, fade);
+    textSize(18);
+    textAlign(LEFT, CENTER);
+    fill(255, fade);
+    text(textDisplay, width / 5, height / 2);
     pop();
   } else if (lineNum === 32) {
     push();
     textSize(40);
-    fill(subTextColor);
-    text(textDisplay, width / 2, height / 2 - 35);
+    //change text color on mouse over
+    subTextColor = color(160, 220, 255, fade);
+    if (mouseX > width / 2) {
+      fill(255);
+    } else {
+      fill(subTextColor);
+    }
+    text(`Manifesto`, (2 * width) / 3, height / 2 + 15);
+    if (mouseX < width / 2) {(2 * width) / 3
+      fill(255);
+    } else {
+      fill(subTextColor);
+    }
+    text(`Playground`, width / 3, height / 2 + 15);
     pop();
   } else if (
     lineNum === 10 ||
@@ -380,7 +417,7 @@ function displayText() {
   ) {
     push();
     textSize(50);
-    fill(39, 57, 64, fade);
+    fill(255, fade);
     text(textDisplay, width / 2, height / 2);
     pop();
   } else {
@@ -394,9 +431,18 @@ function displayText() {
   // display the "next" and "back" text
   if (lineNum >= 4) {
     push();
-    fill(subTextColor);
     textSize(35);
+    if (mouseX > width / 2) {
+      fill(255);
+    } else {
+      fill(subTextColor);
+    }
     text("next >", width - 70, height - 30);
+    if (mouseX < width / 2) {(2 * width) / 3
+      fill(255);
+    } else {
+      fill(subTextColor);
+    }
     text("< back", 70, height - 30);
     pop();
   }
