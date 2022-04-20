@@ -11,7 +11,7 @@ and feminist scholar Donna Haraway.
 "use strict";
 
 // sound
-let state = `playground`; //can be title, manifesto, or playground
+let state = `title`; //can be title, manifesto, or playground
 let music;
 let forwardSFX;
 let backSFX;
@@ -25,11 +25,10 @@ let bg; // The background color
 let fade = 0;
 let fadeAmount = 2;
 
-let reefSize = 1;
+let reefSize = 12;
 
 let alive = [];
-let decaying = [];
-let dead = [];
+let newArray = [];
 
 let hover = false;
 
@@ -37,7 +36,7 @@ let hover = false;
 let reef = []; // empty array to store all the generated coral
 //let decaying = [];
 
-let decay = true; // can be true or false //keeps track of coral that is actively decaying
+let decay = false; // can be true or false //keeps track of coral that is actively decaying
 let numDecay = 0; //The amount of coral that has decayed
 
 /**
@@ -56,6 +55,9 @@ function preload() {
 Creates the initial coral and plays the music
 */
 function setup() {
+  if (state === `manifesto`) {
+    lineNum = 3;
+  }
   //decaying = reef.splice(0,1);
   textColor = color(39, 57, 64, 255);
   bg = color(250, 236, 222, 255);
@@ -106,20 +108,9 @@ function draw() {
       reef.splice(i, 1);
     }
 
-    //on lines 4-6, make the coral decay
-    if (lineNum === 4) {
-      makeDecay(reef.length / 3);
-    } else if (lineNum === 5) {
-      makeDecay((2 * reef.length) / 3);
-    } else if (lineNum === 6) {
-      makeDecay(reef.length);
-    } else if (lineNum === 7) {
-      reef = [];
-      numDecay = 0;
-    }
     if (decay === true) {
       //console.log(decay);
-      makeDecay(numDecay);
+      //makeDecay(numDecay);
     }
   }
 }
@@ -208,62 +199,74 @@ function displayText() {
   }
 }
 
+function decayOnLineNum() {
+  //on lines 4-6, make the coral decay
+  if (lineNum === 4) {
+    //makeDecay(reef.length / 3);
+    deleteCoral(reefSize / 3);
+  } else if (lineNum === 5) {
+    //makeDecay((2 * reef.length) / 3);
+    deleteCoral((2 * reefSize) / 3);
+  } else if (lineNum === 6) {
+    //makeDecay(reef.length);
+    deleteCoral(reefSize);
+  } else if (lineNum === 7) {
+    reef = [];
+  }
+}
+
+function deleteCoralOriginal() {
+  //works in playground mode
+  //create an array of coral that is currently alive
+  let newArray = reef.filter(function (coral) {
+    return coral.state === `alive`;
+  });
+
+  for (let i = 0; i < newArray.length; i++) {
+    let n = newArray.length - 1;
+    newArray[n].state = `decaying`;
+  }
+}
+
 /**
-Call the decay function for a specififed amount of coral in the reef
+Make a specififed amount of currently alive coral start to decay
 */
-function makeDecay(amount) {
+function deleteCoral(amount) {
+  //create an array of coral that is currently alive
+  newArray = reef.filter(function (coral) {
+    return coral.state === `alive`;
+  });
+
   for (let i = 0; i < amount; i++) {
-    reef[i].decay();
-    //reef[i].state = `decaying`
-    //console.log(reef[i].state);
+    //let n = newArray.length
+    newArray[i].state = `decaying`;
+  }
+  //  console.log(`newArray = ` + newArray.length )
+  //  console.log(`reef = ` + reef.length )
+}
 
-    if (reef[i].r <= -10) {
-      //console.log(`!`)
-      reef[i].state = `dead`;
-      //  dead = alive.splice(i, 1);
+function keyPressed() {}
+
+function keyPressed() {
+  if (state === `title`) {
+    if (lineNum < 2) {
+      forward();
+    } else if (lineNum === 2) {
+      if (keyCode === LEFT_ARROW) {
+        state = `playground`;
+      } else if (keyCode === RIGHT_ARROW) {
+        forward();
+      }
     }
-
-    // if (reef[i].r <= -20){
-    //   reef.splice(0, 1);
-    //   console.log(`spliced`);
-    // }
-  }
-}
-
-function keyPressed() {
-  if (state === `title` && lineNum <= 2) {
-    forward();
-  }
-}
-
-function keyPressed() {
-  if (state === `manifesto`) {
-    if (keyCode === LEFT_ARROW) {
+  } else if (state === `manifesto`) {
+    if (keyCode === LEFT_ARROW && lineNum > 3) {
       back();
     } else if (keyCode === RIGHT_ARROW) {
       forward();
     }
-  }
-
-  let numDeleted = 0;
-  if (state === `playground`) {
+  } else if (state === `playground`) {
     if (keyCode === DELETE || keyCode === BACKSPACE) {
-      let newArray = reef.filter(function (coral) {
-        return coral.state === `alive`;
-      });
-
-      for (let i = 0; i < newArray.length; i++) {
-        let n = newArray.length - 1
-        newArray[n].state = `decaying`;
-      }
-    }
-  }
-}
-
-function filterByState() {
-  for (let i = 0; i < reef.length; i++) {
-    if (reef[i].state === "alive") {
-      return true;
+      deleteCoral();
     }
   }
 }
@@ -274,42 +277,41 @@ Handle forward and back when user clicks on the left or right side of the screen
 function mousePressed() {
   fade = 0;
 
-  // for (let i = 0; i < reef.length; i++){
-  //   if (reef[i].state === 'alive'){
-  //     alive.push(reef[i])
-  //   }
-  // }
-
-  //console.log(reef.some())
-
   if (state === `playground`) {
     let corals = createCoral(mouseX, mouseY, random(50, 90));
     reef.push(corals);
   }
 
-  if (state === `title` && lineNum <= 2) {
+  //handle mouse pressed during the title state
+  if (state === `title` && lineNum < 2) {
     forward();
+  } else if (lineNum === 2) {
+    if (mouseX > width / 2) {
+      forward(); //changes state to `manifesto` automatically because lineNum will = 3
+    } else if (mouseX < width / 2 && lineNum > 0) {
+      state = `playground`;
+    }
   }
 
   if (lineNum >= 0 && lineNum < 32) {
     // if mouse is on RIGHT half of screen
-    if (mouseX > width / 2) {
-      if (lineNum === 3 && state === `title`) {
-        state = `manifesto`;
-        console.log(state);
-      } else if (state === `manifesto`) {
-        forward();
-      }
-
-      // if mosuse is on LEFT half of screen
-    } else if (mouseX < width / 2 && lineNum > 0) {
-      if (lineNum === 3 && state === `title`) {
-        state = `playground`;
-        console.log(state);
-      } else if (state === `manifesto` && lineNum >= 4) {
-        back(); // go back a line
-      }
-    }
+    // if (mouseX > width / 2) {
+    //   if (lineNum === 3 && state === `title`) {
+    //     //state = `manifesto`;
+    //     console.log(state);
+    //   } else if (state === `manifesto`) {
+    //     forward();
+    //   }
+    //
+    //   // if mosuse is on LEFT half of screen
+    // } else if (mouseX < width / 2 && lineNum > 0) {
+    //   if (lineNum === 3 && state === `title`) {
+    //     state = `playground`;
+    //     console.log(state);
+    //   } else if (state === `manifesto` && lineNum >= 4) {
+    //     back(); // go back a line
+    //   }
+    // }
   }
   //refresh the page
   else if (lineNum === 32) {
@@ -323,6 +325,10 @@ Goes forward a line and creates a new coral
 function forward() {
   // go forward 1 line
   lineNum++;
+  decayOnLineNum();
+  if (lineNum >= 3) {
+    state = `manifesto`;
+  }
   // create new coral after line 8
   if (lineNum >= 8) {
     positionCoral(1); //create 1 new coral each time user clicks
@@ -337,9 +343,7 @@ function back() {
   lineNum--;
   // make coral decay when the user goes back a line after line 8
   if (lineNum >= 8) {
-    //decay = true;
-    //numDecay += 1;
-    console.log(numDecay);
+    deleteCoral(1);
   }
 }
 

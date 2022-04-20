@@ -95,7 +95,7 @@ class Coral {
     // display coral untill it decays
     if (this.r > -20) {
       this.body();
-      this.details();
+    //  this.details();
       this.wobbleFunc();
       if (this.fullGrown === true) {
         this.hover();
@@ -241,7 +241,7 @@ class Coral {
     } else if (this.r > this.rInit && d > this.r + this.wobble) {
       this.r--;
     } else {
-      this.r = this.r - 0.01; // coral will get smaller and smaller untill it decays
+      //this.r = this.r - 0.01; // coral will get smaller and smaller untill it decays
     }
   }
 }
