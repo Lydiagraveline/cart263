@@ -1,5 +1,5 @@
 class Coral {
-  constructor(x, y, radius) {
+  constructor(x, y, radius, state) {
     this.x = x;
     this.y = y;
     this.r = 0; // Circle radius
@@ -15,6 +15,7 @@ class Coral {
     this.circleSize = random(10, 25);
     this.t = 1;
     this.fullGrown = false;
+    this.state = state
 
     // the color palette
     //main color
@@ -46,7 +47,7 @@ class Coral {
     };
 
     // color fade
-    this.decayRate = 0.1 //random(0.1, 0.08);
+    this.decayRate = 1 //random(0.1, 0.08);
     this.isDecaying = false;
     this.amt = 0;
     this.from = color(this.c.r, this.c.g, this.c.b);
@@ -124,6 +125,7 @@ class Coral {
     curveVertex(this.nodes[0].pos.x, this.nodes[0].pos.y);
     endShape();
     pop();
+
   }
 
   details() {
@@ -206,7 +208,7 @@ class Coral {
 
     this.r = this.r - this.decayRate
 
-    this.amt += 0.001;
+    this.amt += 0.005; //speed of color change
 
      this.c = {
      r: lerpColor(this.from, this.to, this.amt),

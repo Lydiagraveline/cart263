@@ -11,7 +11,7 @@ and feminist scholar Donna Haraway.
 "use strict";
 
 // sound
-let state = `title`; //can be title, manifesto, or playground
+let state = `playground`; //can be title, manifesto, or playground
 let music;
 let forwardSFX;
 let backSFX;
@@ -25,8 +25,17 @@ let bg; // The background color
 let fade = 0;
 let fadeAmount = 2;
 
+let reefSize = 1;
+
+let alive = [];
+let decaying = [];
+let dead = [];
+
+let hover = false;
+
 // coral
 let reef = []; // empty array to store all the generated coral
+//let decaying = [];
 
 let decay = true; // can be true or false //keeps track of coral that is actively decaying
 let numDecay = 0; //The amount of coral that has decayed
@@ -47,22 +56,24 @@ function preload() {
 Creates the initial coral and plays the music
 */
 function setup() {
+  //decaying = reef.splice(0,1);
   textColor = color(39, 57, 64, 255);
   bg = color(250, 236, 222, 255);
   createCanvas(windowWidth, windowHeight);
   // Play the music and make it loop
   music.loop();
-  positionCoral(12);
+  positionCoral(reefSize);
 }
 
 /**
 creates a new coral object and sets it's parameters
 */
-function createCoral(x, y, radius) {
+function createCoral(x, y, radius, state) {
   let coral = new Coral(
     (x = x), //random(200, width-200),//x,
     (y = y), //random(200, height - 200),//y,
-    (radius = radius)
+    (radius = radius),
+    (state = `alive`)
   );
   return coral;
 }
@@ -76,12 +87,25 @@ function draw() {
   if (state === `title` || state === `manifesto`) {
     displayText();
   } else if (state === `playground`) {
+    lineNum = 33;
   }
 
   //draw the coral reef
   for (let i = 0; i < reef.length; i++) {
     reef[i].setup();
     reef[i].draw();
+
+    if (reef[i].r <= -20) {
+      reef[i].state = `dead`;
+    }
+
+    if (reef[i].state === `decaying` || reef[i].state === `dead`) {
+      reef[i].decay();
+    }
+    if (reef[i].state === `dead`) {
+      reef.splice(i, 1);
+    }
+
     //on lines 4-6, make the coral decay
     if (lineNum === 4) {
       makeDecay(reef.length / 3);
@@ -93,10 +117,10 @@ function draw() {
       reef = [];
       numDecay = 0;
     }
-    //if (decay === true) {
-    //console.log(decay);
-    makeDecay(numDecay);
-    //}
+    if (decay === true) {
+      //console.log(decay);
+      makeDecay(numDecay);
+    }
   }
 }
 
@@ -190,6 +214,57 @@ Call the decay function for a specififed amount of coral in the reef
 function makeDecay(amount) {
   for (let i = 0; i < amount; i++) {
     reef[i].decay();
+    //reef[i].state = `decaying`
+    //console.log(reef[i].state);
+
+    if (reef[i].r <= -10) {
+      //console.log(`!`)
+      reef[i].state = `dead`;
+      //  dead = alive.splice(i, 1);
+    }
+
+    // if (reef[i].r <= -20){
+    //   reef.splice(0, 1);
+    //   console.log(`spliced`);
+    // }
+  }
+}
+
+function keyPressed() {
+  if (state === `title` && lineNum <= 2) {
+    forward();
+  }
+}
+
+function keyPressed() {
+  if (state === `manifesto`) {
+    if (keyCode === LEFT_ARROW) {
+      back();
+    } else if (keyCode === RIGHT_ARROW) {
+      forward();
+    }
+  }
+
+  let numDeleted = 0;
+  if (state === `playground`) {
+    if (keyCode === DELETE || keyCode === BACKSPACE) {
+      let newArray = reef.filter(function (coral) {
+        return coral.state === `alive`;
+      });
+
+      for (let i = 0; i < newArray.length; i++) {
+        let n = newArray.length - 1
+        newArray[n].state = `decaying`;
+      }
+    }
+  }
+}
+
+function filterByState() {
+  for (let i = 0; i < reef.length; i++) {
+    if (reef[i].state === "alive") {
+      return true;
+    }
   }
 }
 
@@ -198,6 +273,19 @@ Handle forward and back when user clicks on the left or right side of the screen
 */
 function mousePressed() {
   fade = 0;
+
+  // for (let i = 0; i < reef.length; i++){
+  //   if (reef[i].state === 'alive'){
+  //     alive.push(reef[i])
+  //   }
+  // }
+
+  //console.log(reef.some())
+
+  if (state === `playground`) {
+    let corals = createCoral(mouseX, mouseY, random(50, 90));
+    reef.push(corals);
+  }
 
   if (state === `title` && lineNum <= 2) {
     forward();
@@ -250,7 +338,7 @@ function back() {
   // make coral decay when the user goes back a line after line 8
   if (lineNum >= 8) {
     //decay = true;
-    numDecay += 1;
+    //numDecay += 1;
     console.log(numDecay);
   }
 }
@@ -292,7 +380,7 @@ function positionCoral(numCoral) {
 
     // If the coral dosn't overlap, add it to the reef
     if (!overlapping) {
-      let corals = createCoral(coral.x, coral.y, coral.r);
+      let corals = createCoral(coral.x, coral.y, coral.r, 1);
       reef.push(corals);
     }
   }
