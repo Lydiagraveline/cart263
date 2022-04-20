@@ -21,7 +21,10 @@ let textJson; // JSON file containing all the lines of text
 let textDisplay; // The text to be displayed derived from the JSON file
 let lineNum = 0; // Current "line" of text from the JSON file to be displayed
 let textColor; // The text color
+let subTextColor;
 let bg; // The background color
+let amt, startColor, newColor; // background colors
+
 let fade = 0;
 let fadeAmount = 2;
 
@@ -52,12 +55,20 @@ function preload() {
 Creates the initial coral and plays the music
 */
 function setup() {
-  textColor = color(39, 57, 64, 255);
-  bg = color(250, 236, 222, 255);
+  textColor = color(255);
+  bg = color(43, 49, 77, 255);
+  subTextColor = color(255);
   createCanvas(windowWidth, windowHeight);
   // Play the music and make it loop
   music.loop();
   positionCoral(reefSize);
+
+  // background
+  startColor = color(43, 49, 77);
+  newColor = color(49, 86, 87);
+  amt = 0;
+
+  background(startColor);
 }
 
 /**
@@ -74,11 +85,24 @@ function createCoral(x, y, radius, state) {
 }
 
 /**
+Make the background fade between different random colors
+*/
+function backgroundColor() {
+  background(lerpColor(startColor, newColor, amt));
+  amt += 0.001;
+  if (amt >= 1) {
+    amt = 0.0;
+    startColor = newColor;
+    newColor = color(random(39, 49), random(49, 86), random(64, 87));
+  }
+}
+
+/**
 Handle the different states
 and draw the coral
 */
 function draw() {
-  background(bg);
+  backgroundColor();
 
   //draw the coral reef
   for (let i = 0; i < reef.length; i++) {
@@ -142,14 +166,14 @@ function keyPressed() {
     if (keyCode === LEFT_ARROW) {
       if (lineNum > 3 && lineNum < 32) {
         back();
-      // switch states
+        // switch states
       } else if (lineNum === 32) {
         state = `playground`;
       }
     } else if (keyCode === RIGHT_ARROW) {
       if (lineNum < 32) {
         forward();
-      // restart
+        // restart
       } else if (lineNum === 32) {
         lineNum = 3;
       }
@@ -333,7 +357,7 @@ function displayText() {
     textSize(50);
     text("Coral Grief", width / 2, height / 2 - 50);
     textSize(40);
-    fill(100, 100, 200, fade);
+    fill(subTextColor);
     text(textDisplay, width / 2, height / 2 - 35);
     pop();
   } else if (lineNum === 3) {
@@ -345,7 +369,7 @@ function displayText() {
   } else if (lineNum === 32) {
     push();
     textSize(40);
-    fill(100, 100, 200, fade);
+    fill(subTextColor);
     text(textDisplay, width / 2, height / 2 - 35);
     pop();
   } else if (
@@ -370,7 +394,7 @@ function displayText() {
   // display the "next" and "back" text
   if (lineNum >= 4) {
     push();
-    fill(textColor);
+    fill(subTextColor);
     textSize(35);
     text("next >", width - 70, height - 30);
     text("< back", 70, height - 30);
