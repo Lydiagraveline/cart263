@@ -36,9 +36,6 @@ let hover = false;
 let reef = []; // empty array to store all the generated coral
 //let decaying = [];
 
-let decay = false; // can be true or false //keeps track of coral that is actively decaying
-let numDecay = 0; //The amount of coral that has decayed
-
 /**
 Preload the audio files + a JSON file
 */
@@ -83,12 +80,6 @@ and draw the coral
 function draw() {
   background(bg);
 
-  if (state === `title` || state === `manifesto`) {
-    displayText();
-  } else if (state === `playground`) {
-    lineNum = 33;
-  }
-
   //draw the coral reef
   for (let i = 0; i < reef.length; i++) {
     reef[i].setup();
@@ -104,11 +95,13 @@ function draw() {
     if (reef[i].state === `dead`) {
       reef.splice(i, 1);
     }
+  }
 
-    if (decay === true) {
-      //console.log(decay);
-      //makeDecay(numDecay);
-    }
+  //handle the states
+  if (state === `title` || state === `manifesto`) {
+    displayText();
+  } else if (state === `playground`) {
+    lineNum = 33;
   }
 }
 
@@ -146,10 +139,20 @@ function keyPressed() {
     //MANIFESTO//
     //handle going forward and back a line
   } else if (state === `manifesto`) {
-    if (keyCode === LEFT_ARROW && lineNum > 3) {
-      back();
+    if (keyCode === LEFT_ARROW) {
+      if (lineNum > 3 && lineNum < 32) {
+        back();
+      // switch states
+      } else if (lineNum === 32) {
+        state = `playground`;
+      }
     } else if (keyCode === RIGHT_ARROW) {
-      forward();
+      if (lineNum < 32) {
+        forward();
+      // restart
+      } else if (lineNum === 32) {
+        lineNum = 3;
+      }
     }
     //PLAYGROUND//
     // delete most recent coral
@@ -179,7 +182,7 @@ function mousePressed() {
   } else if (lineNum === 2) {
     if (mouseX > width / 2) {
       forward(); //changes state to `manifesto` automatically because lineNum will = 3
-    } else if (mouseX < width / 2 && lineNum > 0) {
+    } else if (mouseX < width / 2) {
       state = `playground`;
     }
   }
@@ -191,15 +194,21 @@ function mousePressed() {
         forward();
       }
       // if mosuse is on LEFT half of screen
-    } else if (mouseX < width / 2 && lineNum > 0) {
+    } else if (mouseX < width / 2) {
       if (state === `manifesto` && lineNum >= 3) {
         back(); // go back a line
       }
     }
   }
-  //refresh the page
+  //handle the end of the manifesto
   else if (lineNum === 32) {
-    lineNum = 0;
+    if (mouseX > width / 2) {
+      //restart manifesto
+      lineNum = 3;
+    } else if (mouseX < width / 2 && lineNum > 0) {
+      // switch to playground
+      state = `playground`;
+    }
   }
 }
 
@@ -238,13 +247,13 @@ function decayOnLineNum() {
   //on lines 4-6, make the coral decay
   if (lineNum === 4) {
     //makeDecay(reef.length / 3);
-    deleteCoral(reefSize / 3);
+    deleteCoral(reef.length / 3);
   } else if (lineNum === 5) {
     //makeDecay((2 * reef.length) / 3);
-    deleteCoral(reefSize / 3);
+    deleteCoral(reef.length / 3);
   } else if (lineNum === 6) {
     //makeDecay(reef.length);
-    deleteCoral(reefSize);
+    deleteCoral(reef.length);
   } else if (lineNum === 7) {
     reef = [];
   }
@@ -332,6 +341,12 @@ function displayText() {
     textSize(22);
     fill(39, 57, 64, fade);
     text(textDisplay, width / 2, height / 2);
+    pop();
+  } else if (lineNum === 32) {
+    push();
+    textSize(40);
+    fill(100, 100, 200, fade);
+    text(textDisplay, width / 2, height / 2 - 35);
     pop();
   } else if (
     lineNum === 10 ||
