@@ -117,10 +117,10 @@ function draw() {
       reef.splice(i, 1);
     }
   }
-
+  displayText();
   //handle the states
   if (state === `title` || state === `manifesto`) {
-    displayText();
+
   } else if (state === `playground`) {
     lineNum = 33;
   }
@@ -429,7 +429,7 @@ function displayText() {
   }
 
   // display the "next" and "back" text
-  if (lineNum >= 4) {
+  if (lineNum >= 4 && state === `manifesto`) {
     push();
     textSize(35);
     if (mouseX > width / 2) {
@@ -445,5 +445,13 @@ function displayText() {
     }
     text("< back", 70, height - 30);
     pop();
+  } else if (state === `playground`){
+    push();
+    fill(subTextColor);
+    text("Click anywhere to create coral. Press DELETE to remove the most recent coral.", width/2, height - 30);
+    pop();
   }
+
+
+
 }
