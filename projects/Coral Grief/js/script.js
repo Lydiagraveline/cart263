@@ -112,7 +112,6 @@ function draw() {
   }
 }
 
-
 /**
 Make a specififed amount of currently alive coral start to decay
 */
@@ -131,6 +130,7 @@ function deleteCoral(amount) {
 Handle keys pressed during specific states
 */
 function keyPressed() {
+  fade = 0; //reset fade
   //TITLE//
   //handle going forward a line and changing states
   if (state === `title`) {
@@ -161,17 +161,19 @@ function keyPressed() {
 }
 
 /**
-Handle forward and back when user clicks on the left or right side of the screen
+Handle mouse pressed during different states
 */
 function mousePressed() {
-  fade = 0;
+  fade = 0; //reset fade
 
+  //PLAYGROUND//
+  // create a new coral where the user clicks
   if (state === `playground`) {
     let corals = createCoral(mouseX, mouseY, random(50, 90));
     reef.push(corals);
   }
 
-  //handle mouse pressed during the title state
+  //TITLE//
   if (state === `title` && lineNum < 2) {
     forward();
   } else if (lineNum === 2) {
@@ -181,26 +183,19 @@ function mousePressed() {
       state = `playground`;
     }
   }
-
+  //MANIFESTO//
   if (lineNum >= 0 && lineNum < 32) {
-    // if mouse is on RIGHT half of screen
-    // if (mouseX > width / 2) {
-    //   if (lineNum === 3 && state === `title`) {
-    //     //state = `manifesto`;
-    //     console.log(state);
-    //   } else if (state === `manifesto`) {
-    //     forward();
-    //   }
-    //
-    //   // if mosuse is on LEFT half of screen
-    // } else if (mouseX < width / 2 && lineNum > 0) {
-    //   if (lineNum === 3 && state === `title`) {
-    //     state = `playground`;
-    //     console.log(state);
-    //   } else if (state === `manifesto` && lineNum >= 4) {
-    //     back(); // go back a line
-    //   }
-    // }
+    //if mouse is on RIGHT half of screen
+    if (mouseX > width / 2) {
+      if (state === `manifesto`) {
+        forward();
+      }
+      // if mosuse is on LEFT half of screen
+    } else if (mouseX < width / 2 && lineNum > 0) {
+      if (state === `manifesto` && lineNum >= 3) {
+        back(); // go back a line
+      }
+    }
   }
   //refresh the page
   else if (lineNum === 32) {
