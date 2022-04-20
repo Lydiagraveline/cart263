@@ -55,10 +55,6 @@ function preload() {
 Creates the initial coral and plays the music
 */
 function setup() {
-  if (state === `manifesto`) {
-    lineNum = 3;
-  }
-  //decaying = reef.splice(0,1);
   textColor = color(39, 57, 64, 255);
   bg = color(250, 236, 222, 255);
   createCanvas(windowWidth, windowHeight);
@@ -81,7 +77,8 @@ function createCoral(x, y, radius, state) {
 }
 
 /**
-Description of draw()
+Handle the different states
+and draw the coral
 */
 function draw() {
   background(bg);
@@ -115,118 +112,6 @@ function draw() {
   }
 }
 
-function displayText() {
-  textDisplay = `${textJson.line[lineNum]}`;
-  fade += fadeAmount;
-
-  // if (lineNum >= 0 && lineNum < 10) {
-  //   textColor = color(39, 57, 64, 255);
-  //   bg = color(250, 236, 222, 255);
-  // } else if (lineNum >= 10) {
-  //   textColor = color(171, 247, 255, fade);
-  //   bg = color(39, 57, 64);
-  // }
-
-  fill(textColor);
-  noStroke();
-  textFont("Space Mono");
-  textAlign(CENTER, TOP);
-
-  if (lineNum === 0) {
-    push();
-    textSize(50);
-    fill(39, 57, 64, fade);
-    text(textDisplay, width / 2, height / 2 - 50);
-    textSize(35);
-    text("begin", width - 70, height - 30);
-    pop();
-  } else if (lineNum === 1) {
-    push();
-    textSize(50);
-    text("Coral Grief", width / 2, height / 2 - 50);
-    fill(39, 57, 64, fade);
-    text(textDisplay, width / 2, height / 2 - 50);
-    pop();
-  } else if (lineNum === 2) {
-    push();
-    textSize(50);
-    text("Coral Grief", width / 2, height / 2 - 50);
-    //text(textDisplay, width / 2, height / 2 - 50);
-    textSize(40);
-    fill(100, 100, 200, fade);
-    text(textDisplay, width / 2, height / 2 - 35);
-    //  textSize(35);
-    //text("Playground", width /3, height/2);
-    pop();
-  } else if (lineNum === 3) {
-    push();
-    textSize(22);
-    fill(39, 57, 64, fade);
-    text(textDisplay, width / 2, height / 2);
-    pop();
-  } else if (
-    lineNum === 10 ||
-    lineNum === 16 ||
-    lineNum === 20 ||
-    lineNum === 25
-  ) {
-    push();
-    textSize(50);
-    fill(39, 57, 64, fade);
-    //fill(textColor);
-    text(textDisplay, width / 2, height / 2);
-    pop();
-  } else {
-    push();
-    textSize(18);
-    textAlign(LEFT, CENTER);
-    text(textDisplay, width / 5, height / 2);
-    pop();
-  }
-
-  if (lineNum >= 10) {
-    // background(39, 57, 64, fade);
-  }
-
-  // display the "next" and "back" text
-  if (lineNum >= 4) {
-    push();
-    fill(textColor);
-    textSize(35);
-    text("next", width - 70, height - 30);
-    text("back", 70, height - 30);
-    pop();
-  }
-}
-
-function decayOnLineNum() {
-  //on lines 4-6, make the coral decay
-  if (lineNum === 4) {
-    //makeDecay(reef.length / 3);
-    deleteCoral(reefSize / 3);
-  } else if (lineNum === 5) {
-    //makeDecay((2 * reef.length) / 3);
-    deleteCoral((2 * reefSize) / 3);
-  } else if (lineNum === 6) {
-    //makeDecay(reef.length);
-    deleteCoral(reefSize);
-  } else if (lineNum === 7) {
-    reef = [];
-  }
-}
-
-function deleteCoralOriginal() {
-  //works in playground mode
-  //create an array of coral that is currently alive
-  let newArray = reef.filter(function (coral) {
-    return coral.state === `alive`;
-  });
-
-  for (let i = 0; i < newArray.length; i++) {
-    let n = newArray.length - 1;
-    newArray[n].state = `decaying`;
-  }
-}
 
 /**
 Make a specififed amount of currently alive coral start to decay
@@ -238,16 +123,16 @@ function deleteCoral(amount) {
   });
 
   for (let i = 0; i < amount; i++) {
-    //let n = newArray.length
     newArray[i].state = `decaying`;
   }
-  //  console.log(`newArray = ` + newArray.length )
-  //  console.log(`reef = ` + reef.length )
 }
 
-function keyPressed() {}
-
+/**
+Handle keys pressed during specific states
+*/
 function keyPressed() {
+  //TITLE//
+  //handle going forward a line and changing states
   if (state === `title`) {
     if (lineNum < 2) {
       forward();
@@ -255,18 +140,22 @@ function keyPressed() {
       if (keyCode === LEFT_ARROW) {
         state = `playground`;
       } else if (keyCode === RIGHT_ARROW) {
-        forward();
+        forward(); //changes state to `manifesto` automatically because lineNum will = 3
       }
     }
+    //MANIFESTO//
+    //handle going forward and back a line
   } else if (state === `manifesto`) {
     if (keyCode === LEFT_ARROW && lineNum > 3) {
       back();
     } else if (keyCode === RIGHT_ARROW) {
       forward();
     }
+    //PLAYGROUND//
+    // delete most recent coral
   } else if (state === `playground`) {
     if (keyCode === DELETE || keyCode === BACKSPACE) {
-      deleteCoral();
+      deleteCoral(1);
     }
   }
 }
@@ -348,6 +237,25 @@ function back() {
 }
 
 /**
+Make coral decay on specific lines
+*/
+function decayOnLineNum() {
+  //on lines 4-6, make the coral decay
+  if (lineNum === 4) {
+    //makeDecay(reef.length / 3);
+    deleteCoral(reefSize / 3);
+  } else if (lineNum === 5) {
+    //makeDecay((2 * reef.length) / 3);
+    deleteCoral(reefSize / 3);
+  } else if (lineNum === 6) {
+    //makeDecay(reef.length);
+    deleteCoral(reefSize);
+  } else if (lineNum === 7) {
+    reef = [];
+  }
+}
+
+/**
 Generates a designated amount of coral (numCoral)
 that won't overlap eachother or the text box
 */
@@ -387,5 +295,75 @@ function positionCoral(numCoral) {
       let corals = createCoral(coral.x, coral.y, coral.r, 1);
       reef.push(corals);
     }
+  }
+}
+
+/**
+Handle the text displayed on specific lines
+*/
+function displayText() {
+  textDisplay = `${textJson.line[lineNum]}`;
+  fade += fadeAmount;
+
+  fill(textColor);
+  noStroke();
+  textFont("Space Mono");
+  textAlign(CENTER, TOP);
+
+  if (lineNum === 0) {
+    push();
+    textSize(50);
+    fill(39, 57, 64, fade);
+    text(textDisplay, width / 2, height / 2 - 50);
+    textSize(35);
+    pop();
+  } else if (lineNum === 1) {
+    push();
+    textSize(50);
+    text("Coral Grief", width / 2, height / 2 - 50);
+    fill(39, 57, 64, fade);
+    text(textDisplay, width / 2, height / 2 - 50);
+    pop();
+  } else if (lineNum === 2) {
+    push();
+    textSize(50);
+    text("Coral Grief", width / 2, height / 2 - 50);
+    textSize(40);
+    fill(100, 100, 200, fade);
+    text(textDisplay, width / 2, height / 2 - 35);
+    pop();
+  } else if (lineNum === 3) {
+    push();
+    textSize(22);
+    fill(39, 57, 64, fade);
+    text(textDisplay, width / 2, height / 2);
+    pop();
+  } else if (
+    lineNum === 10 ||
+    lineNum === 16 ||
+    lineNum === 20 ||
+    lineNum === 25
+  ) {
+    push();
+    textSize(50);
+    fill(39, 57, 64, fade);
+    text(textDisplay, width / 2, height / 2);
+    pop();
+  } else {
+    push();
+    textSize(18);
+    textAlign(LEFT, CENTER);
+    text(textDisplay, width / 5, height / 2);
+    pop();
+  }
+
+  // display the "next" and "back" text
+  if (lineNum >= 4) {
+    push();
+    fill(textColor);
+    textSize(35);
+    text("next >", width - 70, height - 30);
+    text("< back", 70, height - 30);
+    pop();
   }
 }
